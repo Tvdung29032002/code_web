@@ -1,42 +1,42 @@
 /* Thiết lập căn chỉnh và font chữ cho trang */
 body,
 html {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  height: 100%;
-  overflow: hidden;
+  margin: 0; /* Xóa khoảng trắng xung quanh */
+  padding: 0; /* Xóa padding mặc định */
+  font-family: Arial, sans-serif; /* Font chữ chính */
+  height: 100%; /* Chiều cao 100% của trang */
+  overflow: hidden; /* Ẩn thanh cuộn khi không cần thiết */
 }
 
 /* Thiết lập nền và vị trí của container chính */
 .container {
-  background-image: url("album/sci_group.png");
-  background-size: cover;
-  background-position: center;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
+  background-image: url("album/sci_group.png"); /* Hình nền */
+  background-size: cover; /* Đảm bảo hình nền được fill hết */
+  background-position: center; /* Chỉnh vị trí hình nền là giữa */
+  height: 100%; /* Chiều cao 100% của container */
+  overflow: hidden; /* Ẩn thanh cuộn khi không cần thiết */
+  position: relative; /* Vị trí tương đối */
 }
 
 /* Overlay đen chia sẻ header và content */
 .overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Màu đen với độ trong suốt 50% */
+  position: absolute; /* Vị trí tuyệt đối */
+  top: 0; /* Đặt ở phía trên cùng */
+  left: 0; /* Đặt ở bên trái */
+  width: 100%; /* Chiều rộng 100% */
+  height: 100%; /* Chiều cao 100% */
+  background-color: rgba(0, 0, 0, 0.5); /* Màu nền đen với độ trong suốt 50% */
 }
 
 /* Thiết lập header */
 header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  color: white;
-  position: relative;
-  z-index: 1; /* Đảm bảo header hiển thị phía trên cùng */
+  display: flex; /* Hiển thị theo kiểu flexbox */
+  justify-content: space-between; /* Căn chỉnh các phần tử theo khoảng cách đều */
+  align-items: center; /* Căn chỉnh các phần tử theo trục dọc */
+  padding: 20px; /* Padding 20px */
+  color: white; /* Màu chữ trắng */
+  position: relative; /* Vị trí tương đối */
+  z-index: 1; /* Độ sâu vượt lên trên cùng */
 }
 
 /* Thiết lập logo */
@@ -46,140 +46,148 @@ header {
 
 /* Thiết lập menu điều hướng */
 nav a {
-  color: white;
-  text-decoration: none;
-  margin: 0 10px;
+  color: white; /* Màu chữ trắng */
+  text-decoration: none; /* Bỏ gạch chân */
+  margin: 0 10px; /* Margin 0 10px */
 }
 
 /* Thiết lập nội dung chính */
 .content {
-  text-align: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1; /* Đảm bảo content hiển thị phía trên cùng */
-  color: white;
+  text-align: center; /* Căn chỉnh văn bản vào giữa */
+  position: absolute; /* Vị trí tuyệt đối */
+  top: 50%; /* Đặt ở giữa theo chiều cao */
+  left: 50%; /* Đặt ở giữa theo chiều rộng */
+  transform: translate(-50%, -50%); /* Dịch chuyển để căn giữa */
+  z-index: 1; /* Độ sâu vượt lên trên cùng */
+  color: white; /* Màu chữ trắng */
 }
 
 /* Thiết lập tiêu đề chúc mừng */
 h1 {
-  font-size: 72px;
-  margin: 0;
+  font-size: 72px; /* Cỡ chữ 72px */
+  margin: 0; /* Xóa margin */
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Đổ bóng văn bản */
 }
 
 /* Thiết lập phần hiển thị văn bản chữ */
 .typing-text {
-  display: inline-block;
+  display: inline-block; /* Hiển thị dạng block */
 }
 
 /* Thiết lập văn bản in hoa màu xanh dương */
 .uppercase-blue {
-  font-weight: bold;
-  color: rgb(0, 255, 89);
-  font-size: 36px;
+  font-weight: bold; /* Chữ in đậm */
+  color: rgb(0, 255, 89); /* Màu xanh dương */
+  font-size: 36px; /* Cỡ chữ 36px */
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Đổ bóng văn bản */
 }
 
 /* Hiệu ứng nhấp nháy cho văn bản */
 .blink {
-  animation: blink-animation 0.8s steps(5, start) infinite;
+  animation: blink-animation 0.8s steps(5, start) infinite; /* Hiệu ứng nhấp nháy */
 }
 
 @keyframes blink-animation {
   to {
-    visibility: hidden;
+    visibility: hidden; /* Ẩn văn bản */
   }
 }
 
 /* Thiết lập bóng bay */
 .balloon {
-  position: absolute;
-  width: 250px;
-  height: 250px;
-  animation: moveUp 10s linear infinite;
+  position: absolute; /* Vị trí tuyệt đối */
+  width: 250px; /* Chiều rộng 250px */
+  height: 250px; /* Chiều cao 250px */
+  animation: moveUp 10s linear infinite; /* Hiệu ứng di chuyển lên */
 }
 
 @keyframes moveUp {
   0% {
-    transform: translateY(100vh) translateX(0);
+    transform: translateY(100vh) translateX(0); /* Bắt đầu từ dưới cùng */
   }
   100% {
-    transform: translateY(-100vh) translateX(0);
+    transform: translateY(-100vh) translateX(0); /* Kết thúc ở trên cùng */
   }
 }
 
 /* Thiết lập nút bắt đầu */
 #start-button {
-  display: block;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 20px;
-  font-size: 24px;
-  cursor: pointer;
-  z-index: 2; /* Đảm bảo nút hiển thị phía trên cùng */
+  display: block; /* Hiển thị dạng block */
+  position: absolute; /* Vị trí tuyệt đối */
+  top: 50%; /* Đặt ở giữa theo chiều cao */
+  left: 50%; /* Đặt ở giữa theo chiều rộng */
+  transform: translate(-50%, -50%); /* Dịch chuyển để căn giữa */
+  padding: 20px; /* Padding 20px */
+  font-size: 24px; /* Cỡ chữ 24px */
+  cursor: pointer; /* Con trỏ là bàn tay */
+  z-index: 2; /* Độ sâu vượt lên trên cùng */
   background-color: rgba(
     255,
     255,
     255,
     0.7
   ); /* Nền màu trắng với độ trong suốt 70% */
-  border: none;
+  border: none; /* Không có viền */
   border-radius: 10px; /* Bo góc cho nút */
 }
+/* Thiết lập sidebar */
 .sidebar {
-  height: 100%;
-  width: 0;
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  background-color: #24292e;
-  overflow-x: hidden;
-  transition: 0.5s;
-  padding-top: 60px;
+  height: 100%; /* Chiều cao 100% */
+  width: 0; /* Không hiển thị ban đầu */
+  position: fixed; /* Vị trí cố định */
+  z-index: 1; /* Độ sâu vượt lên trên cùng */
+  top: 0; /* Đặt ở phía trên cùng */
+  left: 0; /* Đặt ở bên trái */
+  background-color: #24292e; /* Màu nền xám đậm */
+  overflow-x: hidden; /* Ẩn phần dư ra ngang */
+  transition: 0.5s; /* Hiệu ứng chuyển động 0.5s */
+  padding-top: 60px; /* Padding top 60px */
 }
 
+/* Thiết lập kiểu cho các liên kết trong sidebar */
 .sidebar a {
-  padding: 8px 8px 8px 32px;
-  text-decoration: none;
-  font-size: 18px;
-  color: #818181;
-  display: block;
-  transition: 0.3s;
+  padding: 8px 8px 8px 32px; /* Padding */
+  text-decoration: none; /* Bỏ gạch chân */
+  font-size: 18px; /* Cỡ chữ 18px */
+  color: #818181; /* Màu chữ xám */
+  display: block; /* Hiển thị dạng block */
+  transition: 0.3s; /* Hiệu ứng chuyển động 0.3s */
 }
 
+/* Hiệu ứng màu chữ khi hover đối với các liên kết trong sidebar */
 .sidebar a:hover {
-  color: #f1f1f1;
+  color: #f1f1f1; /* Đổi màu chữ khi hover */
 }
 
+/* Thiết lập nút đóng sidebar */
 .sidebar .close-btn {
-  position: absolute;
-  top: 0;
-  right: 25px;
-  font-size: 36px;
-  margin-left: 50px;
+  position: absolute; /* Vị trí tuyệt đối */
+  top: 0; /* Đặt ở phía trên cùng */
+  right: 25px; /* Đặt ở bên phải 25px */
+  font-size: 36px; /* Cỡ chữ 36px */
+  margin-left: 50px; /* Margin left 50px */
 }
 
+/* Thiết lập kiểu cho tiêu đề trong sidebar */
 .sidebar h3 {
-  color: #818181;
-  padding-left: 32px;
-}
-footer {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  background-color: #333333;
-  color: white;
-  text-align: center;
-  padding: 10px 0;
+  color: #818181; /* Màu chữ xám */
+  padding-left: 32px; /* Padding left 32px */
 }
 
+/* Thiết lập footer */
+footer {
+  position: fixed; /* Vị trí cố định */
+  left: 0; /* Đặt ở bên trái */
+  bottom: 0; /* Đặt ở phía dưới cùng */
+  width: 100%; /* Chiều rộng 100% */
+  background-color: #333333; /* Màu nền xám đậm */
+  color: white; /* Màu chữ trắng */
+  text-align: center; /* Căn giữa nội dung văn bản */
+  padding: 10px 0; /* Padding 10px trên và dưới */
+}
+
+/* Thiết lập kiểu cho đoạn văn bản trong footer */
 footer p {
-  margin: 0;
-  font-size: 14px;
+  margin: 0; /* Xóa margin */
+  font-size: 14px; /* Cỡ chữ 14px */
 }

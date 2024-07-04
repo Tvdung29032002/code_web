@@ -95,6 +95,8 @@ document.addEventListener("DOMContentLoaded", function () {
     setInterval(createBalloon, 2000);
   });
 });
+
+// Hàm toggleSidebar để mở và đóng sidebar
 function toggleSidebar() {
   const sidebar = document.getElementById("sidebar-menu");
   if (sidebar.style.width === "250px") {
@@ -104,5 +106,5 @@ function toggleSidebar() {
   }
 }
 
-// Close the sidebar when clicking on the close button
+// Đóng sidebar khi click vào nút đóng
 document.querySelector(".close-btn").addEventListener("click", toggleSidebar);
