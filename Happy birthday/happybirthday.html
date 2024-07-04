@@ -4,30 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Happy Birthday</title>
-    <!-- Liên kết tới file CSS -->
     <link rel="stylesheet" href="style_hapybirthday.css" />
   </head>
   <body>
     <div class="container">
-      <!-- Overlay đen phủ lên nền và header -->
       <div class="overlay"></div>
-      <!-- Header chứa logo và menu -->
       <header>
         <div class="logo">
-          <!-- Đường dẫn tới trang HTML khác -->
-          <a href="12congiap.html">
-            <img src="album/anh2.png" alt="Logo" />
-          </a>
+          <img src="album/menu.png" alt="Logo" onclick="toggleSidebar()" />
         </div>
-        <nav>
-          <a href="#">Home</a>
-          <a href="#">About</a>
-          <a href="#">Contact</a>
-        </nav>
       </header>
-      <!-- Nội dung chính của trang -->
+
+      <div id="sidebar-menu" class="sidebar">
+        <a href="#" class="close-btn">&times;</a>
+        <a href="#">Home</a>
+        <a href="#">Issues</a>
+        <a href="#">Pull requests</a>
+        <a href="#">Projects</a>
+      </div>
+
       <div class="content">
-        <!-- Hình ảnh chụp mô tả -->
         <img
           class="avatar-img"
           src="album/cake.jpg"
@@ -35,18 +31,18 @@
           width="400"
           height="400"
         />
-        <!-- Tiêu đề chúc mừng sinh nhật -->
         <h1>Happy Birthday!</h1>
-        <!-- Phần hiển thị văn bản chữ -->
         <p class="typing-text uppercase-blue"></p>
       </div>
-      <!-- Nút bắt đầu -->
       <button id="start-button">Start</button>
     </div>
-    <!-- Âm thanh sinh nhật -->
+
     <audio id="birthday-audio" src="album/happy birthday.mp3" loop></audio>
 
-    <!-- Liên kết tới file JavaScript -->
+    <footer>
+      <p>Copyright © 2024,Tran Van Dung</p>
+    </footer>
+
     <script src="script_happybirthday.js"></script>
   </body>
 </html>
