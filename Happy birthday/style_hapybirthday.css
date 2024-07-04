@@ -1,0 +1,132 @@
+/* Thiết lập căn chỉnh và font chữ cho trang */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Thiết lập nền và vị trí của container chính */
+.container {
+  background-image: url("album/sci_group.png");
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Overlay đen chia sẻ header và content */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Màu đen với độ trong suốt 50% */
+}
+
+/* Thiết lập header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  color: white;
+  position: relative;
+  z-index: 1; /* Đảm bảo header hiển thị phía trên cùng */
+}
+
+/* Thiết lập logo */
+.logo img {
+  height: 80px; /* Chiều cao của logo */
+}
+
+/* Thiết lập menu điều hướng */
+nav a {
+  color: white;
+  text-decoration: none;
+  margin: 0 10px;
+}
+
+/* Thiết lập nội dung chính */
+.content {
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1; /* Đảm bảo content hiển thị phía trên cùng */
+  color: white;
+}
+
+/* Thiết lập tiêu đề chúc mừng */
+h1 {
+  font-size: 72px;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Đổ bóng văn bản */
+}
+
+/* Thiết lập phần hiển thị văn bản chữ */
+.typing-text {
+  display: inline-block;
+}
+
+/* Thiết lập văn bản in hoa màu xanh dương */
+.uppercase-blue {
+  font-weight: bold;
+  color: rgb(0, 255, 89);
+  font-size: 36px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Đổ bóng văn bản */
+}
+
+/* Hiệu ứng nhấp nháy cho văn bản */
+.blink {
+  animation: blink-animation 0.8s steps(5, start) infinite;
+}
+
+@keyframes blink-animation {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* Thiết lập bóng bay */
+.balloon {
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  animation: moveUp 10s linear infinite;
+}
+
+@keyframes moveUp {
+  0% {
+    transform: translateY(100vh) translateX(0);
+  }
+  100% {
+    transform: translateY(-100vh) translateX(0);
+  }
+}
+
+/* Thiết lập nút bắt đầu */
+#start-button {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 2; /* Đảm bảo nút hiển thị phía trên cùng */
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.7
+  ); /* Nền màu trắng với độ trong suốt 70% */
+  border: none;
+  border-radius: 10px; /* Bo góc cho nút */
+}

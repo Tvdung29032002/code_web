@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday</title>
+    <!-- Liên kết tới file CSS -->
+    <link rel="stylesheet" href="style_hapybirthday.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Overlay đen phủ lên nền và header -->
+      <div class="overlay"></div>
+      <!-- Header chứa logo và menu -->
+      <header>
+        <div class="logo">
+          <!-- Đường dẫn tới trang HTML khác -->
+          <a href="12congiap.html">
+            <img src="album/anh2.png" alt="Logo" />
+          </a>
+        </div>
+        <nav>
+          <a href="#">Home</a>
+          <a href="#">About</a>
+          <a href="#">Contact</a>
+        </nav>
+      </header>
+      <!-- Nội dung chính của trang -->
+      <div class="content">
+        <!-- Hình ảnh chụp mô tả -->
+        <img
+          class="avatar-img"
+          src="album/cake.jpg"
+          alt="Ảnh mô tả"
+          width="400"
+          height="400"
+        />
+        <!-- Tiêu đề chúc mừng sinh nhật -->
+        <h1>Happy Birthday!</h1>
+        <!-- Phần hiển thị văn bản chữ -->
+        <p class="typing-text uppercase-blue"></p>
+      </div>
+      <!-- Nút bắt đầu -->
+      <button id="start-button">Start</button>
+    </div>
+    <!-- Âm thanh sinh nhật -->
+    <audio id="birthday-audio" src="album/happy birthday.mp3" loop></audio>
+
+    <!-- Liên kết tới file JavaScript -->
+    <script src="script_happybirthday.js"></script>
+  </body>
+</html>
