@@ -38,10 +38,32 @@ header {
   position: relative; /* Vị trí tương đối */
   z-index: 1; /* Độ sâu vượt lên trên cùng */
 }
-
-/* Thiết lập logo */
-.logo img {
+/* Thiết lập header bên trái là menu */
+.header-left img {
   height: 50px; /* Chiều cao của logo */
+}
+
+/* Thiết lập header bên phải là 3 thương hiệu */
+.header-right {
+  display: flex;
+  align-items: center;
+}
+.header-right .header-logo.paris-logo {
+  width: 170px; /* Đặt chiều rộng cho logo Paris là 170px */
+  height: auto; /* Để chiều cao tự động theo tỷ lệ */
+  margin-right: 5px; /* Khoảng cách giữa các logo */
+}
+
+.header-right .header-logo.kangnam-logo {
+  width: 170px; /* Đặt chiều rộng cho logo Kangnam là 170px */
+  height: auto; /* Để chiều cao tự động theo tỷ lệ */
+  margin-right: 5px; /* Khoảng cách giữa các logo */
+}
+
+.header-right .header-logo.hongha-logo {
+  width: 100px; /* Đặt chiều rộng cho logo Hong Ha là 100px */
+  height: auto; /* Để chiều cao tự động theo tỷ lệ */
+  margin-right: 5px; /* Khoảng cách giữa các logo */
 }
 
 /* Thiết lập menu điều hướng */
@@ -190,4 +212,30 @@ footer {
 footer p {
   margin: 0; /* Xóa margin */
   font-size: 14px; /* Cỡ chữ 14px */
+}
+#logoutBtn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+#logoutBtn:hover {
+  background-color: #d32f2f;
+}
+.sidebar a.logout {
+  background-color: #f44336;
+  color: white;
+  margin-top: 20px;
+}
+
+.sidebar a.logout:hover {
+  background-color: #d32f2f;
 }

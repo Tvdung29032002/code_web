@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="overlay"></div>
+      <header>
+        <div class="header-left">
+          <img src="album/menu.png" alt="Logo" onclick="toggleSidebar()" />
+        </div>
+        <div class="header-right">
+          <img
+            src="album/logo_paris.png"
+            alt="Paris Logo"
+            class="header-logo paris-logo"
+          />
+          <a
+            href="https://benhvienthammykangnam.com.vn/uu-dai/?utm_source=Marketing_Google_Search&utm_medium=CPC&utm_campaign=99999_HN_Th%C6%B0%C6%A1ng_Hi%E1%BB%87u_Search_Kangnam&utm_term=keywords&utm_content=HN&csa_acc=1671244448&gclid=EAIaIQobChMImcT9puyNhwMV5tsWBR0DQQ9_EAAYASAAEgLg1_D_BwE"
+            target="_blank"
+          >
+            <img
+              src="album/logo_kangnam.png"
+              alt="Kangnam Logo"
+              class="header-logo kangnam-logo"
+            />
+          </a>
+          <img
+            src="album/logo_hongha.png"
+            alt="Hong Ha Logo"
+            class="header-logo hongha-logo"
+          />
+        </div>
+      </header>
+
+      <div id="sidebar-menu" class="sidebar">
+        <a href="#" class="close-btn">&times;</a>
+        <a href="#">Home</a>
+        <a href="https://vietnix.vn/day-code-len-github/">Issues</a>
+        <a href="#">Pull requests</a>
+        <a href="#">Projects</a>
+        <a href="#" class="logout" onclick="logout()">Logout</a>
+      </div>
+
+      <div class="content">
+        <img
+          class="avatar-img"
+          src="album/cake.jpg"
+          alt="Ảnh mô tả"
+          width="400"
+          height="400"
+        />
+        <h1>Happy Birthday!</h1>
+        <p class="typing-text uppercase-blue"></p>
+      </div>
+      <button id="start-button">Start</button>
+    </div>
+
+    <audio id="birthday-audio" src="album/happy birthday.mp3" loop></audio>
+
+    <footer>
+      <p>Copyright © 2024, Tran Van Dung</p>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
