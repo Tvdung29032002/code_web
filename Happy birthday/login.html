@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
     <link rel="stylesheet" href="login-style.css" />
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   </head>
   <body>
     <div class="login-container">
@@ -18,6 +19,10 @@
           <label for="password">Password</label>
           <input type="password" id="password" name="password" required />
         </div>
+        <div
+          class="g-recaptcha"
+          data-sitekey="6Lfp5gkqAAAAAM3yH5X7XQ_8ZSk7csmwJ4xvZy85"
+        ></div>
         <button type="submit">Login</button>
       </form>
     </div>

@@ -50,3 +50,7 @@ button {
 button:hover {
   background-color: #2980b9;
 }
+
+.g-recaptcha {
+  margin-bottom: 15px;
+}

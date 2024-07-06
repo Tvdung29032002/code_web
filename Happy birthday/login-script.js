@@ -3,7 +3,12 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
 
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
+  const recaptchaResponse = grecaptcha.getResponse();
 
+  if (!recaptchaResponse) {
+    alert("Vui lòng xác nhận bạn không phải là robot.");
+    return;
+  }
   // Đây chỉ là một ví dụ đơn giản. Trong thực tế, bạn nên sử dụng backend để xác thực.
   if (username === "xxx" && password === "123456") {
     // Lưu trạng thái đăng nhập vào localStorage

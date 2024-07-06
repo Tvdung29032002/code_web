@@ -40,7 +40,7 @@ header {
 }
 /* Thiết lập header bên trái là menu */
 .header-left img {
-  height: 50px; /* Chiều cao của logo */
+  height: 40px; /* Chiều cao của logo */
 }
 
 /* Thiết lập header bên phải là 3 thương hiệu */
@@ -154,8 +154,10 @@ h1 {
 }
 /* Thiết lập sidebar */
 .sidebar {
+  display: flex; /* Sử dụng Flexbox */
+  flex-direction: column; /* Xếp các phần tử theo cột */
   height: 100%; /* Chiều cao 100% */
-  width: 0; /* Không hiển thị ban đầu */
+  width: 250px; /* Đặt chiều rộng */
   position: fixed; /* Vị trí cố định */
   z-index: 1; /* Độ sâu vượt lên trên cùng */
   top: 0; /* Đặt ở phía trên cùng */
@@ -164,6 +166,7 @@ h1 {
   overflow-x: hidden; /* Ẩn phần dư ra ngang */
   transition: 0.5s; /* Hiệu ứng chuyển động 0.5s */
   padding-top: 60px; /* Padding top 60px */
+  justify-content: space-between; /* Căn giữa các phần tử */
 }
 
 /* Thiết lập kiểu cho các liên kết trong sidebar */
@@ -194,6 +197,26 @@ h1 {
 .sidebar h3 {
   color: #818181; /* Màu chữ xám */
   padding-left: 32px; /* Padding left 32px */
+}
+
+/* Thiết lập kiểu cho liên kết logout */
+.sidebar .logout-container {
+  padding: 70px 20px; /* Giảm padding từ 70px*/
+  text-align: center; /* Căn giữa nội dung */
+}
+
+.sidebar a.logout {
+  background-color: #f44336; /* Màu nền đỏ */
+  color: white; /* Màu chữ trắng */
+  padding: 8px 16px; /* Padding */
+  text-decoration: none; /* Bỏ gạch chân */
+  display: inline-block; /* Hiển thị dạng block */
+  border-radius: 5px; /* Bo góc cho nút */
+  font-size: 12px; /* Đặt kích thước font lại thành 9px */
+}
+
+.sidebar a.logout:hover {
+  background-color: #d32f2f; /* Đổi màu nền khi hover */
 }
 
 /* Thiết lập footer */
