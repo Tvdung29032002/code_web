@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Virtual Keyboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: rgba(240, 240, 240, 0.9);
+      }
+      .keyboard {
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        width: fit-content;
+        margin: 0 auto;
+      }
+      .title {
+        text-align: center;
+        margin-bottom: 10px;
+        font-weight: bold;
+        font-size: 14px;
+      }
+      .row {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 5px;
+      }
+      .key {
+        width: 25px;
+        height: 25px;
+        margin: 1px;
+        border: 1px solid #ccc;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        background-color: #fff;
+        border-radius: 3px;
+        font-size: 12px;
+      }
+      .key:hover {
+        background-color: #f0f0f0;
+      }
+      .wide {
+        width: auto;
+        padding: 0 5px;
+      }
+      .space {
+        width: 150px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="keyboard">
+      <div class="title">Virtual Keyboard</div>
+      <div class="row">
+        <div class="key">1</div>
+        <div class="key">2</div>
+        <div class="key">3</div>
+        <div class="key">4</div>
+        <div class="key">5</div>
+        <div class="key">6</div>
+        <div class="key">7</div>
+        <div class="key">8</div>
+        <div class="key">9</div>
+        <div class="key">0</div>
+        <div class="key">-</div>
+        <div class="key">=</div>
+        <div class="key wide">⌫</div>
+      </div>
+      <div class="row">
+        <div class="key">q</div>
+        <div class="key">w</div>
+        <div class="key">e</div>
+        <div class="key">r</div>
+        <div class="key">t</div>
+        <div class="key">y</div>
+        <div class="key">u</div>
+        <div class="key">i</div>
+        <div class="key">o</div>
+        <div class="key">p</div>
+        <div class="key">[</div>
+        <div class="key">]</div>
+      </div>
+      <div class="row">
+        <div class="key">a</div>
+        <div class="key">s</div>
+        <div class="key">d</div>
+        <div class="key">f</div>
+        <div class="key">g</div>
+        <div class="key">h</div>
+        <div class="key">j</div>
+        <div class="key">k</div>
+        <div class="key">l</div>
+        <div class="key">;</div>
+        <div class="key">'</div>
+      </div>
+      <div class="row">
+        <div class="key wide">⇧</div>
+        <div class="key">z</div>
+        <div class="key">x</div>
+        <div class="key">c</div>
+        <div class="key">v</div>
+        <div class="key">b</div>
+        <div class="key">n</div>
+        <div class="key">m</div>
+        <div class="key">,</div>
+        <div class="key">.</div>
+        <div class="key">/</div>
+        <div class="key wide">⇧</div>
+      </div>
+      <div class="row">
+        <div class="key">Ctrl</div>
+        <div class="key">Alt</div>
+        <div class="key space">Space</div>
+        <div class="key">Alt</div>
+        <div class="key">Ctrl</div>
+      </div>
+    </div>
+  </body>
+</html>

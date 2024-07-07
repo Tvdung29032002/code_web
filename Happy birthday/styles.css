@@ -1,289 +1,305 @@
-/* Thiết lập căn chỉnh và font chữ cho trang */
+/* styles.css */
 body,
 html {
-  margin: 0; /* Xóa khoảng trắng xung quanh */
-  padding: 0; /* Xóa padding mặc định */
-  font-family: Arial, sans-serif; /* Font chữ chính */
-  height: 100%; /* Chiều cao 100% của trang */
-  overflow: hidden; /* Ẩn thanh cuộn khi không cần thiết */
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  height: 100%;
+  overflow: hidden;
+  background-color: #f6f8fc;
 }
 
-/* Thiết lập nền và vị trí của container chính */
-.container {
-  background-image: url("album/sci_group.png"); /* Hình nền */
-  background-size: cover; /* Đảm bảo hình nền được fill hết */
-  background-position: center; /* Chỉnh vị trí hình nền là giữa */
-  height: 100%; /* Chiều cao 100% của container */
-  overflow: hidden; /* Ẩn thanh cuộn khi không cần thiết */
-  position: relative; /* Vị trí tương đối */
-}
-
-/* Overlay đen chia sẻ header và content */
-.overlay {
-  position: absolute; /* Vị trí tuyệt đối */
-  top: 0; /* Đặt ở phía trên cùng */
-  left: 0; /* Đặt ở bên trái */
-  width: 100%; /* Chiều rộng 100% */
-  height: 100%; /* Chiều cao 100% */
-  background-color: rgba(0, 0, 0, 0.5); /* Màu nền đen với độ trong suốt 50% */
-}
-
-/* Thiết lập header */
 header {
-  display: flex; /* Hiển thị theo kiểu flexbox */
-  justify-content: space-between; /* Căn chỉnh các phần tử theo khoảng cách đều */
-  align-items: center; /* Căn chỉnh các phần tử theo trục dọc */
-  padding: 20px; /* Padding 20px */
-  color: white; /* Màu chữ trắng */
-  position: relative; /* Vị trí tương đối */
-  z-index: 1; /* Độ sâu vượt lên trên cùng */
-}
-/* Thiết lập header bên trái là menu */
-.header-left img {
-  height: 40px; /* Chiều cao của logo */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 50px;
 }
 
-/* Thiết lập header bên phải là 3 thương hiệu */
+.header-left,
 .header-right {
-  display: flex; /* Sắp xếp các phần tử theo chiều ngang */
-  align-items: center; /* Căn chỉnh các phần tử theo chiều dọc vào trung tâm */
+  display: flex;
+  align-items: center;
 }
 
-.header-right .header-logo.tiktok {
-  width: 50px; /* Đặt chiều rộng cho logo TikTok là 50px */
-  height: 50px; /* Để chiều cao tự động theo tỷ lệ */
-  margin-right: 20px; /* Khoảng cách giữa các logo */
-  border: 1px solid #ccc; /* Thêm khung viền màu xám */
+.header-left img,
+.header-right img {
+  width: 35px;
+  height: 35px;
+  margin: 0 8px;
+  cursor: pointer;
 }
 
-.header-right .header-logo.instagram {
-  width: 50px; /* Đặt chiều rộng cho logo Instagram là 50px */
-  height: 50px; /* Để chiều cao tự động theo tỷ lệ */
-  margin-right: 20px; /* Khoảng cách giữa các logo */
-  border: 1px solid #ccc; /* Thêm khung viền màu xám */
+.search-bar {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 50%; /* Đưa khung tìm kiếm vào giữa màn hình */
+  transform: translateX(-50%); /* Điều chỉnh vị trí cụ thể từ mép trái */
+  top: 20px; /* Điều chỉnh vị trí từ mép trên */
 }
 
-.header-right .header-logo.facebook {
-  width: 50px; /* Đặt chiều rộng cho logo Facebook là 50px */
-  height: 50px; /* Để chiều cao tự động theo tỷ lệ */
-  margin-right: 20px; /* Khoảng cách giữa các logo */
-  border: 1px solid #ccc; /* Thêm khung viền màu xám */
+.search-bar input {
+  width: 300px; /* Độ rộng của input, điều chỉnh theo nhu cầu */
+  padding: 8px 30px 8px 40px; /* Padding cho input, điều chỉnh tùy ý */
+  border: 1px solid #f1f3f4;
+  border-radius: 20px;
+  background-color: #f1f3f4;
+  font-size: 14px;
 }
 
-/* Thiết lập menu điều hướng */
-nav a {
-  color: white; /* Màu chữ trắng */
-  text-decoration: none; /* Bỏ gạch chân */
-  margin: 0 10px; /* Margin 0 10px */
+.search-icon {
+  position: absolute;
+  left: 10px; /* Vị trí từ mép trái */
+  width: 20px; /* Kích thước của biểu tượng */
+  height: auto;
+  cursor: pointer;
+  z-index: 1; /* Đưa search-icon lên trên keyboard-icon */
 }
 
-/* Thiết lập nội dung chính */
+.keyboard-icon {
+  margin-left: -35px; /* Điều chỉnh vị trí từ mép trái */
+  width: 24px; /* Kích thước của biểu tượng keyboard */
+  height: auto;
+  z-index: 0; /* Đưa keyboard-icon xuống dưới */
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-left: 16px;
+}
+
+.container {
+  padding-top: 64px;
+  background-image: url("album/sci_group.png");
+  background-size: cover;
+  background-position: center;
+  height: calc(100% - 64px);
+  overflow: hidden;
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
 .content {
-  text-align: center; /* Căn chỉnh văn bản vào giữa */
-  position: absolute; /* Vị trí tuyệt đối */
-  top: 50%; /* Đặt ở giữa theo chiều cao */
-  left: 50%; /* Đặt ở giữa theo chiều rộng */
-  transform: translate(-50%, -50%); /* Dịch chuyển để căn giữa */
-  z-index: 1; /* Độ sâu vượt lên trên cùng */
-  color: white; /* Màu chữ trắng */
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  color: white;
 }
 
-/* Thiết lập tiêu đề chúc mừng */
 h1 {
-  font-size: 72px; /* Cỡ chữ 72px */
-  margin: 0; /* Xóa margin */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Đổ bóng văn bản */
+  font-size: 72px;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Thiết lập phần hiển thị văn bản chữ */
 .typing-text {
-  display: inline-block; /* Hiển thị dạng block */
+  display: inline-block;
 }
 
-/* Thiết lập văn bản in hoa màu xanh dương */
 .uppercase-blue {
-  font-weight: bold; /* Chữ in đậm */
-  color: rgb(0, 255, 89); /* Màu xanh dương */
-  font-size: 36px; /* Cỡ chữ 36px */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Đổ bóng văn bản */
+  font-weight: bold;
+  color: rgb(0, 255, 89);
+  font-size: 36px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Hiệu ứng nhấp nháy cho văn bản */
 .blink {
-  animation: blink-animation 0.8s steps(5, start) infinite; /* Hiệu ứng nhấp nháy */
+  animation: blink-animation 0.8s steps(5, start) infinite;
 }
 
 @keyframes blink-animation {
   to {
-    visibility: hidden; /* Ẩn văn bản */
+    visibility: hidden;
   }
 }
 
-/* Thiết lập bóng bay */
 .balloon {
-  position: absolute; /* Vị trí tuyệt đối */
-  width: 250px; /* Chiều rộng 250px */
-  height: 250px; /* Chiều cao 250px */
-  animation: moveUp 10s linear infinite; /* Hiệu ứng di chuyển lên */
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  animation: moveUp 10s linear infinite;
 }
 
 @keyframes moveUp {
   0% {
-    transform: translateY(100vh) translateX(0); /* Bắt đầu từ dưới cùng */
+    transform: translateY(100vh) translateX(0);
   }
   100% {
-    transform: translateY(-100vh) translateX(0); /* Kết thúc ở trên cùng */
+    transform: translateY(-100vh) translateX(0);
   }
 }
 
-/* Thiết lập nút bắt đầu */
 #start-button {
-  display: block; /* Hiển thị dạng block */
-  position: absolute; /* Vị trí tuyệt đối */
-  top: 50%; /* Đặt ở giữa theo chiều cao */
-  left: 50%; /* Đặt ở giữa theo chiều rộng */
-  transform: translate(-50%, -50%); /* Dịch chuyển để căn giữa */
-  padding: 20px; /* Padding 20px */
-  font-size: 24px; /* Cỡ chữ 24px */
-  cursor: pointer; /* Con trỏ là bàn tay */
-  z-index: 2; /* Độ sâu vượt lên trên cùng */
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.7
-  ); /* Nền màu trắng với độ trong suốt 70% */
-  border: none; /* Không có viền */
-  border-radius: 10px; /* Bo góc cho nút */
-}
-/* Thiết lập sidebar */
-.sidebar {
-  display: flex; /* Sử dụng Flexbox */
-  flex-direction: column; /* Xếp các phần tử theo cột */
-  height: 100%; /* Chiều cao 100% */
-  width: 250px; /* Đặt chiều rộng */
-  position: fixed; /* Vị trí cố định */
-  z-index: 1; /* Độ sâu vượt lên trên cùng */
-  top: 0; /* Đặt ở phía trên cùng */
-  left: 0; /* Đặt ở bên trái */
-  background-color: #24292e; /* Màu nền xám đậm */
-  overflow-x: hidden; /* Ẩn phần dư ra ngang */
-  transition: 0.5s; /* Hiệu ứng chuyển động 0.5s */
-  padding-top: 60px; /* Padding top 60px */
-  justify-content: space-between; /* Căn giữa các phần tử */
-}
-
-/* Thiết lập kiểu cho các liên kết trong sidebar */
-.sidebar a {
-  padding: 8px 8px 8px 32px; /* Padding */
-  text-decoration: none; /* Bỏ gạch chân */
-  font-size: 18px; /* Cỡ chữ 18px */
-  color: #818181; /* Màu chữ xám */
-  display: block; /* Hiển thị dạng block */
-  transition: 0.3s; /* Hiệu ứng chuyển động 0.3s */
-}
-
-/* Hiệu ứng màu chữ khi hover đối với các liên kết trong sidebar */
-.sidebar a:hover {
-  color: #f1f1f1; /* Đổi màu chữ khi hover */
-}
-
-/* Thiết lập nút đóng sidebar */
-.sidebar .close-btn {
-  position: absolute; /* Vị trí tuyệt đối */
-  top: 0; /* Đặt ở phía trên cùng */
-  right: 25px; /* Đặt ở bên phải 25px */
-  font-size: 36px; /* Cỡ chữ 36px */
-  margin-left: 50px; /* Margin left 50px */
-}
-
-/* Thiết lập kiểu cho tiêu đề trong sidebar */
-.sidebar h3 {
-  color: #818181; /* Màu chữ xám */
-  padding-left: 32px; /* Padding left 32px */
-}
-
-/* Thiết lập kiểu cho liên kết logout */
-.sidebar .logout-container {
-  padding: 70px 20px; /* Giảm padding từ 70px*/
-  text-align: center; /* Căn giữa nội dung */
-}
-
-.sidebar a.logout {
-  background-color: #f44336; /* Màu nền đỏ */
-  color: white; /* Màu chữ trắng */
-  padding: 8px 16px; /* Padding */
-  text-decoration: none; /* Bỏ gạch chân */
-  display: inline-block; /* Hiển thị dạng block */
-  border-radius: 5px; /* Bo góc cho nút */
-  font-size: 12px; /* Đặt kích thước font lại thành 9px */
-}
-
-.sidebar a.logout:hover {
-  background-color: #d32f2f; /* Đổi màu nền khi hover */
-}
-
-.sidebar-links {
-  margin-top: 20px; /* Điều chỉnh khoảng cách từ hình ảnh sidebar_close.png xuống danh sách liên kết */
-}
-
-/* Thiết lập footer */
-footer {
-  position: fixed; /* Vị trí cố định */
-  left: 0; /* Đặt ở bên trái */
-  bottom: 0; /* Đặt ở phía dưới cùng */
-  width: 100%; /* Chiều rộng 100% */
-  background-color: #333333; /* Màu nền xám đậm */
-  color: white; /* Màu chữ trắng */
-  text-align: center; /* Căn giữa nội dung văn bản */
-  padding: 10px 0; /* Padding 10px trên và dưới */
-}
-
-/* Thiết lập kiểu cho đoạn văn bản trong footer */
-footer p {
-  margin: 0; /* Xóa margin */
-  font-size: 14px; /* Cỡ chữ 14px */
-}
-#logoutBtn {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  font-size: 24px;
   cursor: pointer;
-  border-radius: 5px;
+  z-index: 2;
+  background-color: rgba(255, 255, 255, 0.7);
+  border: none;
+  border-radius: 10px;
 }
 
-#logoutBtn:hover {
-  background-color: #d32f2f;
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 250px;
+  position: fixed;
+  z-index: 1100;
+  top: 0;
+  left: -250px;
+  background-color: #24292e;
+  overflow-x: hidden;
+  transition: 0.3s;
+  padding-top: 64px;
+  justify-content: space-between;
 }
+
+.sidebar.open {
+  left: 0;
+}
+
+.sidebar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 18px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidebar a:hover {
+  color: #f1f1f1;
+}
+
+.sidebar .logout-container {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 50px;
+  text-align: center;
+}
+
 .sidebar a.logout {
   background-color: #f44336;
   color: white;
-  margin-top: 20px;
+  padding: 8px 16px;
+  display: inline-block;
+  border-radius: 5px;
+  font-size: 12px;
 }
 
 .sidebar a.logout:hover {
   background-color: #d32f2f;
 }
 
-#sidebarClose {
-  position: absolute; /* Đặt vị trí tuyệt đối so với phần tử chứa nó */
-  top: 20px; /* Cách phía trên của phần tử chứa 20px */
-  left: 20px; /* Cách phía trái của phần tử chứa 20px */
-  cursor: pointer; /* Thay đổi con trỏ chuột thành hình bàn tay khi di chuột qua */
-  width: 40px; /* Đặt chiều rộng của phần tử là 50px */
-  height: 40px; /* Đặt chiều cao của phần tử là 50px */
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #333333;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+}
+
+footer p {
+  margin: 0;
+  font-size: 14px;
 }
 
 #sidebarToggle {
-  top: 20px; /* Cách phía trên của phần tử chứa 20px */
-  left: 20px; /* Cách phía trái của phần tử chứa 20px */
-  cursor: pointer; /* Thay đổi con trỏ chuột thành hình bàn tay khi di chuột qua */
-  width: 40px; /* Đặt chiều rộng của phần tử là 50px */
-  height: 40px; /* Đặt chiều cao của phần tử là 50px */
+  cursor: pointer;
+  width: 35px;
+  height: 35px;
+  margin: 0 8px;
+}
+
+#sidebarClose {
+  cursor: pointer;
+  width: 35px;
+  height: 35px;
+}
+
+.sidebar.open #sidebarClose {
+  display: block;
+  position: absolute;
+  top: 20px;
+  left: 25px;
+}
+
+.avatar-img {
+  max-width: 100%;
+  height: auto;
+}
+
+.tooltip-container {
+  position: relative; /* Đặt vị trí của tooltip container là relative để có thể định vị tooltip bên trong */
+  display: inline-block; /* Biến tooltip container thành một khối inline để nó chứa chính xác tooltip */
+}
+
+.tooltip {
+  visibility: hidden; /* Ẩn tooltip ban đầu */
+  width: 120px; /* Độ rộng của tooltip */
+  background-color: black; /* Màu nền của tooltip */
+  color: white; /* Màu chữ của tooltip */
+  text-align: center; /* Căn giữa nội dung trong tooltip */
+  padding: 5px 0; /* Khoảng cách padding của tooltip */
+  border-radius: 6px; /* Bo tròn góc của tooltip */
+  position: absolute; /* Đặt vị trí của tooltip là absolute để nó có thể di chuyển độc lập với phần tử cha */
+  z-index: 1; /* Đặt z-index để tooltip hiển thị trên các phần tử khác khi hover */
+  bottom: -30px; /* Khoảng cách từ tooltip đến phần tử cha theo chiều dưới */
+  left: 50%; /* Đặt vị trí ngang của tooltip là giữa theo phần tử cha */
+  margin-left: -60px; /* Dịch chuyển tooltip về bên trái để căn giữa theo chiều ngang */
+  opacity: 0; /* Đặt opacity của tooltip ban đầu là 0 để ẩn đi */
+  transition: opacity 0.3s; /* Thêm hiệu ứng chuyển đổi opacity trong 0.3s khi tooltip xuất hiện */
+}
+
+.tooltip::after {
+  content: ""; /* Thêm nội dung giả cho pseudo-element after */
+  position: absolute; /* Đặt vị trí của pseudo-element là absolute để nó có thể di chuyển độc lập với tooltip */
+  bottom: calc(
+    100% - 5px
+  ); /* Đặt vị trí bottom của mũi nhọn ở trên cùng của hình Help */
+  left: 50%; /* Đặt vị trí ngang của mũi nhọn là giữa theo tooltip */
+  transform: translateX(
+    -50%
+  ); /* Dịch chuyển mũi nhọn về bên trái để căn giữa theo chiều ngang */
+  border-width: 5px; /* Độ dày của mũi nhọn */
+  border-style: solid; /* Kiểu đường viền của mũi nhọn */
+  border-color: black transparent transparent transparent; /* Màu sắc của mũi nhọn */
+}
+
+.tooltip-container:hover .tooltip {
+  visibility: visible; /* Hiển thị tooltip khi hover vào tooltip container */
+  opacity: 1; /* Đặt opacity của tooltip là 1 để hiển thị nội dung tooltip */
 }

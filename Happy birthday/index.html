@@ -7,35 +7,54 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <header>
+      <div class="header-left">
+        <img
+          src="album/sidebar_open.png"
+          alt="Menu"
+          id="sidebarToggle"
+          class="icon"
+        />
+      </div>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Tìm kiếm" />
+        <img
+          src="album/keyboard.png"
+          alt="Keyboard Icon"
+          class="keyboard-icon"
+          id="keyboardIcon"
+        />
+        <img
+          src="album/search-icon.png"
+          alt="Search Icon"
+          class="search-icon"
+        />
+      </div>
+
+      <div class="header-right">
+        <span class="tooltip-container">
+          <img
+            src="album/help-icon.png"
+            alt="Help"
+            class="icon"
+            id="helpIcon"
+          />
+          <span class="tooltip">Can i help you?</span>
+        </span>
+        <img src="album/settings-icon.png" alt="Settings" class="icon" />
+        <img src="album/apps-icon.png" alt="Apps" class="icon" />
+        <img src="album/avatar.jpg" alt="User Avatar" class="avatar" />
+      </div>
+    </header>
+
     <div class="container">
       <div class="overlay"></div>
-      <header>
-        <div class="header-left">
-          <img
-            src="album/sidebar_open.png"
-            alt="Open Sidebar"
-            id="sidebarToggle"
-          />
-        </div>
-        <div class="header-right">
-          <img src="album/tiktok.jpg" alt="tiktok" class="header-logo tiktok" />
-          <img
-            src="album/instagram.jpg"
-            alt="instagram"
-            class="header-logo instagram"
-          />
-          <img
-            src="album/facebook.png"
-            alt="facebook"
-            class="header-logo facebook"
-          />
-        </div>
-      </header>
       <div id="sidebar-menu" class="sidebar">
         <img
           src="album/sidebar_close.png"
           alt="Close Sidebar"
           id="sidebarClose"
+          class="icon"
         />
         <div class="sidebar-links">
           <a href="#">Home</a>
@@ -60,7 +79,20 @@
       </div>
       <button id="start-button">Start</button>
     </div>
-
+    <iframe
+      id="virtual-keyboard"
+      src="keyboard.html"
+      style="
+        display: none;
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        width: 394px;
+        height: 217px;
+        border: none;
+        z-index: 1000;
+      "
+    ></iframe>
     <audio id="birthday-audio" src="album/happy birthday.mp3" loop></audio>
 
     <footer>
@@ -68,6 +100,7 @@
     </footer>
 
     <script src="auth.js"></script>
-    <script src="script.js"></script>
+    <script src="virtualKeyboard.js"></script>
+    <script src="main.js"></script>
   </body>
 </html>
