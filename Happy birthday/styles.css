@@ -45,25 +45,29 @@ header {
 
 /* Thiết lập header bên phải là 3 thương hiệu */
 .header-right {
-  display: flex;
-  align-items: center;
-}
-.header-right .header-logo.paris-logo {
-  width: 170px; /* Đặt chiều rộng cho logo Paris là 170px */
-  height: auto; /* Để chiều cao tự động theo tỷ lệ */
-  margin-right: 5px; /* Khoảng cách giữa các logo */
+  display: flex; /* Sắp xếp các phần tử theo chiều ngang */
+  align-items: center; /* Căn chỉnh các phần tử theo chiều dọc vào trung tâm */
 }
 
-.header-right .header-logo.kangnam-logo {
-  width: 170px; /* Đặt chiều rộng cho logo Kangnam là 170px */
-  height: auto; /* Để chiều cao tự động theo tỷ lệ */
-  margin-right: 5px; /* Khoảng cách giữa các logo */
+.header-right .header-logo.tiktok {
+  width: 50px; /* Đặt chiều rộng cho logo TikTok là 50px */
+  height: 50px; /* Để chiều cao tự động theo tỷ lệ */
+  margin-right: 20px; /* Khoảng cách giữa các logo */
+  border: 1px solid #ccc; /* Thêm khung viền màu xám */
 }
 
-.header-right .header-logo.hongha-logo {
-  width: 100px; /* Đặt chiều rộng cho logo Hong Ha là 100px */
-  height: auto; /* Để chiều cao tự động theo tỷ lệ */
-  margin-right: 5px; /* Khoảng cách giữa các logo */
+.header-right .header-logo.instagram {
+  width: 50px; /* Đặt chiều rộng cho logo Instagram là 50px */
+  height: 50px; /* Để chiều cao tự động theo tỷ lệ */
+  margin-right: 20px; /* Khoảng cách giữa các logo */
+  border: 1px solid #ccc; /* Thêm khung viền màu xám */
+}
+
+.header-right .header-logo.facebook {
+  width: 50px; /* Đặt chiều rộng cho logo Facebook là 50px */
+  height: 50px; /* Để chiều cao tự động theo tỷ lệ */
+  margin-right: 20px; /* Khoảng cách giữa các logo */
+  border: 1px solid #ccc; /* Thêm khung viền màu xám */
 }
 
 /* Thiết lập menu điều hướng */
@@ -219,6 +223,10 @@ h1 {
   background-color: #d32f2f; /* Đổi màu nền khi hover */
 }
 
+.sidebar-links {
+  margin-top: 20px; /* Điều chỉnh khoảng cách từ hình ảnh sidebar_close.png xuống danh sách liên kết */
+}
+
 /* Thiết lập footer */
 footer {
   position: fixed; /* Vị trí cố định */
@@ -262,17 +270,20 @@ footer p {
 .sidebar a.logout:hover {
   background-color: #d32f2f;
 }
+
 #sidebarClose {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  cursor: pointer;
-  width: 30px;
-  height: 30px;
+  position: absolute; /* Đặt vị trí tuyệt đối so với phần tử chứa nó */
+  top: 20px; /* Cách phía trên của phần tử chứa 20px */
+  left: 20px; /* Cách phía trái của phần tử chứa 20px */
+  cursor: pointer; /* Thay đổi con trỏ chuột thành hình bàn tay khi di chuột qua */
+  width: 40px; /* Đặt chiều rộng của phần tử là 50px */
+  height: 40px; /* Đặt chiều cao của phần tử là 50px */
 }
 
 #sidebarToggle {
-  cursor: pointer;
-  width: 30px;
-  height: 30px;
+  top: 20px; /* Cách phía trên của phần tử chứa 20px */
+  left: 20px; /* Cách phía trái của phần tử chứa 20px */
+  cursor: pointer; /* Thay đổi con trỏ chuột thành hình bàn tay khi di chuột qua */
+  width: 40px; /* Đặt chiều rộng của phần tử là 50px */
+  height: 40px; /* Đặt chiều cao của phần tử là 50px */
 }
