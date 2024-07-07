@@ -11,7 +11,11 @@
       <div class="overlay"></div>
       <header>
         <div class="header-left">
-          <img src="album/menu.png" alt="Logo" onclick="toggleSidebar()" />
+          <img
+            src="album/sidebar_open.png"
+            alt="Open Sidebar"
+            id="sidebarToggle"
+          />
         </div>
         <div class="header-right">
           <img
@@ -37,8 +41,12 @@
         </div>
       </header>
       <div id="sidebar-menu" class="sidebar">
+        <img
+          src="album/sidebar_close.png"
+          alt="Close Sidebar"
+          id="sidebarClose"
+        />
         <div>
-          <a href="#" class="close-btn">&times;</a>
           <a href="#">Home</a>
           <a href="https://vietnix.vn/day-code-len-github/">Issues</a>
           <a href="#">Pull requests</a>

@@ -99,12 +99,22 @@ document.addEventListener("DOMContentLoaded", function () {
 // Hàm toggleSidebar để mở và đóng sidebar
 function toggleSidebar() {
   const sidebar = document.getElementById("sidebar-menu");
+  const sidebarToggle = document.getElementById("sidebarToggle");
   if (sidebar.style.width === "250px") {
     sidebar.style.width = "0";
+    sidebarToggle.src = "album/sidebar_open.png";
   } else {
     sidebar.style.width = "250px";
+    sidebarToggle.src = "album/sidebar_close.png";
   }
 }
 
-// Đóng sidebar khi click vào nút đóng
-document.querySelector(".close-btn").addEventListener("click", toggleSidebar);
+// Thêm các event listener mới
+document.addEventListener("DOMContentLoaded", function () {
+  document
+    .getElementById("sidebarToggle")
+    .addEventListener("click", toggleSidebar);
+  document
+    .getElementById("sidebarClose")
+    .addEventListener("click", toggleSidebar);
+});

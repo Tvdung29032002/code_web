@@ -262,3 +262,17 @@ footer p {
 .sidebar a.logout:hover {
   background-color: #d32f2f;
 }
+#sidebarClose {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+}
+
+#sidebarToggle {
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+}
