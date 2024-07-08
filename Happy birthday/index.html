@@ -9,12 +9,7 @@
   <body>
     <header>
       <div class="header-left">
-        <img
-          src="album/sidebar_open.png"
-          alt="Menu"
-          id="sidebarToggle"
-          class="icon"
-        />
+        <img src="album/menu.png" alt="Menu" id="sidebarToggle" class="icon" />
       </div>
       <div class="search-bar">
         <input type="text" id="searchInput" placeholder="Tìm kiếm" />
@@ -30,7 +25,6 @@
           class="search-icon"
         />
       </div>
-
       <div class="header-right">
         <span class="tooltip-container">
           <img
@@ -39,19 +33,31 @@
             class="icon"
             id="helpIcon"
           />
-          <span class="tooltip">Can i help you?</span>
+          <span class="tooltip">Can I help you?</span>
         </span>
         <img src="album/settings-icon.png" alt="Settings" class="icon" />
         <img src="album/apps-icon.png" alt="Apps" class="icon" />
-        <img src="album/avatar.jpg" alt="User Avatar" class="avatar" />
+        <div class="avatar-container">
+          <img
+            src="album/avatar.jpg"
+            alt="User Avatar"
+            class="avatar"
+            id="avatarIcon"
+          />
+          <div class="dropdown-menu" id="dropdownMenu">
+            <div class="dropdown-item">Thông tin cá nhân</div>
+            <div class="dropdown-item">Cài đặt</div>
+            <div class="dropdown-item">Đóng góp ý kiến</div>
+            <div class="dropdown-item">Đăng xuất</div>
+          </div>
+        </div>
       </div>
     </header>
-
     <div class="container">
       <div class="overlay"></div>
       <div id="sidebar-menu" class="sidebar">
         <img
-          src="album/sidebar_close.png"
+          src="album/menu.png"
           alt="Close Sidebar"
           id="sidebarClose"
           class="icon"
@@ -94,12 +100,10 @@
       "
     ></iframe>
     <audio id="birthday-audio" src="album/happy birthday.mp3" loop></audio>
-
     <footer>
       <p>Copyright © 2024, Tran Van Dung</p>
     </footer>
 
-    <script src="auth.js"></script>
     <script src="virtualKeyboard.js"></script>
     <script src="main.js"></script>
   </body>

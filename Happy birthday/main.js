@@ -73,18 +73,23 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// main.js
-document.addEventListener("DOMContentLoaded", function () {
-  const helpIcon = document.getElementById("helpIcon");
-  const tooltip = document.querySelector(".tooltip");
+document.addEventListener("DOMContentLoaded", () => {
+  const avatarIcon = document.getElementById("avatarIcon");
+  const dropdownMenu = document.getElementById("dropdownMenu");
 
-  helpIcon.addEventListener("mouseover", () => {
-    // Hiển thị tooltip khi di chuột vào icon Help
-    tooltip.style.display = "block";
+  avatarIcon.addEventListener("click", (event) => {
+    event.stopPropagation(); // Ngăn chặn sự kiện click lan ra ngoài
+    dropdownMenu.style.display =
+      dropdownMenu.style.display === "block" ? "none" : "block";
   });
 
-  helpIcon.addEventListener("mouseout", () => {
-    // Ẩn tooltip khi di chuột ra khỏi icon Help
-    tooltip.style.display = "none";
+  // Đóng menu dropdown nếu người dùng click bên ngoài
+  window.addEventListener("click", (event) => {
+    if (
+      !avatarIcon.contains(event.target) &&
+      !dropdownMenu.contains(event.target)
+    ) {
+      dropdownMenu.style.display = "none";
+    }
   });
 });
