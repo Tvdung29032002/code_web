@@ -1,56 +1,65 @@
+/* Phần style cho toàn bộ nội dung body */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
+  font-family: Arial, sans-serif; /* Thiết lập font chữ cho toàn bộ tài liệu */
+  background-color: #f0f0f0; /* Thiết lập màu nền xám nhạt */
+  display: flex; /* Sử dụng layout flexbox */
+  justify-content: center; /* Căn giữa các phần tử theo chiều ngang */
+  align-items: center; /* Căn giữa các phần tử theo chiều dọc */
+  height: 100vh; /* Chiếm toàn bộ chiều cao của viewport */
+  margin: 0; /* Xóa margin mặc định */
 }
 
+/* Phần style cho khung đăng nhập */
 .login-container {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 5px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  width: 300px;
+  background-color: white; /* Thiết lập màu nền trắng */
+  padding: 2rem; /* Thêm khoảng đệm bên trong khung */
+  border-radius: 5px; /* Làm tròn góc cho khung */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Thêm đổ bóng nhẹ */
+  width: 300px; /* Đặt chiều rộng cố định cho khung */
 }
 
+/* Phần style cho tiêu đề h2 */
 h2 {
-  text-align: center;
-  margin-bottom: 1.5rem;
+  text-align: center; /* Căn giữa văn bản theo chiều ngang */
+  margin-bottom: 1.5rem; /* Thêm margin phía dưới */
 }
 
+/* Phần style cho nhóm input */
 .input-group {
-  margin-bottom: 1rem;
+  margin-bottom: 1rem; /* Thêm margin phía dưới giữa các nhóm input */
 }
 
+/* Phần style cho nhãn (label) */
 label {
-  display: block;
-  margin-bottom: 0.5rem;
+  display: block; /* Biến nhãn thành phần tử block */
+  margin-bottom: 0.5rem; /* Thêm margin phía dưới */
 }
 
+/* Phần style cho input */
 input {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 3px;
+  width: 100%; /* Chiếm toàn bộ chiều rộng của container */
+  padding: 0.5rem; /* Thêm padding bên trong input */
+  border: 1px solid #ddd; /* Đặt viền màu xám nhạt */
+  border-radius: 3px; /* Làm tròn góc của input */
 }
 
+/* Phần style cho nút (button) */
 button {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
+  width: 100%; /* Chiếm toàn bộ chiều rộng của container */
+  padding: 0.75rem; /* Thêm padding bên trong nút */
+  background-color: #3498db; /* Đặt màu nền cho nút */
+  color: white; /* Đặt màu văn bản là trắng */
+  border: none; /* Bỏ viền của nút */
+  border-radius: 3px; /* Làm tròn góc của nút */
+  cursor: pointer; /* Đổi con trỏ chuột thành pointer khi di chuột qua */
 }
 
+/* Phần style hover cho nút */
 button:hover {
-  background-color: #2980b9;
+  background-color: #2980b9; /* Đậm màu nền của nút khi hover */
 }
 
+/* Phần style cho Google reCAPTCHA */
 .g-recaptcha {
-  margin-bottom: 15px;
+  margin-bottom: 15px; /* Thêm margin phía dưới cho phần Google reCAPTCHA */
 }

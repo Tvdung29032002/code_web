@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Happy Birthday</title>
     <link rel="stylesheet" href="styles.css" />
+    <!-- Liên kết đến file CSS để trang trí giao diện -->
   </head>
   <body>
     <header>
+      <!-- Phần header bao gồm menu toggle, ô tìm kiếm và các biểu tượng -->
       <div class="header-left">
         <img src="album/menu.png" alt="Menu" id="sidebarToggle" class="icon" />
+        <!-- Biểu tượng mở sidebar -->
       </div>
       <div class="search-bar">
         <input type="text" id="searchInput" placeholder="Tìm kiếm" />
@@ -19,24 +22,28 @@
           class="keyboard-icon"
           id="keyboardIcon"
         />
-        <img
-          src="album/search-icon.png"
-          alt="Search Icon"
-          class="search-icon"
-        />
-      </div>
+   <img
+    src="album/search-icon.png"
+    alt="Search Icon"
+    class="search-icon"
+  />
+  <span class="search-tooltip-text">Search</span>
+</div>
       <div class="header-right">
-        <span class="tooltip-container">
-          <img
-            src="album/help-icon.png"
-            alt="Help"
-            class="icon"
-            id="helpIcon"
-          />
-          <span class="tooltip">Can I help you?</span>
+        <!-- Các biểu tượng phải của header -->
+        <div class="help-tooltip-wrapper">
+          <img src="album/help-icon.png" alt="Help" class="icon" id="helpIcon" />
+          <span class="help-tooltip-text">Can I help you?</span>
+        </div>
+          <!-- Tooltip cho biểu tượng trợ giúp -->
         </span>
-        <img src="album/settings-icon.png" alt="Settings" class="icon" />
+        <div class="settings-tooltip-wrapper">
+          <img src="album/settings-icon.png" alt="Settings" class="icon" />
+          <span class="settings-tooltip-text">This is a tooltip</span>
+        </div>
+        <!-- Biểu tượng cài đặt -->
         <img src="album/apps-icon.png" alt="Apps" class="icon" />
+        <!-- Biểu tượng ứng dụng -->
         <div class="avatar-container">
           <img
             src="album/avatar.jpg"
@@ -44,35 +51,42 @@
             class="avatar"
             id="avatarIcon"
           />
+          <!-- Avatar người dùng -->
           <div class="dropdown-menu" id="dropdownMenu">
+            <!-- Menu dropdown cho avatar -->
             <div class="dropdown-item">Thông tin cá nhân</div>
             <div class="dropdown-item">Cài đặt</div>
-            <div class="dropdown-item">Đóng góp ý kiến</div>
-            <div class="dropdown-item">Đăng xuất</div>
+            <div class="dropdown-item" id="open-feedback">Đóng góp ý kiến</div>
+            <!-- Mở form đóng góp ý kiến -->
+            <div class="dropdown-item" onclick="logout()">Đăng xuất</div>
+            <!-- Đăng xuất người dùng -->
           </div>
         </div>
       </div>
     </header>
+
     <div class="container">
       <div class="overlay"></div>
+      <!-- Overlay cho sidebar khi mở -->
       <div id="sidebar-menu" class="sidebar">
+        <!-- Sidebar menu -->
         <img
           src="album/menu.png"
           alt="Close Sidebar"
           id="sidebarClose"
           class="icon"
         />
+        <!-- Biểu tượng đóng sidebar -->
         <div class="sidebar-links">
           <a href="#">Home</a>
           <a href="#">Issues</a>
           <a href="#">Pull requests</a>
           <a href="#">Projects</a>
         </div>
-        <div class="logout-container">
-          <a href="#" class="logout" onclick="logout()">Logout</a>
-        </div>
       </div>
+
       <div class="content">
+        <!-- Nội dung chính của trang -->
         <img
           class="avatar-img"
           src="album/cake.jpg"
@@ -80,11 +94,16 @@
           width="400"
           height="400"
         />
+        <!-- Ảnh chủ đề -->
         <h1>Happy Birthday!</h1>
+        <!-- Tiêu đề -->
         <p class="typing-text uppercase-blue"></p>
+        <!-- Đoạn văn bản chào mừng -->
       </div>
       <button id="start-button">Start</button>
+      <!-- Nút bắt đầu -->
     </div>
+
     <iframe
       id="virtual-keyboard"
       src="keyboard.html"
@@ -99,12 +118,55 @@
         z-index: 1000;
       "
     ></iframe>
+    <!-- Iframe để hiển thị bàn phím ảo -->
+
     <audio id="birthday-audio" src="album/happy birthday.mp3" loop></audio>
+    <!-- Audio phát nhạc sinh nhật -->
+
+    <div id="feedback-overlay" class="feedback-overlay"></div>
+    <!-- Overlay cho form đóng góp ý kiến -->
+    <div id="feedback-container" class="feedback-container">
+      <!-- Form đóng góp ý kiến -->
+      <h2>Đóng góp ý kiến để cải thiện</h2>
+      <img
+        id="close-feedback"
+        src="album/close-feedback.png"
+        alt="Đóng"
+        class="album/close-feedback-icon"
+      />
+      <!-- Biểu tượng đóng form -->
+      <div class="feedback-option">
+        <img src="album/logo_laptop.png" alt="web Icon" class="feedback-icon" />
+        <!-- Biểu tượng trang web -->
+        <div>
+          <h3>Chung tay cải thiện trang web</h3>
+          <p>Đóng góp ý kiến về trải nghiệm sử dụng trang web của bạn.</p>
+        </div>
+      </div>
+      <div class="feedback-option">
+        <img
+          src="album/error-icon.png"
+          alt="Error Icon"
+          class="feedback-icon"
+        />
+        <!-- Biểu tượng lỗi -->
+        <div>
+          <h3>Đã xảy ra lỗi</h3>
+          <p>Hãy cho chúng tôi biết về tính năng bị lỗi.</p>
+        </div>
+      </div>
+    </div>
+
     <footer>
       <p>Copyright © 2024, Tran Van Dung</p>
     </footer>
+    <!-- Footer -->
 
+    <!-- Script để xử lý đăng nhập -->
+    <script src="auth.js"></script>
+    <!-- Script để xử lý bàn phím ảo -->
     <script src="virtualKeyboard.js"></script>
+    <!-- Script chính của trang -->
     <script src="main.js"></script>
   </body>
 </html>

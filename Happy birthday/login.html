@@ -5,27 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
     <link rel="stylesheet" href="login-style.css" />
+    <!-- Liên kết đến file CSS để trang trí giao diện -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <!-- Script để tích hợp Google reCAPTCHA -->
   </head>
   <body>
     <div class="login-container">
       <h2>Login</h2>
+      <!-- Tiêu đề của form đăng nhập -->
       <form id="loginForm">
+        <!-- Form đăng nhập -->
         <div class="input-group">
           <label for="username">Username</label>
+          <!-- Nhãn cho trường nhập username -->
           <input type="text" id="username" name="username" required />
+          <!-- Input nhập username -->
         </div>
         <div class="input-group">
           <label for="password">Password</label>
+          <!-- Nhãn cho trường nhập password -->
           <input type="password" id="password" name="password" required />
+          <!-- Input nhập password -->
         </div>
         <div
           class="g-recaptcha"
-          data-sitekey="6Lfp5gkqAAAAAM3yH5X7XQ_8ZSk7csmwJ4xvZy85"
+          data-sitekey="6LcXewsqAAAAAEAx_HSaxl12SMcxyLKx2xRCaAZi"
         ></div>
+        <!-- Phần để hiển thị Google reCAPTCHA, data-sitekey là khóa site của bạn -->
+
         <button type="submit">Login</button>
+        <!-- Nút submit để đăng nhập -->
       </form>
     </div>
     <script src="login-script.js"></script>
+    <!-- Script để xử lý logic đăng nhập -->
   </body>
 </html>
