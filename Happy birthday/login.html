@@ -10,34 +10,127 @@
     <!-- Script để tích hợp Google reCAPTCHA -->
   </head>
   <body>
+    <video autoplay muted loop id="background-video">
+      <source src="image_login/cc.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    <header>
+      <div class="header-login">
+        <span class="header-title"
+          >Chào mừng đến với website của tôi! Đừng ngần ngại đăng nhập bằng tài
+          khoản hiện có hoặc đăng ký một tài khoản mới để trải nghiệm những điều
+          kỳ diệu và bất ngờ. Đảm bảo rằng bạn sẽ tìm thấy những thông tin hữu
+          ích và thú vị ở đây, vừa đủ để bạn bị cuốn hút vào màn hình và quên cả
+          việc đi ăn cơm trưa!</span
+        >
+      </div>
+    </header>
     <div class="login-container">
-      <h2>Login</h2>
-      <!-- Tiêu đề của form đăng nhập -->
+      <div class="logo-container">
+        <img
+          src="image_login/logo_login.jpg"
+          alt="Login Logo"
+          class="login-logo"
+        />
+      </div>
       <form id="loginForm">
-        <!-- Form đăng nhập -->
         <div class="input-group">
           <label for="username">Username</label>
-          <!-- Nhãn cho trường nhập username -->
           <input type="text" id="username" name="username" required />
-          <!-- Input nhập username -->
         </div>
-        <div class="input-group">
+        <div class="input-group password-group">
           <label for="password">Password</label>
-          <!-- Nhãn cho trường nhập password -->
-          <input type="password" id="password" name="password" required />
-          <!-- Input nhập password -->
+          <div class="password-input-wrapper">
+            <input type="password" id="password" name="password" required />
+            <img
+              src="image_login/eye-open.png"
+              alt="Show/Hide Password"
+              id="togglePassword"
+              class="toggle-password"
+            />
+          </div>
         </div>
         <div
           class="g-recaptcha"
-          data-sitekey="6LcXewsqAAAAAEAx_HSaxl12SMcxyLKx2xRCaAZi"
+          data-sitekey="6Lf4uAwqAAAAAEa8uloD2SVNHxL1o6ggY0w1KV8n"
         ></div>
-        <!-- Phần để hiển thị Google reCAPTCHA, data-sitekey là khóa site của bạn -->
-
-        <button type="submit">Login</button>
-        <!-- Nút submit để đăng nhập -->
+        <div class="keep-logged-in">
+          <input type="checkbox" id="keepLoggedIn" name="keepLoggedIn" />
+          <label for="keepLoggedIn">Duy trì đăng nhập</label>
+        </div>
+        <button type="submit">Đăng nhập</button>
       </form>
+      <div class="additional-options">
+        <a href="#" class="forgot-password">Quên mật khẩu?</a>
+        <button class="create-account">Tạo tài khoản mới</button>
+      </div>
+    </div>
+    <footer>
+      <p>Copyright © 2024, Tran Van Dung</p>
+    </footer>
+    <div id="signupModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Đăng ký</h2>
+        <p>Nhanh chóng và dễ dàng.</p>
+        <form id="signupForm">
+          <div class="input-group">
+            <input type="text" placeholder="Họ" id="firstName" required />
+          </div>
+          <div class="input-group">
+            <input type="text" placeholder="Tên" id="lastName" required />
+          </div>
+          <div class="input-group">
+            <input
+              type="text"
+              placeholder="Tên đăng nhập"
+              id="username"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <input type="email" placeholder="Email" id="email" required />
+          </div>
+          <div class="input-group">
+            <input
+              type="password"
+              placeholder="Mật khẩu mới"
+              id="password"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <label>Ngày sinh</label>
+            <div class="birthday-inputs">
+              <select id="day" required>
+                <option value="" disabled selected>Ngày</option>
+              </select>
+              <select id="month" required>
+                <option value="" disabled selected>Tháng</option>
+              </select>
+              <select id="year" required>
+                <option value="" disabled selected>Năm</option>
+              </select>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>Giới tính</label>
+            <div class="gender-inputs">
+              <label
+                ><input type="radio" name="gender" value="female" /> Nữ</label
+              >
+              <label
+                ><input type="radio" name="gender" value="male" /> Nam</label
+              >
+              <label
+                ><input type="radio" name="gender" value="other" /> Khác</label
+              >
+            </div>
+          </div>
+          <button id="signupButton" type="button">Đăng ký</button>
+        </form>
+      </div>
     </div>
     <script src="login-script.js"></script>
-    <!-- Script để xử lý logic đăng nhập -->
   </body>
 </html>

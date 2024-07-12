@@ -93,84 +93,6 @@ header {
   background-color: rgba(0, 0, 0, 0.5); /* Màu nền đen trong suốt của overlay */
 }
 
-.content {
-  text-align: center; /* Căn giữa văn bản bên trong content */
-  position: absolute; /* Định vị tuyệt đối cho content */
-  top: 50%; /* Đặt content ở giữa màn hình theo chiều dọc */
-  left: 50%; /* Đặt content ở giữa màn hình theo chiều ngang */
-  transform: translate(
-    -50%,
-    -50%
-  ); /* Dịch chuyển content để căn giữa hoàn toàn */
-  z-index: 1; /* Đưa content lên trên các phần tử khác */
-  color: white; /* Màu chữ trắng cho content */
-}
-
-h1 {
-  font-size: 72px; /* Kích thước font chữ của tiêu đề */
-  margin: 0; /* Bỏ khoảng cách bên ngoài của tiêu đề */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Đổ bóng cho chữ */
-}
-
-.typing-text {
-  display: inline-block; /* Hiển thị như khối nội tuyến */
-}
-
-.uppercase-blue {
-  font-weight: bold; /* Chữ đậm */
-  color: rgb(0, 255, 89); /* Màu xanh lá cho chữ */
-  font-size: 36px; /* Kích thước font chữ */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Đổ bóng cho chữ */
-}
-
-.blink {
-  animation: blink-animation 0.8s steps(5, start) infinite; /* Áp dụng hiệu ứng nhấp nháy cho phần tử */
-}
-
-@keyframes blink-animation {
-  to {
-    visibility: hidden; /* Làm ẩn phần tử */
-  }
-}
-
-.balloon {
-  position: absolute; /* Định vị tuyệt đối cho balloon */
-  width: 250px; /* Chiều rộng của balloon */
-  height: 250px; /* Chiều cao của balloon */
-  animation: moveUp 10s linear infinite; /* Áp dụng hiệu ứng di chuyển lên trên cho balloon */
-}
-
-@keyframes moveUp {
-  0% {
-    transform: translateY(100vh) translateX(0); /* Bắt đầu từ vị trí dưới cùng của màn hình */
-  }
-  100% {
-    transform: translateY(-100vh) translateX(0); /* Di chuyển lên trên khỏi màn hình */
-  }
-}
-#start-button {
-  display: block; /* Hiển thị dưới dạng khối */
-  position: absolute; /* Định vị tuyệt đối cho nút start */
-  top: 50%; /* Đặt nút start ở giữa màn hình theo chiều dọc */
-  left: 50%; /* Đặt nút start ở giữa màn hình theo chiều ngang */
-  transform: translate(
-    -50%,
-    -50%
-  ); /* Dịch chuyển nút start để căn giữa hoàn toàn */
-  padding: 20px; /* Khoảng cách bên trong của nút start */
-  font-size: 24px; /* Kích thước font chữ của nút start */
-  cursor: pointer; /* Đổi con trỏ chuột khi hover vào nút start */
-  z-index: 2; /* Đưa nút start lên trên các phần tử khác */
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.7
-  ); /* Màu nền trắng trong suốt của nút start */
-  border: none; /* Bỏ đường viền của nút start */
-  border-radius: 10px; /* Bo tròn góc của nút start */
-}
-
 .sidebar {
   display: flex; /* Sử dụng Flexbox để căn chỉnh các phần tử bên trong sidebar */
   flex-direction: column; /* Xếp các phần tử theo chiều dọc */
@@ -212,13 +134,14 @@ footer {
   background-color: #333333; /* Màu nền của footer */
   color: white; /* Màu chữ trắng của footer */
   text-align: center; /* Căn giữa văn bản trong footer */
-  padding: 10px 0; /* Khoảng cách padding trên và dưới của footer */
+  padding: 6px 0; /* Khoảng cách padding trên và dưới của footer */
 }
 
 footer p {
   margin: 0; /* Bỏ khoảng cách bên ngoài của đoạn văn */
-  font-size: 14px; /* Kích thước font chữ của đoạn văn */
+  font-size: 12px; /* Kích thước font chữ của đoạn văn */
 }
+
 #sidebarToggle {
   cursor: pointer; /* Đổi con trỏ chuột khi hover vào sidebarToggle */
   width: 35px; /* Chiều rộng của sidebarToggle */
