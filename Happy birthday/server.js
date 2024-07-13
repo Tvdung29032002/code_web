@@ -8,13 +8,6 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Logging middleware
-app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-  next();
-});
-
-// Cấu hình kết nối MySQL
 const dbConfig = {
   host: "127.0.0.1",
   user: "dungtv",
@@ -35,37 +28,82 @@ async function connectToDatabase() {
   }
 }
 
-connectToDatabase();
-
-// Route cho trang chủ
-app.get("/", (req, res) => {
-  res.send("Welcome to the registration server!");
-});
-
-// Route kiểm tra API đăng ký
-app.get("/api/register", (req, res) => {
-  res.json({ message: "Registration API is working" });
-});
-
-// Route kiểm tra kết nối cơ sở dữ liệu
-app.get("/api/db-check", async (req, res) => {
+app.post("/api/login", async (req, res) => {
   try {
-    await connection.query("SELECT 1");
-    res.json({ message: "Database connection is working" });
+    const { username, password } = req.body;
+
+    const [users] = await connection.execute(
+      "SELECT * FROM users WHERE username = ?",
+      [username]
+    );
+
+    if (users.length === 0) {
+      return res.json({
+        success: false,
+        message: "Tên đăng nhập không tồn tại",
+      });
+    }
+
+    const user = users[0];
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.json({ success: false, message: "Mật khẩu không đúng" });
+    }
+
+    res.json({
+      success: true,
+      message: "Đăng nhập thành công",
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      },
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Database connection failed", error: error.message });
+    console.error("Login error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Đăng nhập thất bại",
+      error: error.message,
+    });
   }
 });
 
-// Route đăng ký
 app.post("/api/register", async (req, res) => {
-  console.log("Received registration request:", req.body);
   try {
-    // ... (phần code đăng ký hiện tại của bạn)
+    const {
+      firstName,
+      lastName,
+      username,
+      email,
+      password,
+      birthDate,
+      gender,
+    } = req.body;
+
+    const [existingUsers] = await connection.execute(
+      "SELECT * FROM users WHERE username = ? OR email = ?",
+      [username, email]
+    );
+
+    if (existingUsers.length > 0) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Username hoặc email đã tồn tại" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const [result] = await connection.execute(
+      "INSERT INTO users (firstName, lastName, username, email, password, birthDate, gender) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [firstName, lastName, username, email, hashedPassword, birthDate, gender]
+    );
+
+    console.log("User registered successfully");
+    res.json({ success: true, message: "Đăng ký thành công!" });
   } catch (error) {
-    console.error("Detailed error:", error);
+    console.error("Registration error:", error);
     res.status(500).json({
       success: false,
       message: "Đăng ký thất bại",
@@ -75,6 +113,12 @@ app.post("/api/register", async (req, res) => {
 });
 
 const PORT = 3000;
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+
+async function startServer() {
+  await connectToDatabase();
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}
+
+startServer();

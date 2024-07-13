@@ -72,3 +72,51 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const appsIcon = document.getElementById("appsIcon");
+  const appsMenu = document.getElementById("appsMenu");
+
+  appsIcon.addEventListener("click", (event) => {
+    event.stopPropagation();
+    appsMenu.classList.toggle("show");
+  });
+
+  // Đóng menu ứng dụng nếu người dùng click bên ngoài
+  window.addEventListener("click", (event) => {
+    if (!appsIcon.contains(event.target) && !appsMenu.contains(event.target)) {
+      appsMenu.classList.remove("show");
+    }
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const helpIcon = document.getElementById("helpIcon");
+  const helpMenu = document.getElementById("helpMenu");
+  const helpTooltipWrapper = helpIcon.closest(".help-tooltip-wrapper");
+
+  helpIcon.addEventListener("click", (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    if (helpMenu.style.display === "block") {
+      helpMenu.style.display = "none";
+      helpTooltipWrapper.classList.remove("menu-open");
+    } else {
+      helpMenu.style.display = "block";
+      helpTooltipWrapper.classList.add("menu-open");
+    }
+  });
+
+  // Đóng menu help nếu người dùng click bên ngoài
+  window.addEventListener("click", (event) => {
+    if (!helpIcon.contains(event.target) && !helpMenu.contains(event.target)) {
+      helpMenu.style.display = "none";
+      helpTooltipWrapper.classList.remove("menu-open");
+    }
+  });
+
+  // Ngăn chặn sự kiện click từ việc lan truyền khi nhấp vào menu
+  helpMenu.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+});

@@ -12,27 +12,37 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
     return;
   }
 
-  if (
-    (username === "xxx" && password === "123456") ||
-    (username === "dungtv" && password === "29032002") ||
-    (username === "hungnk" && password === "29042002")
-  ) {
-    if (keepLoggedIn) {
-      // Lưu thông tin đăng nhập vào localStorage nếu "Duy trì đăng nhập" được chọn
-      localStorage.setItem("username", username);
-      localStorage.setItem("password", password); // Lưu ý: Đây không phải là cách an toàn để lưu mật khẩu
-      localStorage.setItem("isLoggedIn", "true");
-    } else {
-      // Xóa thông tin đăng nhập khỏi localStorage nếu không chọn "Duy trì đăng nhập"
-      localStorage.removeItem("username");
-      localStorage.removeItem("password");
-      localStorage.removeItem("isLoggedIn");
-    }
+  // Gửi yêu cầu đăng nhập đến server
+  fetch("http://localhost:3000/api/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username, password }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        if (keepLoggedIn) {
+          // Lưu thông tin đăng nhập vào localStorage nếu "Duy trì đăng nhập" được chọn
+          localStorage.setItem("username", username);
+          localStorage.setItem("isLoggedIn", "true");
+          // Không lưu mật khẩu vào localStorage vì lý do bảo mật
+        } else {
+          // Xóa thông tin đăng nhập khỏi localStorage nếu không chọn "Duy trì đăng nhập"
+          localStorage.removeItem("username");
+          localStorage.removeItem("isLoggedIn");
+        }
 
-    window.location.href = "index.html";
-  } else {
-    alert("Sai username hoặc password");
-  }
+        window.location.href = "index.html";
+      } else {
+        alert(data.message || "Đăng nhập thất bại. Vui lòng thử lại.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+    });
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -134,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // Lấy giá trị từ các trường input
       const firstName = document.getElementById("firstName").value;
       const lastName = document.getElementById("lastName").value;
-      const username = document.getElementById("username").value;
+      const username = document.getElementById("signupUsername").value; // Đã sửa đổi
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
       const day = document.getElementById("day").value;
@@ -143,7 +153,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const gender = document.querySelector(
         'input[name="gender"]:checked'
       )?.value;
-
       if (
         !firstName ||
         !lastName ||

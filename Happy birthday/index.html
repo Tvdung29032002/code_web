@@ -33,16 +33,78 @@
         <!-- Các biểu tượng phải của header -->
         <div class="help-tooltip-wrapper">
           <img src="album/help-icon.png" alt="Help" class="icon" id="helpIcon" />
-          <span class="help-tooltip-text">Can I help you?</span>
+          <span class="help-tooltip-text">Hỗ trợ</span>
+          <div id="helpMenu" class="help-menu">
+            <div class="help-item">Trợ giúp</div>
+            <div class="help-item">Đào tạo</div>
+            <div class="help-item">Nội dung cập nhật</div>
+            <div class="help-item">Gửi ý kiến phản hồi cho Google</div>
+          </div>
         </div>
-          <!-- Tooltip cho biểu tượng trợ giúp -->
-        </span>
         <div class="settings-tooltip-wrapper">
           <img src="album/settings-icon.png" alt="Settings" class="icon" />
-          <span class="settings-tooltip-text">This is a tooltip</span>
+          <span class="settings-tooltip-text">Cài đặt</span>
         </div>
         <!-- Biểu tượng cài đặt -->
-        <img src="album/apps-icon.png" alt="Apps" class="icon" />
+        <div class="apps-container">
+          <img src="album/apps-icon.png" alt="Apps" class="icon" id="appsIcon">
+          <div id="appsMenu" class="apps-menu">
+            <div class="apps-grid">
+              <div class="apps-item">
+                <img src="image_menu_app/calendar.jpg" alt="Calendar">
+                <span>Calendar</span>
+              </div>
+              <div class="apps-item">
+                <img src="image_menu_app/gmail.jpg" alt="Gmail">
+                <span>Gmail</span>
+              </div>
+              <div class="apps-item">
+                <img src="image_menu_app/google_map.jpg" alt="Maps">
+                <span>Maps</span>
+              </div>
+              <div class="apps-item">
+                <img src="image_menu_app/youtube.jpg" alt="YouTube">
+                <span>YouTube</span>
+              </div>
+              <div class="apps-item">
+                <img src="image_menu_app/vnexpress.png" alt="News">
+                <span>News</span>
+              </div>
+              <div class="apps-item">
+                <img src="image_menu_app/tiktok.jpg" alt="Tiktok">
+                <span>Tiktok</span>
+              </div>
+              <div class="apps-item">
+                <img src="image_menu_app/messenger.jpg" alt="Messenger">
+                <span>Messenger</span>
+              </div>
+              <div class="apps-item">
+                <img src="image_menu_app/facebook.png" alt="Facebook">
+                <span>Facebook</span>
+              </div>
+              <div class="apps-item">
+                <img src="image_menu_app/instagram.jpg" alt="Instagram">
+                <span>Instagram</span>
+              </div>
+              <div class="apps-item">
+                <img src="image_menu_app/openai-chatgpt.png" alt="Chat GPT">
+                <span>Chat GPT</span>
+              </div>
+              <div class="apps-item">
+                <img src="image_menu_app/claude.png" alt="Claude">
+                <span>Claude</span>
+              </div>
+              <div class="apps-item">
+                <img src="image_menu_app/gemini.png" alt="Gemini">
+                <span>Gemini</span>
+              </div>
+              <div class="apps-item">
+                <img src="image_menu_app/blackbox.png" alt="Blackbox">
+                <span>Blackbox</span>
+              </div>
+            </div>
+          </div>
+        </div>
         <!-- Biểu tượng ứng dụng -->
         <div class="avatar-container">
           <img
@@ -140,7 +202,6 @@
     <!-- Footer -->
 
     <!-- Script để xử lý đăng nhập -->
-    <script src="auth.js"></script>
     <!-- Script để xử lý bàn phím ảo -->
     <script src="virtualKeyboard.js"></script>
     <!-- Script chính của trang -->
