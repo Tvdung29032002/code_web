@@ -25,45 +25,39 @@
         >
       </div>
     </header>
-    <div class="login-container">
+    <d<div class="login-container">
       <div class="logo-container">
-        <img
-          src="image_login/logo_login.jpg"
-          alt="Login Logo"
-          class="login-logo"
-        />
+        <img src="image_login/logo_login.jpg" alt="Login Logo" class="login-logo">
       </div>
+    
       <form id="loginForm">
         <div class="input-group">
-          <label for="username">Username</label>
-          <input type="text" id="signupUsername" name="username" required />
+          Username
+          <input type="text" id="loginUsername" name="loginUsername" required>
         </div>
+    
         <div class="input-group password-group">
-          <label for="password">Password</label>
+          Password
           <div class="password-input-wrapper">
-            <input type="password" id="password" name="password" required />
-            <img
-              src="image_login/eye-open.png"
-              alt="Show/Hide Password"
-              id="togglePassword"
-              class="toggle-password"
-            />
+            <input type="password" id="loginPassword" name="loginPassword" required>
+            <img src="image_login/eye-open.png" id="togglePassword" class="toggle-password">
           </div>
         </div>
-        <div
-          class="g-recaptcha"
-          data-sitekey="6Lf4uAwqAAAAAEa8uloD2SVNHxL1o6ggY0w1KV8n"
-        ></div>
+    
+        <div class="g-recaptcha" data-sitekey="6Lf4uAwqAAAAAEa8uloD2SVNHxL1o6ggY0w1KV8n"></div>
+    
         <div class="keep-logged-in">
-          <input type="checkbox" id="keepLoggedIn" name="keepLoggedIn" />
+          <input type="checkbox" id="keepLoggedIn">
           <label for="keepLoggedIn">Duy trì đăng nhập</label>
         </div>
+    
         <button type="submit">Đăng nhập</button>
+    
+        <div class="additional-options">
+          <a href="#" class="forgot-password">Quên mật khẩu?</a>
+          <a href="#" class="create-account">Tạo tài khoản mới</a>
+        </div>
       </form>
-      <div class="additional-options">
-        <a href="#" class="forgot-password">Quên mật khẩu?</a>
-        <button class="create-account">Tạo tài khoản mới</button>
-      </div>
     </div>
     <footer>
       <p>Copyright © 2024, Tran Van Dung</p>
@@ -75,29 +69,19 @@
         <p>Nhanh chóng và dễ dàng.</p>
         <form id="signupForm">
           <div class="input-group">
-            <input type="text" placeholder="Họ" id="firstName" required />
+            <input type="text" id="firstName" placeholder="Họ" required>
           </div>
           <div class="input-group">
-            <input type="text" placeholder="Tên" id="lastName" required />
+            <input type="text" id="lastName" placeholder="Tên" required>
           </div>
           <div class="input-group">
-            <input
-              type="text"
-              placeholder="Tên đăng nhập"
-              id="username"
-              required
-            />
+            <input type="text" id="signupUsername" placeholder="Tên đăng nhập" required>
           </div>
           <div class="input-group">
-            <input type="email" placeholder="Email" id="email" required />
+            <input type="email" id="email" placeholder="Email" required>
           </div>
           <div class="input-group">
-            <input
-              type="password"
-              placeholder="Mật khẩu mới"
-              id="password"
-              required
-            />
+            <input type="password" id="signupPassword" placeholder="Mật khẩu mới" required>
           </div>
           <div class="input-group">
             <label>Ngày sinh</label>
@@ -127,7 +111,7 @@
               >
             </div>
           </div>
-          <button id="signupButton" type="button">Đăng ký</button>
+          <button type="submit" id="signupButton">Đăng ký</button>
         </form>
       </div>
     </div>

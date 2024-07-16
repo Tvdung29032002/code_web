@@ -37,6 +37,19 @@ header {
   cursor: pointer; /* Đổi con trỏ chuột khi hover vào ảnh */
 }
 
+#citySelect {
+  margin-left: 10px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.weather-widget {
+  display: flex;
+  align-items: center;
+}
+
 .search-bar {
   display: flex; /* Sử dụng Flexbox để căn chỉnh các phần tử bên trong search-bar */
   align-items: center; /* Căn giữa các phần tử theo chiều dọc */
@@ -459,4 +472,54 @@ footer p {
 .search-icon:hover + .search-tooltip-text {
   visibility: visible;
   opacity: 1;
+}
+
+.apps-tooltip-wrapper,
+.avatar-tooltip-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.apps-tooltip-text,
+.avatar-tooltip-text {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  bottom: -30px;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.apps-tooltip-text::after,
+.avatar-tooltip-text::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+.apps-tooltip-wrapper:hover .apps-tooltip-text,
+.avatar-tooltip-wrapper:hover .avatar-tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltip-disabled .help-tooltip-text,
+.tooltip-disabled .settings-tooltip-text,
+.tooltip-disabled .search-tooltip-text,
+.tooltip-disabled .apps-tooltip-text,
+.tooltip-disabled .avatar-tooltip-text {
+  display: none !important;
 }

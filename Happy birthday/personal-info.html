@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thông tin cá nhân</title>
+    <link rel="stylesheet" href="personal-info-styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  </head>
+  <body>
+    <header>
+      <button id="back-button">Quay lại</button>
+      <h1>Thông tin cá nhân</h1>
+    </header>
+    <div class="container">
+      <div class="personal-info-content">
+        <div class="info-section">
+          <h3>Thông tin cơ bản</h3>
+          <div class="info-item">
+            <span class="info-label">Ảnh hồ sơ</span>
+            <div class="info-value profile-photo-container">
+              <img src="album/avatar.jpg" id="profile-photo" alt="Ảnh hồ sơ" />
+              <div class="camera-icon" id="change-photo-button">
+                <img src="album/camera-icon.png" alt="Thay đổi ảnh" />
+              </div>
+              <input
+                type="file"
+                id="photo-upload"
+                accept="image/*"
+                style="display: none"
+              />
+            </div>
+            <span class="photo-description"
+              >Ảnh hồ sơ sẽ giúp bạn tạo nét riêng cho tài khoản của mình</span
+            >
+          </div>
+          <div class="info-item">
+            <span class="info-label">Tên *:</span>
+            <span
+              class="info-value"
+              id="user-name"
+              contenteditable="false"
+            ></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Ngày sinh *:</span>
+            <span id="user-birthday" class="info-value"></span>
+            <input
+              type="text"
+              id="birthday-picker"
+              class="flatpickr"
+              style="display: none"
+            />
+          </div>
+          <div class="info-item">
+            <span class="info-label">Giới tính *:</span>
+            <span id="user-gender" class="info-value"></span>
+            <select id="gender-select" style="display: none">
+              <option value="Nam">Nam</option>
+              <option value="Nữ">Nữ</option>
+              <option value="Khác">Khác</option>
+            </select>
+          </div>
+        </div>
+        <div class="info-section">
+          <h3>Thông tin liên hệ</h3>
+          <div class="info-item">
+            <span class="info-label">Email *:</span>
+            <span
+              class="info-value"
+              id="user-email"
+              contenteditable="false"
+            ></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Điện thoại *:</span>
+            <span
+              class="info-value"
+              id="user-phone"
+              contenteditable="false"
+            ></span>
+          </div>
+        </div>
+        <div class="info-section">
+          <h3>Tiểu sử</h3>
+          <div class="info-item">
+            <textarea
+              id="user-bio"
+              class="info-value bio-textarea"
+              maxlength="150"
+              rows="3"
+              placeholder="Thêm tiểu sử"
+            ></textarea>
+            <div class="char-count"><span id="bio-char-count">0</span>/150</div>
+          </div>
+        </div>
+        <button id="edit-button">Sửa thông tin</button>
+        <button id="save-button" style="display: none">Lưu</button>
+        <button id="cancel-button" style="display: none">Hủy</button>
+      </div>
+    </div>
+
+    <footer>
+      <p>Copyright © 2024, Tran Van Dung</p>
+    </footer>
+
+    <script src="personal-info-script.js"></script>
+    <div id="error-popup" class="error-popup">
+      <p id="error-message"></p>
+      <button id="error-ok-button">OK</button>
+    </div>
+  </body>
+</html>

@@ -13,8 +13,17 @@
       <div class="header-left">
         <img src="album/menu.png" alt="Menu" id="sidebarToggle" class="icon" />
         <!-- Biểu tượng mở sidebar -->
+        <div class="weather-widget">
+          <img src="album/weather.png" alt="Weather" class="weather-icon">
+          <span class="temperature">--°</span>
+          <select id="citySelect">
+            <option value="21.0278,105.8342">Hà Nội</option>
+            <option value="10.7769,106.7009">Hồ Chí Minh</option>
+            <option value="16.0544,108.2022">Đà Nẵng</option>
+          </select>
+        </div>
       </div>
-      <div class="search-bar">
+      <div class="search-bar tooltip-container">
         <input type="text" id="searchInput" placeholder="Tìm kiếm" />
         <img
           src="album/keyboard.png"
@@ -27,11 +36,11 @@
     alt="Search Icon"
     class="search-icon"
   />
-  <span class="search-tooltip-text">Search</span>
+  <span class="search-tooltip-text">Tìm kiếm</span>
 </div>
       <div class="header-right">
         <!-- Các biểu tượng phải của header -->
-        <div class="help-tooltip-wrapper">
+        <div class="help-tooltip-wrapper tooltip-container">
           <img src="album/help-icon.png" alt="Help" class="icon" id="helpIcon" />
           <span class="help-tooltip-text">Hỗ trợ</span>
           <div id="helpMenu" class="help-menu">
@@ -41,13 +50,14 @@
             <div class="help-item">Gửi ý kiến phản hồi cho Google</div>
           </div>
         </div>
-        <div class="settings-tooltip-wrapper">
+        <div class="settings-tooltip-wrapper tooltip-container">
           <img src="album/settings-icon.png" alt="Settings" class="icon" />
           <span class="settings-tooltip-text">Cài đặt</span>
         </div>
         <!-- Biểu tượng cài đặt -->
-        <div class="apps-container">
+        <div class="apps-tooltip-wrapper tooltip-container">
           <img src="album/apps-icon.png" alt="Apps" class="icon" id="appsIcon">
+          <span class="apps-tooltip-text">Ứng dụng</span>
           <div id="appsMenu" class="apps-menu">
             <div class="apps-grid">
               <div class="apps-item">
@@ -67,8 +77,8 @@
                 <span>YouTube</span>
               </div>
               <div class="apps-item">
-                <img src="image_menu_app/vnexpress.png" alt="News">
-                <span>News</span>
+                <img src="image_menu_app/vnexpress.png" alt="Vnexpress">
+                <span>Vnexpress</span>
               </div>
               <div class="apps-item">
                 <img src="image_menu_app/tiktok.jpg" alt="Tiktok">
@@ -106,17 +116,19 @@
           </div>
         </div>
         <!-- Biểu tượng ứng dụng -->
-        <div class="avatar-container">
+        <div class="avatar-tooltip-wrapper tooltip-container">
           <img
             src="album/avatar.jpg"
             alt="User Avatar"
             class="avatar"
             id="avatarIcon"
           />
+          <span class="avatar-tooltip-text">Tài khoản</span>
           <!-- Avatar người dùng -->
           <div class="dropdown-menu" id="dropdownMenu">
             <!-- Menu dropdown cho avatar -->
             <div class="dropdown-item">Thông tin cá nhân</div>
+            
             <div class="dropdown-item">Cài đặt</div>
             <div class="dropdown-item" id="open-feedback">Đóng góp ý kiến</div>
             <!-- Mở form đóng góp ý kiến -->
@@ -202,6 +214,7 @@
     <!-- Footer -->
 
     <!-- Script để xử lý đăng nhập -->
+     <script src="auth.js"></script>
     <!-- Script để xử lý bàn phím ảo -->
     <script src="virtualKeyboard.js"></script>
     <!-- Script chính của trang -->

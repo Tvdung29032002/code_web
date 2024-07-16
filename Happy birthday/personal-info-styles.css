@@ -1,0 +1,256 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f6f8fc;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background-color: #ffffff;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 20px;
+  color: #202124;
+  flex-grow: 1;
+  text-align: center;
+}
+
+#back-button {
+  background-color: transparent;
+  border: none;
+  color: #1a73e8;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 8px 16px;
+}
+
+#back-button:hover {
+  background-color: #f1f3f4;
+  border-radius: 4px;
+}
+
+.container {
+  flex: 1;
+  padding-top: 64px;
+  background-image: url("album/sci_group.png");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+}
+
+.personal-info-content {
+  max-width: 800px;
+  width: 100%;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.info-section {
+  margin-bottom: 30px;
+}
+
+.info-section h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #202124;
+}
+
+.info-description {
+  color: #5f6368;
+  margin-bottom: 15px;
+}
+
+.info-item {
+  display: flex;
+  margin-bottom: 15px;
+  align-items: center;
+}
+
+.info-label {
+  width: 150px;
+  color: #5f6368;
+}
+
+.info-value {
+  flex: 1;
+  color: #202124;
+}
+
+#profile-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.info-value img + span {
+  vertical-align: middle;
+}
+
+a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+footer {
+  background-color: #333333;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  width: 100%;
+}
+
+footer p {
+  margin: 0;
+  font-size: 12px;
+}
+.info-value[contenteditable="true"] {
+  border: 1px solid #dadce0;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+#edit-button,
+#save-button,
+#cancel-button {
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 20px;
+  margin-right: 10px;
+}
+
+#edit-button:hover,
+#save-button:hover,
+#cancel-button:hover {
+  background-color: #155db1;
+}
+
+#cancel-button {
+  background-color: #5f6368;
+}
+
+#cancel-button:hover {
+  background-color: #4a4d51;
+}
+
+.profile-photo-container {
+  position: relative;
+  display: inline-block;
+}
+
+#profile-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.camera-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.camera-icon img {
+  width: 14px;
+  height: 14px;
+}
+
+.bio-textarea {
+  width: 100%;
+  resize: none;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  padding: 8px;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.char-count {
+  text-align: right;
+  color: #5f6368;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+#gender-select {
+  padding: 5px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  font-size: inherit;
+}
+
+#birthday-picker {
+  padding: 5px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  font-size: inherit;
+}
+
+.error-popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #2d2d2d;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  z-index: 1000;
+}
+
+.error-popup p {
+  margin-bottom: 20px;
+}
+
+.error-popup button {
+  background-color: #ffc2a1;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.error-popup button:hover {
+  background-color: #ffab7a;
+}

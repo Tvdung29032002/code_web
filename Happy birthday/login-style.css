@@ -14,6 +14,7 @@
   overflow: hidden;
   width: 100%;
 }
+
 .header-title {
   font-size: 14px;
   font-weight: bold;
@@ -71,6 +72,28 @@ body {
 .logo-container {
   text-align: center;
   margin-bottom: 1.5rem;
+}
+
+/* Thay đổi này */
+#loginUsername,
+#loginPassword {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+
+/* Thêm style cho nút hiển thị/ẩn mật khẩu */
+#togglePassword {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  width: 20px;
+  height: auto;
+  z-index: 10;
 }
 
 /* Phần style cho hình ảnh logo */
@@ -221,6 +244,11 @@ footer p {
   color: #333;
 }
 
+#keepLoggedIn {
+  width: auto;
+  margin-right: 0.5rem;
+}
+
 .modal {
   display: none;
   position: fixed;
@@ -316,4 +344,14 @@ h2 {
 
 .signup-button:hover {
   background-color: #42b72a;
+}
+
+#loginForm {
+  width: 100%;
+}
+
+.error-message {
+  color: #ff0000;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
 }
