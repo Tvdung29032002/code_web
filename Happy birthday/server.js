@@ -177,6 +177,72 @@ app.get("/api/check-db-connection", async (req, res) => {
   }
 });
 
+const nodemailer = require("nodemailer");
+
+app.post("/api/reset-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+    console.log("Received email for password reset:", email);
+
+    // Kiểm tra xem email có tồn tại trong cơ sở dữ liệu không
+    const [users] = await connection.execute(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
+    console.log("Users found:", users.length);
+
+    if (users.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Email không tồn tại trong hệ thống.",
+      });
+    }
+
+    // Tạo mật khẩu mới
+    const newPassword = Math.random().toString(36).slice(-8);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    console.log("New password generated");
+
+    // Cập nhật mật khẩu mới trong cơ sở dữ liệu
+    await connection.execute("UPDATE users SET password = ? WHERE email = ?", [
+      hashedPassword,
+      email,
+    ]);
+    console.log("Password updated in database");
+
+    // Trong hàm reset password
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "vboyht35@gmail.com",
+        pass: "rwzb tatw piem seuj", // Sử dụng App Password thay vì mật khẩu Gmail
+      },
+    });
+
+    let mailOptions = {
+      from: "vboyht35@gmail.com",
+      to: email,
+      subject: "Mật khẩu mới cho tài khoản của bạn",
+      text: `Mật khẩu mới của bạn là: ${newPassword}`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log("Email sent successfully");
+
+    res.json({
+      success: true,
+      message: "Mật khẩu mới đã được gửi đến email của bạn.",
+    });
+  } catch (error) {
+    console.error("Reset password error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể đặt lại mật khẩu",
+      error: error.message,
+    });
+  }
+});
+
 const PORT = 3000;
 
 async function startServer() {

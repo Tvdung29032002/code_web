@@ -251,4 +251,55 @@ document.addEventListener("DOMContentLoaded", function () {
   } else {
     console.error("Signup form not found!");
   }
+  // Xử lý mở modal quên mật khẩu
+  const forgotPasswordLink = document.querySelector(".forgot-password");
+  const forgotPasswordModal = document.getElementById("forgotPasswordModal");
+  const closeForgotPasswordModal = forgotPasswordModal.querySelector(".close");
+
+  forgotPasswordLink.addEventListener("click", function (e) {
+    e.preventDefault();
+    forgotPasswordModal.style.display = "block";
+  });
+
+  closeForgotPasswordModal.addEventListener("click", function () {
+    forgotPasswordModal.style.display = "none";
+  });
+
+  // Xử lý form quên mật khẩu
+  const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+  forgotPasswordForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const email = document.getElementById("forgotPasswordEmail").value.trim();
+
+    if (!isValidEmail(email)) {
+      alert("Vui lòng nhập một địa chỉ email hợp lệ.");
+      return;
+    }
+
+    // Gửi yêu cầu đặt lại mật khẩu đến server
+    fetch("http://192.168.0.103:3000/api/reset-password", {
+      method: "POST", // Đảm bảo đây là "POST"
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          alert(
+            "Mật khẩu mới đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư đến."
+          );
+          forgotPasswordModal.style.display = "none";
+        } else {
+          alert(
+            data.message || "Không thể đặt lại mật khẩu. Vui lòng thử lại sau."
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+      });
+  });
 });
