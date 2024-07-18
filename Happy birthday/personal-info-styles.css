@@ -43,6 +43,21 @@ header h1 {
   border-radius: 4px;
 }
 
+#logout-button {
+  order: 3;
+  background-color: transparent;
+  border: none;
+  color: #1a73e8;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 8px 16px;
+}
+
+#logout-button:hover {
+  background-color: #f1f3f4;
+  border-radius: 4px;
+}
+
 .container {
   flex: 1;
   padding-top: 64px;

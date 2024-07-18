@@ -12,15 +12,28 @@
       <!-- Phần header bao gồm menu toggle, ô tìm kiếm và các biểu tượng -->
       <div class="header-left">
         <img src="album/menu.png" alt="Menu" id="sidebarToggle" class="icon" />
+        <div id="current-time" class="current-time">
+          <span class="date"></span>
+          <span class="time"></span>
+      </div>
         <!-- Biểu tượng mở sidebar -->
         <div class="weather-widget">
           <img src="album/weather.png" alt="Weather" class="weather-icon">
           <span class="temperature">--°</span>
-          <select id="citySelect">
-            <option value="21.0278,105.8342">Hà Nội</option>
-            <option value="10.7769,106.7009">Hồ Chí Minh</option>
-            <option value="16.0544,108.2022">Đà Nẵng</option>
-          </select>
+          <div class="city-selector">
+            <div class="selected-city" id="selectedCity">
+              Hà Nội
+              <img src="album/dropdown-arrow.png" id="toggleIcon" class="toggle-icon">
+            </div>
+            <div class="city-dropdown" style="display: none;">
+              <div class="search-container">
+                <input type="text" id="citySearch" placeholder="Tìm địa điểm">
+              </div>
+              <ul id="cityList">
+                <!-- Danh sách thành phố sẽ được thêm bằng JavaScript -->
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
       <div class="search-bar tooltip-container">
@@ -31,13 +44,13 @@
           class="keyboard-icon"
           id="keyboardIcon"
         />
-   <img
-    src="album/search-icon.png"
-    alt="Search Icon"
-    class="search-icon"
-  />
-  <span class="search-tooltip-text">Tìm kiếm</span>
-</div>
+        <img
+          src="album/search-icon.png"
+          alt="Search Icon"
+          class="search-icon"
+        />
+        <span class="search-tooltip-text">Tìm kiếm</span>
+      </div>
       <div class="header-right">
         <!-- Các biểu tượng phải của header -->
         <div class="help-tooltip-wrapper tooltip-container">
@@ -47,7 +60,6 @@
             <div class="help-item">Trợ giúp</div>
             <div class="help-item">Đào tạo</div>
             <div class="help-item">Nội dung cập nhật</div>
-            <div class="help-item">Gửi ý kiến phản hồi cho Google</div>
           </div>
         </div>
         <div class="settings-tooltip-wrapper tooltip-container">

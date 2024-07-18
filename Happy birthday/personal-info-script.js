@@ -1,19 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
+  let currentUsername = "";
   let personalInfo = {
-    name: "Dũng Trần",
-    birthday: "2002-03-29",
-    gender: "Nam",
-    email: "vboyht35@gmail.com, tvdung29032002@gmail.com",
-    phone: "0915 599 258",
+    name: "",
+    birthday: "",
+    gender: "",
+    email: "",
+    phone: "",
     bio: "",
     photoUrl: "album/avatar.jpg",
   };
-
-  // Kiểm tra xem có dữ liệu được lưu trong localStorage không
-  const savedInfo = localStorage.getItem("personalInfo");
-  if (savedInfo) {
-    personalInfo = JSON.parse(savedInfo);
-  }
 
   const editButton = document.getElementById("edit-button");
   const saveButton = document.getElementById("save-button");
@@ -29,19 +24,47 @@ document.addEventListener("DOMContentLoaded", function () {
   const birthdaySpan = document.getElementById("user-birthday");
   const birthdayPicker = document.getElementById("birthday-picker");
 
-  function updateInfoDisplay() {
-    document.getElementById("user-name").textContent = personalInfo.name;
-    birthdaySpan.textContent = formatDate(personalInfo.birthday);
-    birthdayPicker.value = personalInfo.birthday;
-    genderSpan.textContent = personalInfo.gender;
-    genderSelect.value = personalInfo.gender;
-    document.getElementById("user-email").textContent = personalInfo.email;
-    document.getElementById("user-phone").textContent = personalInfo.phone;
-    bioTextarea.value = personalInfo.bio;
-    updateCharCount();
+  function getCurrentUsername() {
+    return localStorage.getItem("username") || "";
+  }
 
-    if (personalInfo.photoUrl) {
-      profilePhoto.src = personalInfo.photoUrl;
+  function savePersonalInfo(info) {
+    localStorage.setItem(
+      `personalInfo_${currentUsername}`,
+      JSON.stringify(info)
+    );
+    // Đánh dấu rằng thông tin cá nhân đã được cập nhật
+    localStorage.setItem(`profileUpdated_${currentUsername}`, "true");
+  }
+
+  function getPersonalInfo() {
+    const storedInfo = localStorage.getItem(`personalInfo_${currentUsername}`);
+    return storedInfo ? JSON.parse(storedInfo) : null;
+  }
+
+  function isProfileUpdated() {
+    return localStorage.getItem(`profileUpdated_${currentUsername}`) === "true";
+  }
+
+  function updateInfoDisplay() {
+    const info = getPersonalInfo();
+    if (info && isProfileUpdated()) {
+      document.getElementById("user-name").textContent = info.name;
+      birthdaySpan.textContent = formatDate(info.birthday);
+      birthdayPicker.value = info.birthday;
+      genderSpan.textContent = info.gender;
+      genderSelect.value = info.gender;
+      document.getElementById("user-email").textContent = info.email;
+      document.getElementById("user-phone").textContent = info.phone;
+      bioTextarea.value = info.bio;
+      updateCharCount();
+
+      if (info.photoUrl) {
+        profilePhoto.src = info.photoUrl;
+      }
+    } else {
+      // Hiển thị thông báo yêu cầu cập nhật thông tin
+      alert("Vui lòng cập nhật thông tin cá nhân của bạn.");
     }
   }
 
@@ -68,6 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function formatDate(dateString) {
+    if (!dateString) return "";
     const date = new Date(dateString);
     const day = date.getDate();
     const month = date.getMonth() + 1;
@@ -97,7 +121,18 @@ document.addEventListener("DOMContentLoaded", function () {
     errorPopup.style.display = "none";
   }
 
-  updateInfoDisplay();
+  currentUsername = getCurrentUsername();
+  if (currentUsername) {
+    if (!isProfileUpdated()) {
+      alert("Vui lòng cập nhật thông tin cá nhân của bạn.");
+      toggleEditMode(true); // Tự động chuyển sang chế độ chỉnh sửa
+    } else {
+      updateInfoDisplay();
+    }
+  } else {
+    console.log("User not logged in");
+    window.location.href = "login.html";
+  }
 
   editButton.addEventListener("click", function () {
     toggleEditMode(true);
@@ -113,7 +148,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let errorMessage = "";
 
-    // Kiểm tra các trường bắt buộc
     if (!newName) {
       errorMessage = "Vui lòng nhập họ tên.";
     } else if (!newEmail) {
@@ -135,18 +169,17 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // Cập nhật thông tin cá nhân
-    personalInfo.name = newName;
-    personalInfo.birthday = newBirthday;
-    personalInfo.gender = newGender;
-    personalInfo.email = newEmail;
-    personalInfo.phone = newPhone;
-    personalInfo.bio = newBio;
+    const updatedInfo = {
+      name: newName,
+      birthday: newBirthday,
+      gender: newGender,
+      email: newEmail,
+      phone: newPhone,
+      bio: newBio,
+      photoUrl: personalInfo.photoUrl,
+    };
 
-    // Lưu vào localStorage
-    localStorage.setItem("personalInfo", JSON.stringify(personalInfo));
-
-    // Cập nhật hiển thị và tắt chế độ chỉnh sửa
+    savePersonalInfo(updatedInfo);
     updateInfoDisplay();
     toggleEditMode(false);
   });
@@ -167,7 +200,7 @@ document.addEventListener("DOMContentLoaded", function () {
       reader.onload = function (e) {
         profilePhoto.src = e.target.result;
         personalInfo.photoUrl = e.target.result;
-        localStorage.setItem("personalInfo", JSON.stringify(personalInfo));
+        savePersonalInfo(personalInfo);
       };
       reader.readAsDataURL(file);
     }
@@ -231,5 +264,12 @@ document.addEventListener("DOMContentLoaded", function () {
         ],
       },
     },
+  });
+
+  const logoutButton = document.getElementById("logout-button");
+  logoutButton.addEventListener("click", function () {
+    localStorage.removeItem("username");
+    localStorage.removeItem("isLoggedIn");
+    window.location.href = "login.html";
   });
 });

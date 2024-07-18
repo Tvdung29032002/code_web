@@ -36,55 +36,216 @@ header {
   margin: 0 8px; /* Khoảng cách giữa các ảnh */
   cursor: pointer; /* Đổi con trỏ chuột khi hover vào ảnh */
 }
-
-#citySelect {
-  margin-left: 10px;
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  font-size: 14px;
+/* Bao bọc của thành phần lựa chọn */
+.select-wrapper {
+  position: relative; /* Đặt vị trí tương đối so với thành phần cha */
+  width: 250px; /* Đặt chiều rộng là 250px */
+  font-family: Arial, sans-serif; /* Sử dụng font Arial, hoặc sans-serif nếu Arial không có */
 }
 
+/* Hộp tìm kiếm */
+.search-box {
+  position: relative; /* Đặt vị trí tương đối */
+  margin-bottom: 10px; /* Thêm khoảng cách phía dưới là 10px */
+}
+
+/* Thành phần lựa chọn thành phố */
+.city-selector {
+  position: relative; /* Đặt vị trí tương đối */
+  width: 150px; /* Đặt chiều rộng là 150px */
+  font-family: Arial, sans-serif; /* Sử dụng font Arial, hoặc sans-serif nếu Arial không có */
+  margin-left: 15px; /* Thêm khoảng cách bên trái là 15px */
+}
+
+/* Thành phố được chọn */
+.selected-city {
+  display: flex; /* Sử dụng flexbox để bố trí */
+  align-items: center; /* Canh giữa theo chiều dọc */
+  justify-content: space-between; /* Canh đều các phần tử bên trong */
+  padding: 1px 5px; /* Thêm khoảng cách bên trong: 5px trên và dưới, 10px trái và phải */
+  border: 1px solid #dfe1e5; /* Đặt viền màu xám nhạt */
+  border-radius: 24px; /* Bo góc viền */
+  cursor: pointer; /* Thay đổi con trỏ thành hình bàn tay khi di chuột qua */
+  background-color: #f1f3f4; /* Đặt màu nền */
+  font-size: 14px; /* Đặt kích thước chữ */
+}
+
+/* Biểu tượng toggle (mở/đóng danh sách) */
+.toggle-icon {
+  width: 12px; /* Đặt chiều rộng */
+  height: 12px; /* Đặt chiều cao */
+  transition: transform 0.3s ease; /* Thêm hiệu ứng chuyển đổi trong 0.3 giây */
+  margin-left: 5px; /* Thêm khoảng cách bên trái là 5px */
+}
+
+/* Trạng thái khi biểu tượng toggle mở */
+.toggle-icon.up {
+  transform: rotate(180deg); /* Xoay 180 độ */
+}
+
+/* Danh sách thành phố xổ xuống */
+.city-dropdown {
+  position: absolute; /* Đặt vị trí tuyệt đối */
+  top: 100%; /* Đặt vị trí cách phía trên 100% chiều cao của thành phần cha */
+  left: 0; /* Đặt vị trí cách bên trái 0 */
+  width: 250px; /* Đặt chiều rộng */
+  background-color: white; /* Đặt màu nền trắng */
+  border: 1px solid #dfe1e5; /* Đặt viền màu xám nhạt */
+  border-radius: 8px; /* Bo góc viền */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Thêm bóng đổ */
+  z-index: 1000; /* Đặt thứ tự xếp chồng */
+  margin-top: 5px; /* Thêm khoảng cách bên trên là 5px */
+}
+
+/* Hộp chứa tìm kiếm */
+.search-container {
+  position: relative; /* Đặt vị trí tương đối */
+  padding: 8px; /* Thêm khoảng cách bên trong là 8px */
+  max-width: 180px; /* Đặt chiều rộng tối đa là 100px */
+}
+
+/* Ô nhập tìm kiếm thành phố */
+#citySearch {
+  width: 100%; /* Đặt chiều rộng 100% của thành phần cha */
+  padding: 8px 8px 8px 40px; /* Thêm khoảng cách bên trong: 8px trên, dưới, trái và 40px phải */
+  border: none; /* Không có viền */
+  border-radius: 24px; /* Bo góc viền */
+  background-color: #f1f3f4; /* Đặt màu nền */
+  font-size: 14px; /* Đặt kích thước chữ */
+  outline: none; /* Không có viền khi tập trung */
+}
+
+/* Danh sách các thành phố */
+#cityList {
+  list-style-type: none; /* Không có kiểu danh sách */
+  padding: 0; /* Không có khoảng cách bên trong */
+  margin: 0; /* Không có khoảng cách bên ngoài */
+  max-height: 300px; /* Đặt chiều cao tối đa là 300px */
+  overflow-y: auto; /* Thêm thanh cuộn dọc nếu nội dung vượt quá chiều cao */
+}
+
+/* Mục trong danh sách thành phố */
+#cityList li {
+  padding: 10px 16px; /* Thêm khoảng cách bên trong: 10px trên và dưới, 16px trái và phải */
+  cursor: pointer; /* Thay đổi con trỏ thành hình bàn tay khi di chuột qua */
+  display: flex; /* Sử dụng flexbox để bố trí */
+  justify-content: space-between; /* Canh đều các phần tử bên trong */
+  align-items: center; /* Canh giữa theo chiều dọc */
+}
+
+/* Hiệu ứng khi di chuột qua mục trong danh sách thành phố */
+#cityList li:hover {
+  background-color: #f1f3f4; /* Đặt màu nền khi di chuột qua */
+}
+
+/* Biểu tượng vị trí */
+.location-icon {
+  width: 8px; /* Đặt chiều rộng */
+  height: 8px; /* Đặt chiều cao */
+  opacity: 0.5; /* Đặt độ mờ */
+}
+
+/* Widget thời tiết */
 .weather-widget {
+  display: flex; /* Sử dụng flexbox để bố trí */
+  align-items: center; /* Canh giữa theo chiều dọc */
+  margin-left: 15px; /* Thêm khoảng cách bên trái là 15px */
+}
+
+/* Biểu tượng thời tiết */
+.weather-icon {
+  width: 24px; /* Đặt chiều rộng */
+  height: 24px; /* Đặt chiều cao */
+  margin-right: 5px; /* Thêm khoảng cách bên phải là 5px */
+}
+
+/* Nhiệt độ */
+.temperature {
+  font-size: 14px; /* Đặt kích thước chữ */
+  font-weight: bold; /* Đặt độ đậm của chữ */
+}
+
+.current-time {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0 15px;
+  font-family: "Arial", sans-serif;
+  white-space: nowrap;
+  font-size: 14px; /* Kích thước font cơ bản */
+}
+
+.current-time .date {
+  font-size: 0.85em; /* 85% của kích thước font cơ bản */
+  color: #5f6368;
+  margin-bottom: 2px;
+}
+
+.current-time .time {
+  font-size: 1.15em; /* 115% của kích thước font cơ bản */
+  font-weight: bold;
+  color: #202324;
+  display: flex;
+  align-items: baseline;
+}
+
+.current-time .seconds {
+  font-size: 0.85em; /* 85% của kích thước font của .time */
+  color: #c61010;
+  opacity: 0.7;
+  margin-left: 2px;
+}
+
+@media (max-width: 768px) {
+  .current-time {
+    font-size: 12px; /* Giảm kích thước font trên màn hình nhỏ */
+  }
+}
+
+@media (max-width: 480px) {
+  .current-time {
+    font-size: 10px; /* Giảm kích thước font hơn nữa trên màn hình rất nhỏ */
+  }
 }
 
 .search-bar {
-  display: flex; /* Sử dụng Flexbox để căn chỉnh các phần tử bên trong search-bar */
-  align-items: center; /* Căn giữa các phần tử theo chiều dọc */
-  position: absolute; /* Định vị tuyệt đối cho search-bar */
-  left: 50%; /* Đưa search-bar vào giữa màn hình theo chiều ngang */
-  transform: translateX(
-    -50%
-  ); /* Dịch chuyển search-bar về bên trái để căn giữa theo chiều ngang */
-  top: 6px; /* Vị trí từ mép trên của search-bar */
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 .search-bar input {
-  width: 400px; /* Chiều rộng của input trong search-bar */
-  padding: 8px 30px 8px 40px; /* Khoảng cách padding cho input trong search-bar */
-  border: 1px solid #f1f3f4; /* Đường viền của input trong search-bar */
-  border-radius: 20px; /* Bo tròn góc của input trong search-bar */
-  background-color: #f1f3f4; /* Màu nền của input trong search-bar */
-  font-size: 14px; /* Kích thước font chữ của input trong search-bar */
+  width: 100%;
+  padding: 8px 40px 8px 40px;
+  border: 1px solid #f1f3f4;
+  border-radius: 20px;
+  background-color: #f1f3f4;
+  font-size: 14px;
+  box-sizing: border-box;
 }
 
 .search-icon {
-  position: absolute; /* Định vị tuyệt đối cho search-icon */
-  left: 10px; /* Vị trí từ mép trái của search-icon */
-  width: 20px; /* Chiều rộng của search-icon */
-  height: auto; /* Chiều cao tự động của search-icon */
-  cursor: pointer; /* Đổi con trỏ chuột khi hover vào search-icon */
-  z-index: 1; /* Đưa search-icon lên trên các phần tử khác */
-}
-.keyboard-icon {
-  margin-left: -35px; /* Điều chỉnh vị trí từ mép phải của keyboard-icon */
-  width: 24px; /* Chiều rộng của keyboard-icon */
-  height: auto; /* Chiều cao tự động của keyboard-icon */
-  z-index: 0; /* Đưa keyboard-icon xuống dưới search-icon */
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: auto;
+  cursor: pointer;
+  z-index: 1;
 }
 
+.keyboard-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: auto;
+  cursor: pointer;
+  z-index: 1;
+}
 .container {
   padding-top: 64px; /* Khoảng cách trên của container */
   background-image: url("album/sci_group.png"); /* Đặt hình nền cho container */

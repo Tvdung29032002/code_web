@@ -34,14 +34,24 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
       console.log("Server response:", data);
       if (data.success) {
         console.log("Login successful");
+        localStorage.setItem("username", username);
         if (keepLoggedIn) {
           console.log("Saving login info to localStorage");
-          localStorage.setItem("username", username);
           localStorage.setItem("isLoggedIn", "true");
         } else {
-          console.log("Removing login info from localStorage");
-          localStorage.removeItem("username");
+          console.log("Removing isLoggedIn from localStorage");
           localStorage.removeItem("isLoggedIn");
+        }
+
+        const personalInfo = JSON.parse(
+          localStorage.getItem(`personalInfo_${username}`)
+        );
+        if (personalInfo && Object.keys(personalInfo).length > 0) {
+          alert("Đăng nhập thành công!");
+        } else {
+          alert(
+            "Đăng nhập thành công! Vui lòng cập nhật thông tin cá nhân của bạn."
+          );
         }
 
         window.location.href = "index.html";
@@ -56,7 +66,6 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
     });
 });
 
-// Xử lý hiển thị/ẩn mật khẩu
 document.addEventListener("DOMContentLoaded", function () {
   const togglePassword = document.getElementById("togglePassword");
   const password = document.getElementById("loginPassword");
@@ -74,7 +83,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-// Xử lý lưu thông tin đăng nhập
 window.addEventListener("load", function () {
   const savedUsername = localStorage.getItem("username");
   const isLoggedIn = localStorage.getItem("isLoggedIn");
@@ -84,7 +92,6 @@ window.addEventListener("load", function () {
   }
 });
 
-// Xử lý modal đăng ký
 var modal = document.getElementById("signupModal");
 var btn = document.querySelector(".create-account");
 var span = document.getElementsByClassName("close")[0];
@@ -101,7 +108,6 @@ if (span) {
   };
 }
 
-// Xử lý các select cho ngày sinh
 document.addEventListener("DOMContentLoaded", function () {
   const daySelect = document.getElementById("day");
   const monthSelect = document.getElementById("month");
@@ -150,9 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-// Xử lý đăng ký
 function isValidEmail(email) {
-  // Biểu thức chính quy để kiểm tra email có đuôi @gmail.com
   const emailRegex = /^[^\s@]+@gmail\.com$/i;
   return emailRegex.test(email);
 }
@@ -238,7 +242,7 @@ document.addEventListener("DOMContentLoaded", function () {
           console.log("Server response:", data);
           if (data.success) {
             alert("Đăng ký thành công!");
-            modal.style.display = "none"; // Đóng modal sau khi đăng ký thành công
+            modal.style.display = "none";
           } else {
             alert(data.message || "Đăng ký thất bại. Vui lòng thử lại.");
           }
@@ -251,6 +255,7 @@ document.addEventListener("DOMContentLoaded", function () {
   } else {
     console.error("Signup form not found!");
   }
+
   // Xử lý mở modal quên mật khẩu
   const forgotPasswordLink = document.querySelector(".forgot-password");
   const forgotPasswordModal = document.getElementById("forgotPasswordModal");
@@ -265,6 +270,9 @@ document.addEventListener("DOMContentLoaded", function () {
     forgotPasswordModal.style.display = "none";
   });
 
+  // Thêm biến để lưu email của người dùng đang thay đổi mật khẩu
+  let currentResetEmail = "";
+
   // Xử lý form quên mật khẩu
   const forgotPasswordForm = document.getElementById("forgotPasswordForm");
   forgotPasswordForm.addEventListener("submit", function (e) {
@@ -276,9 +284,8 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // Gửi yêu cầu đặt lại mật khẩu đến server
     fetch("http://192.168.0.103:3000/api/reset-password", {
-      method: "POST", // Đảm bảo đây là "POST"
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -288,9 +295,12 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((data) => {
         if (data.success) {
           alert(
-            "Mật khẩu mới đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư đến."
+            "Thông tin tài khoản và mật khẩu tạm thời đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư đến và thay đổi mật khẩu ngay."
           );
           forgotPasswordModal.style.display = "none";
+          currentResetEmail = email;
+          document.getElementById("changePasswordModal").style.display =
+            "block";
         } else {
           alert(
             data.message || "Không thể đặt lại mật khẩu. Vui lòng thử lại sau."
@@ -301,5 +311,53 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Error:", error);
         alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
       });
+  });
+
+  // Xử lý form thay đổi mật khẩu
+  const changePasswordForm = document.getElementById("changePasswordForm");
+  changePasswordForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const newPassword = document.getElementById("newPassword").value;
+    const confirmNewPassword =
+      document.getElementById("confirmNewPassword").value;
+
+    if (newPassword !== confirmNewPassword) {
+      alert("Mật khẩu mới và xác nhận mật khẩu không khớp.");
+      return;
+    }
+
+    fetch("http://192.168.0.103:3000/api/change-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: currentResetEmail, newPassword }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          alert(
+            "Mật khẩu đã được thay đổi thành công. Vui lòng đăng nhập lại."
+          );
+          document.getElementById("changePasswordModal").style.display = "none";
+          currentResetEmail = "";
+        } else {
+          alert(
+            data.message || "Không thể thay đổi mật khẩu. Vui lòng thử lại sau."
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+      });
+  });
+
+  // Xử lý đóng modal thay đổi mật khẩu
+  const closeChangePasswordModal = document.querySelector(
+    "#changePasswordModal .close"
+  );
+  closeChangePasswordModal.addEventListener("click", function () {
+    document.getElementById("changePasswordModal").style.display = "none";
   });
 });
