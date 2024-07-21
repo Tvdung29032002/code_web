@@ -28,13 +28,50 @@ document.addEventListener("DOMContentLoaded", function () {
     return localStorage.getItem("username") || "";
   }
 
+  function fetchUserInfo(username) {
+    return fetch(`http://192.168.0.103:3000/api/user-info/${username}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          return data.user;
+        } else {
+          throw new Error(data.message || "Không thể lấy thông tin người dùng");
+        }
+      });
+  }
+
   function savePersonalInfo(info) {
-    localStorage.setItem(
-      `personalInfo_${currentUsername}`,
-      JSON.stringify(info)
-    );
-    // Đánh dấu rằng thông tin cá nhân đã được cập nhật
-    localStorage.setItem(`profileUpdated_${currentUsername}`, "true");
+    fetch(`http://192.168.0.103:3000/api/update-user-info/${currentUsername}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(info),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          localStorage.setItem(
+            `personalInfo_${currentUsername}`,
+            JSON.stringify(info)
+          );
+          localStorage.setItem(`profileUpdated_${currentUsername}`, "true");
+          alert("Thông tin cá nhân đã được cập nhật thành công!");
+        } else {
+          throw new Error(
+            data.message || "Không thể cập nhật thông tin người dùng"
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Error updating user info:", error);
+        alert("Có lỗi xảy ra khi cập nhật thông tin. Vui lòng thử lại sau.");
+      });
   }
 
   function getPersonalInfo() {
@@ -47,25 +84,39 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function updateInfoDisplay() {
-    const info = getPersonalInfo();
-    if (info && isProfileUpdated()) {
-      document.getElementById("user-name").textContent = info.name;
-      birthdaySpan.textContent = formatDate(info.birthday);
-      birthdayPicker.value = info.birthday;
-      genderSpan.textContent = info.gender;
-      genderSelect.value = info.gender;
-      document.getElementById("user-email").textContent = info.email;
-      document.getElementById("user-phone").textContent = info.phone;
-      bioTextarea.value = info.bio;
-      updateCharCount();
+    fetchUserInfo(currentUsername)
+      .then((userInfo) => {
+        if (userInfo) {
+          document.getElementById("user-name").textContent = userInfo.name;
+          birthdaySpan.textContent = formatDate(userInfo.birthDate);
+          birthdayPicker.value = userInfo.birthDate;
+          genderSpan.textContent = userInfo.gender;
+          genderSelect.value = userInfo.gender;
+          document.getElementById("user-email").textContent = userInfo.email;
 
-      if (info.photoUrl) {
-        profilePhoto.src = info.photoUrl;
-      }
-    } else {
-      // Hiển thị thông báo yêu cầu cập nhật thông tin
-      alert("Vui lòng cập nhật thông tin cá nhân của bạn.");
-    }
+          // Các trường khác vẫn giữ nguyên như cũ
+          const localInfo = getPersonalInfo();
+          document.getElementById("user-phone").textContent =
+            localInfo?.phone || "";
+          bioTextarea.value = localInfo?.bio || "";
+          updateCharCount();
+
+          if (localInfo?.photoUrl) {
+            profilePhoto.src = localInfo.photoUrl;
+          }
+
+          // Đánh dấu rằng thông tin cá nhân đã được cập nhật
+          localStorage.setItem(`profileUpdated_${currentUsername}`, "true");
+        } else {
+          alert("Không thể lấy thông tin người dùng. Vui lòng thử lại sau.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching user info:", error);
+        alert(
+          "Có lỗi xảy ra khi lấy thông tin người dùng. Vui lòng thử lại sau."
+        );
+      });
   }
 
   function updateCharCount() {
@@ -123,12 +174,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   currentUsername = getCurrentUsername();
   if (currentUsername) {
-    if (!isProfileUpdated()) {
-      alert("Vui lòng cập nhật thông tin cá nhân của bạn.");
-      toggleEditMode(true); // Tự động chuyển sang chế độ chỉnh sửa
-    } else {
-      updateInfoDisplay();
-    }
+    updateInfoDisplay();
   } else {
     console.log("User not logged in");
     window.location.href = "login.html";

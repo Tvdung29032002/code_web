@@ -355,3 +355,56 @@ h2 {
   font-size: 0.9rem;
   margin-top: 0.5rem;
 }
+
+/* Style cho modal thay đổi mật khẩu */
+#changePasswordModal .modal-content {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+#changePasswordForm .password-group {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+#changePasswordForm .password-group input[type="password"],
+#changePasswordForm .password-group input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  padding-right: 40px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+#changePasswordForm .toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  background-color: transparent;
+}
+
+#changePasswordForm button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+#changePasswordForm button[type="submit"]:hover {
+  background-color: #45a049;
+}

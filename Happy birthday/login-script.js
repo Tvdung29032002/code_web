@@ -81,6 +81,27 @@ document.addEventListener("DOMContentLoaded", function () {
           : "image_login/eye-open.png";
     });
   }
+
+  // New code for change password modal
+  const changePasswordModal = document.getElementById("changePasswordModal");
+  if (changePasswordModal) {
+    const toggleButtons =
+      changePasswordModal.querySelectorAll(".toggle-password");
+    toggleButtons.forEach((button) => {
+      button.addEventListener("click", function () {
+        const targetId = this.getAttribute("data-target");
+        const passwordInput = document.getElementById(targetId);
+
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          this.src = "image_login/eye-open.png";
+        } else {
+          passwordInput.type = "password";
+          this.src = "image_login/eye-closed.png";
+        }
+      });
+    });
+  }
 });
 
 window.addEventListener("load", function () {
@@ -275,6 +296,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Xử lý form quên mật khẩu
   const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+  const changePasswordModal = document.getElementById("changePasswordModal");
+
   forgotPasswordForm.addEventListener("submit", function (e) {
     e.preventDefault();
     const email = document.getElementById("forgotPasswordEmail").value.trim();
@@ -297,10 +320,10 @@ document.addEventListener("DOMContentLoaded", function () {
           alert(
             "Thông tin tài khoản và mật khẩu tạm thời đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư đến và thay đổi mật khẩu ngay."
           );
-          forgotPasswordModal.style.display = "none";
           currentResetEmail = email;
-          document.getElementById("changePasswordModal").style.display =
-            "block";
+          // Đóng modal quên mật khẩu và hiển thị modal thay đổi mật khẩu
+          forgotPasswordModal.style.display = "none";
+          changePasswordModal.style.display = "block";
         } else {
           alert(
             data.message || "Không thể đặt lại mật khẩu. Vui lòng thử lại sau."
@@ -317,6 +340,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const changePasswordForm = document.getElementById("changePasswordForm");
   changePasswordForm.addEventListener("submit", function (e) {
     e.preventDefault();
+    const tempPassword = document.getElementById("tempPassword").value;
     const newPassword = document.getElementById("newPassword").value;
     const confirmNewPassword =
       document.getElementById("confirmNewPassword").value;
@@ -331,7 +355,11 @@ document.addEventListener("DOMContentLoaded", function () {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email: currentResetEmail, newPassword }),
+      body: JSON.stringify({
+        email: currentResetEmail,
+        tempPassword: tempPassword,
+        newPassword: newPassword,
+      }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -339,8 +367,10 @@ document.addEventListener("DOMContentLoaded", function () {
           alert(
             "Mật khẩu đã được thay đổi thành công. Vui lòng đăng nhập lại."
           );
-          document.getElementById("changePasswordModal").style.display = "none";
+          changePasswordModal.style.display = "none";
           currentResetEmail = "";
+          // Chuyển hướng về trang đăng nhập
+          window.location.href = "login.html";
         } else {
           alert(
             data.message || "Không thể thay đổi mật khẩu. Vui lòng thử lại sau."
@@ -354,10 +384,8 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Xử lý đóng modal thay đổi mật khẩu
-  const closeChangePasswordModal = document.querySelector(
-    "#changePasswordModal .close"
-  );
+  const closeChangePasswordModal = changePasswordModal.querySelector(".close");
   closeChangePasswordModal.addEventListener("click", function () {
-    document.getElementById("changePasswordModal").style.display = "none";
+    changePasswordModal.style.display = "none";
   });
 });

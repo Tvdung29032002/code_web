@@ -126,23 +126,31 @@
           </div>
           <button type="submit">Gửi mật khẩu mới</button>
         </form>
-        <div id="changePasswordModal" class="modal">
-          <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Thay đổi mật khẩu</h2>
-            <form id="changePasswordForm">
-              <div class="input-group">
-                <input type="password" id="newPassword" placeholder="Mật khẩu mới" required>
-              </div>
-              <div class="input-group">
-                <input type="password" id="confirmNewPassword" placeholder="Xác nhận mật khẩu mới" required>
-              </div>
-              <button type="submit">Thay đổi mật khẩu</button>
-            </form>
+      </div> 
+    </div>
+    <!-- Trong modal thay đổi mật khẩu -->
+    <div id="changePasswordModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Thay đổi mật khẩu</h2>
+        <form id="changePasswordForm">
+          <div class="input-group password-group">
+            <input type="password" id="tempPassword" placeholder="Mật khẩu tạm thời từ email" required>
+            <img src="image_login/eye-closed.png" class="toggle-password" data-target="tempPassword">
           </div>
-        </div>
+          <div class="input-group password-group">
+            <input type="password" id="newPassword" placeholder="Mật khẩu mới" required>
+            <img src="image_login/eye-closed.png" class="toggle-password" data-target="newPassword">
+          </div>
+          <div class="input-group password-group">
+            <input type="password" id="confirmNewPassword" placeholder="Xác nhận mật khẩu mới" required>
+            <img src="image_login/eye-closed.png" class="toggle-password" data-target="confirmNewPassword">
+          </div>
+          <button type="submit">Thay đổi mật khẩu</button>
+        </form>
       </div>
     </div>
     <script src="login-script.js"></script>
   </body>
 </html>
+

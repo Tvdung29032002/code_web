@@ -36,6 +36,7 @@ header {
   margin: 0 8px; /* Khoảng cách giữa các ảnh */
   cursor: pointer; /* Đổi con trỏ chuột khi hover vào ảnh */
 }
+
 /* Bao bọc của thành phần lựa chọn */
 .select-wrapper {
   position: relative; /* Đặt vị trí tương đối so với thành phần cha */
@@ -51,31 +52,26 @@ header {
 
 /* Thành phần lựa chọn thành phố */
 .city-selector {
-  position: relative; /* Đặt vị trí tương đối */
-  width: 150px; /* Đặt chiều rộng là 150px */
-  font-family: Arial, sans-serif; /* Sử dụng font Arial, hoặc sans-serif nếu Arial không có */
-  margin-left: 15px; /* Thêm khoảng cách bên trái là 15px */
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 /* Thành phố được chọn */
 .selected-city {
-  display: flex; /* Sử dụng flexbox để bố trí */
-  align-items: center; /* Canh giữa theo chiều dọc */
-  justify-content: space-between; /* Canh đều các phần tử bên trong */
-  padding: 1px 5px; /* Thêm khoảng cách bên trong: 5px trên và dưới, 10px trái và phải */
-  border: 1px solid #dfe1e5; /* Đặt viền màu xám nhạt */
-  border-radius: 24px; /* Bo góc viền */
-  cursor: pointer; /* Thay đổi con trỏ thành hình bàn tay khi di chuột qua */
-  background-color: #f1f3f4; /* Đặt màu nền */
-  font-size: 14px; /* Đặt kích thước chữ */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color: #555;
 }
 
 /* Biểu tượng toggle (mở/đóng danh sách) */
 .toggle-icon {
-  width: 12px; /* Đặt chiều rộng */
-  height: 12px; /* Đặt chiều cao */
-  transition: transform 0.3s ease; /* Thêm hiệu ứng chuyển đổi trong 0.3 giây */
-  margin-left: 5px; /* Thêm khoảng cách bên trái là 5px */
+  width: 10px;
+  height: 10px;
+  margin-left: 5px;
+  transition: transform 0.3s ease;
 }
 
 /* Trạng thái khi biểu tượng toggle mở */
@@ -161,8 +157,16 @@ header {
 
 /* Nhiệt độ */
 .temperature {
-  font-size: 14px; /* Đặt kích thước chữ */
-  font-weight: bold; /* Đặt độ đậm của chữ */
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-right: 20px;
+}
+
+.separator {
+  margin: 0 10px;
+  color: #999;
+  font-size: 20px;
 }
 
 .current-time {

@@ -20,6 +20,7 @@
         <div class="weather-widget">
           <img src="album/weather.png" alt="Weather" class="weather-icon">
           <span class="temperature">--°</span>
+          <span class="separator">|</span> <!-- Thêm phần tử này -->
           <div class="city-selector">
             <div class="selected-city" id="selectedCity">
               Hà Nội
@@ -27,7 +28,7 @@
             </div>
             <div class="city-dropdown" style="display: none;">
               <div class="search-container">
-                <input type="text" id="citySearch" placeholder="Tìm địa điểm">
+                <input type="text" id="citySearch" placeholder="Tìm thành phố...">
               </div>
               <ul id="cityList">
                 <!-- Danh sách thành phố sẽ được thêm bằng JavaScript -->

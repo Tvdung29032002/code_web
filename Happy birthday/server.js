@@ -221,24 +221,45 @@ app.post("/api/reset-password", async (req, res) => {
 
 app.post("/api/change-password", async (req, res) => {
   try {
-    const { email, newPassword } = req.body;
-    console.log("Received request to change password for email:", email);
+    const { email, tempPassword, newPassword } = req.body;
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    const [result] = await connection.execute(
-      "UPDATE users SET password = ? WHERE email = ?",
-      [hashedPassword, email]
+    // Kiểm tra xem email có tồn tại trong cơ sở dữ liệu không
+    const [users] = await connection.execute(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
     );
 
-    if (result.affectedRows === 0) {
+    if (users.length === 0) {
       return res.status(404).json({
         success: false,
         message: "Không tìm thấy tài khoản với email này.",
       });
     }
 
-    console.log("Password changed successfully");
+    const user = users[0];
+
+    // Kiểm tra mật khẩu tạm thời
+    const isValidTempPassword = await bcrypt.compare(
+      tempPassword,
+      user.password
+    );
+
+    if (!isValidTempPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Mật khẩu tạm thời không đúng.",
+      });
+    }
+
+    // Nếu mật khẩu tạm thời đúng, tiến hành thay đổi mật khẩu
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    // Cập nhật mật khẩu mới và thời gian cập nhật
+    await connection.execute(
+      "UPDATE users SET password = ?, password_updated_at = CURRENT_TIMESTAMP WHERE email = ?",
+      [hashedNewPassword, email]
+    );
+
     res.json({
       success: true,
       message: "Mật khẩu đã được thay đổi thành công.",
@@ -284,6 +305,41 @@ app.get("/api/check-db-connection", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Database connection failed",
+      error: error.message,
+    });
+  }
+});
+
+app.get("/api/user-info/:username", async (req, res) => {
+  try {
+    const { username } = req.params;
+    const [users] = await connection.execute(
+      "SELECT firstName, lastName, email, birthDate, gender FROM users WHERE username = ?",
+      [username]
+    );
+
+    if (users.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy thông tin người dùng.",
+      });
+    }
+
+    const user = users[0];
+    res.json({
+      success: true,
+      user: {
+        name: `${user.firstName} ${user.lastName}`,
+        email: user.email,
+        birthDate: user.birthDate,
+        gender: user.gender,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching user info:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể lấy thông tin người dùng",
       error: error.message,
     });
   }
