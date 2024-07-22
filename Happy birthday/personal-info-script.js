@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function fetchUserInfo(username) {
-    return fetch(`http://192.168.0.103:3000/api/user-info/${username}`, {
+    return fetch(`http://192.168.0.103:3000/api/user-details/${username}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -46,22 +46,35 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function savePersonalInfo(info) {
+    console.log("Saving personal info:", info);
+    const formData = new FormData();
+    Object.keys(info).forEach((key) => {
+      if (key === "photoUrl" && info[key] instanceof File) {
+        formData.append("photo", info[key]);
+        console.log("Appending photo to FormData");
+      } else {
+        formData.append(key, info[key]);
+      }
+    });
+
     fetch(`http://192.168.0.103:3000/api/update-user-info/${currentUsername}`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(info),
+      body: formData,
     })
-      .then((response) => response.json())
+      .then((response) => {
+        console.log("Response status:", response.status);
+        return response.json();
+      })
       .then((data) => {
+        console.log("Response data:", data);
         if (data.success) {
-          localStorage.setItem(
-            `personalInfo_${currentUsername}`,
-            JSON.stringify(info)
-          );
-          localStorage.setItem(`profileUpdated_${currentUsername}`, "true");
+          if (data.photoUrl) {
+            profilePhoto.src = data.photoUrl;
+            console.log("Updated photo URL:", data.photoUrl);
+          }
           alert("Thông tin cá nhân đã được cập nhật thành công!");
+          updateInfoDisplay();
+          toggleEditMode(false); // Thêm dòng này
         } else {
           throw new Error(
             data.message || "Không thể cập nhật thông tin người dùng"
@@ -73,41 +86,47 @@ document.addEventListener("DOMContentLoaded", function () {
         alert("Có lỗi xảy ra khi cập nhật thông tin. Vui lòng thử lại sau.");
       });
   }
-
-  function getPersonalInfo() {
-    const storedInfo = localStorage.getItem(`personalInfo_${currentUsername}`);
-    return storedInfo ? JSON.parse(storedInfo) : null;
-  }
-
-  function isProfileUpdated() {
-    return localStorage.getItem(`profileUpdated_${currentUsername}`) === "true";
-  }
-
   function updateInfoDisplay() {
+    console.log("Updating info display for user:", currentUsername);
     fetchUserInfo(currentUsername)
       .then((userInfo) => {
+        console.log("Fetched user info:", userInfo);
         if (userInfo) {
           document.getElementById("user-name").textContent = userInfo.name;
           birthdaySpan.textContent = formatDate(userInfo.birthDate);
           birthdayPicker.value = userInfo.birthDate;
-          genderSpan.textContent = userInfo.gender;
-          genderSelect.value = userInfo.gender;
-          document.getElementById("user-email").textContent = userInfo.email;
 
-          // Các trường khác vẫn giữ nguyên như cũ
-          const localInfo = getPersonalInfo();
+          const genderDisplay = {
+            male: "Nam",
+            female: "Nữ",
+            other: "Khác",
+          };
+          genderSpan.textContent =
+            genderDisplay[userInfo.gender] || userInfo.gender;
+          genderSelect.value = userInfo.gender;
+
+          document.getElementById("user-email").textContent = userInfo.email;
           document.getElementById("user-phone").textContent =
-            localInfo?.phone || "";
-          bioTextarea.value = localInfo?.bio || "";
+            userInfo.phone || "";
+          bioTextarea.value = userInfo.bio || "";
           updateCharCount();
 
-          if (localInfo?.photoUrl) {
-            profilePhoto.src = localInfo.photoUrl;
+          if (userInfo.photoUrl) {
+            profilePhoto.src = userInfo.photoUrl;
+          } else {
+            profilePhoto.src = "/uploads/default.jpg";
           }
+          console.log("Updated profile photo:", profilePhoto.src);
 
-          // Đánh dấu rằng thông tin cá nhân đã được cập nhật
-          localStorage.setItem(`profileUpdated_${currentUsername}`, "true");
+          // Ẩn các nút Lưu và Hủy, hiển thị nút Sửa thông tin
+          editButton.style.display = "inline-block";
+          saveButton.style.display = "none";
+          cancelButton.style.display = "none";
+
+          // Đặt lại trạng thái không chỉnh sửa cho các trường
+          toggleEditMode(false);
         } else {
+          console.error("User info is undefined");
           alert("Không thể lấy thông tin người dùng. Vui lòng thử lại sau.");
         }
       })
@@ -226,8 +245,6 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     savePersonalInfo(updatedInfo);
-    updateInfoDisplay();
-    toggleEditMode(false);
   });
 
   cancelButton.addEventListener("click", function () {
@@ -245,8 +262,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const reader = new FileReader();
       reader.onload = function (e) {
         profilePhoto.src = e.target.result;
-        personalInfo.photoUrl = e.target.result;
-        savePersonalInfo(personalInfo);
+        personalInfo.photoUrl = file; // Lưu File object thay vì base64 string
       };
       reader.readAsDataURL(file);
     }

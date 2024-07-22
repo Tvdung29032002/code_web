@@ -269,3 +269,9 @@ footer p {
 .error-popup button:hover {
   background-color: #ffab7a;
 }
+
+.required {
+  color: #d93025;
+  margin-left: 2px;
+  font-weight: bold; /* Thêm dòng này để in đậm */
+}

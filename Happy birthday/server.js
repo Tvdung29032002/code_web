@@ -4,6 +4,9 @@ const mysql = require("mysql2/promise");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
 const app = express();
 
@@ -12,7 +15,8 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "10mb" }));
+app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 
 const dbConfig = {
   host: "127.0.0.1",
@@ -33,6 +37,29 @@ async function connectToDatabase() {
     process.exit(1);
   }
 }
+
+// Định nghĩa đường dẫn tuyệt đối cho thư mục uploads
+const uploadsDir = path.join(__dirname, "uploads");
+
+// Đảm bảo thư mục uploads tồn tại
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// Cấu hình multer với đường dẫn mới
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadsDir);
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
+
+// Phục vụ các file tĩnh từ thư mục 'uploads'
+app.use("/uploads", express.static(uploadsDir));
 
 app.post("/api/login", async (req, res) => {
   console.log("Received login request");
@@ -130,6 +157,13 @@ app.post("/api/register", async (req, res) => {
       [firstName, lastName, username, email, hashedPassword, birthDate, gender]
     );
 
+    // Thêm avatar mặc định cho người dùng mới
+    const userId = result.insertId;
+    await connection.execute(
+      "INSERT INTO personal_info (user_id, photo_url) VALUES (?, ?)",
+      [userId, "/uploads/default.jpg"]
+    );
+
     console.log("User registered successfully");
     res.json({ success: true, message: "Đăng ký thành công!" });
   } catch (error) {
@@ -147,7 +181,6 @@ app.post("/api/reset-password", async (req, res) => {
     const { email } = req.body;
     console.log("Received email for password reset:", email);
 
-    // Kiểm tra xem email có tồn tại trong cơ sở dữ liệu không
     const [users] = await connection.execute(
       "SELECT * FROM users WHERE email = ?",
       [email]
@@ -163,12 +196,10 @@ app.post("/api/reset-password", async (req, res) => {
 
     const user = users[0];
 
-    // Tạo mật khẩu mới
     const newPassword = Math.random().toString(36).slice(-8);
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     console.log("New password generated");
 
-    // Cập nhật mật khẩu mới trong cơ sở dữ liệu
     await connection.execute("UPDATE users SET password = ? WHERE email = ?", [
       hashedPassword,
       email,
@@ -179,7 +210,7 @@ app.post("/api/reset-password", async (req, res) => {
       service: "gmail",
       auth: {
         user: "vboyht35@gmail.com",
-        pass: "rwzb tatw piem seuj", // Sử dụng App Password thay vì mật khẩu Gmail
+        pass: "rwzb tatw piem seuj",
       },
     });
 
@@ -223,7 +254,6 @@ app.post("/api/change-password", async (req, res) => {
   try {
     const { email, tempPassword, newPassword } = req.body;
 
-    // Kiểm tra xem email có tồn tại trong cơ sở dữ liệu không
     const [users] = await connection.execute(
       "SELECT * FROM users WHERE email = ?",
       [email]
@@ -238,7 +268,6 @@ app.post("/api/change-password", async (req, res) => {
 
     const user = users[0];
 
-    // Kiểm tra mật khẩu tạm thời
     const isValidTempPassword = await bcrypt.compare(
       tempPassword,
       user.password
@@ -251,10 +280,8 @@ app.post("/api/change-password", async (req, res) => {
       });
     }
 
-    // Nếu mật khẩu tạm thời đúng, tiến hành thay đổi mật khẩu
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
-    // Cập nhật mật khẩu mới và thời gian cập nhật
     await connection.execute(
       "UPDATE users SET password = ?, password_updated_at = CURRENT_TIMESTAMP WHERE email = ?",
       [hashedNewPassword, email]
@@ -273,6 +300,132 @@ app.post("/api/change-password", async (req, res) => {
     });
   }
 });
+
+app.get("/api/user-details/:username", async (req, res) => {
+  try {
+    const { username } = req.params;
+    const [users] = await connection.execute(
+      `SELECT u.id, u.firstName, u.lastName, u.email, u.birthDate, u.gender, 
+              pi.phone, pi.bio, pi.photo_url 
+       FROM users u 
+       LEFT JOIN personal_info pi ON u.id = pi.user_id 
+       WHERE u.username = ?`,
+      [username]
+    );
+
+    if (users.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy thông tin người dùng.",
+      });
+    }
+
+    const user = users[0];
+    res.json({
+      success: true,
+      user: {
+        name: `${user.firstName} ${user.lastName}`,
+        email: user.email,
+        birthDate: user.birthDate,
+        gender: user.gender,
+        phone: user.phone || "",
+        bio: user.bio || "",
+        photoUrl: user.photo_url || "",
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể lấy thông tin chi tiết người dùng",
+      error: error.message,
+    });
+  }
+});
+
+app.post(
+  "/api/update-user-info/:username",
+  upload.single("photo"),
+  async (req, res) => {
+    try {
+      const { username } = req.params;
+      const { name, birthday, gender, email, phone, bio } = req.body;
+
+      console.log("Received update request for user:", username);
+      console.log("Request body:", req.body);
+      console.log("Uploaded file:", req.file);
+
+      // Lấy user_id
+      const [users] = await connection.execute(
+        "SELECT id FROM users WHERE username = ?",
+        [username]
+      );
+      const userId = users[0].id;
+
+      let photoUrl = null;
+      if (req.file) {
+        photoUrl = `/uploads/${req.file.filename}`;
+        console.log("File uploaded successfully:", req.file.path);
+      }
+
+      // Kiểm tra xem đã có thông tin cá nhân chưa
+      const [existingInfo] = await connection.execute(
+        "SELECT * FROM personal_info WHERE user_id = ?",
+        [userId]
+      );
+
+      if (existingInfo.length > 0) {
+        // Nếu đã có thông tin, cập nhật
+        await connection.execute(
+          `UPDATE personal_info SET 
+         phone = ?, bio = ?, photo_url = COALESCE(?, photo_url), updated_at = CURRENT_TIMESTAMP
+         WHERE user_id = ?`,
+          [phone, bio, photoUrl, userId]
+        );
+      } else {
+        // Nếu chưa có thông tin, thêm mới
+        await connection.execute(
+          `INSERT INTO personal_info (user_id, phone, bio, photo_url) 
+         VALUES (?, ?, ?, ?)`,
+          [userId, phone, bio, photoUrl]
+        );
+      }
+
+      // Chuyển đổi ngày sinh sang định dạng YYYY-MM-DD
+      const formattedBirthday = new Date(birthday).toISOString().split("T")[0];
+
+      // Cập nhật thông tin trong bảng users
+      await connection.execute(
+        `UPDATE users SET 
+       firstName = ?, lastName = ?, birthDate = ?, gender = ?, email = ? 
+       WHERE id = ?`,
+        [
+          name.split(" ")[0],
+          name.split(" ").slice(1).join(" "),
+          formattedBirthday,
+          gender,
+          email,
+          userId,
+        ]
+      );
+
+      console.log("User info updated successfully");
+
+      res.json({
+        success: true,
+        message: "Thông tin đã được cập nhật thành công.",
+        photoUrl: photoUrl,
+      });
+    } catch (error) {
+      console.error("Error updating user info:", error);
+      res.status(500).json({
+        success: false,
+        message: "Không thể cập nhật thông tin người dùng",
+        error: error.message,
+      });
+    }
+  }
+);
 
 app.get("/", (req, res) => {
   res.send("Server is running!");
@@ -310,47 +463,13 @@ app.get("/api/check-db-connection", async (req, res) => {
   }
 });
 
-app.get("/api/user-info/:username", async (req, res) => {
-  try {
-    const { username } = req.params;
-    const [users] = await connection.execute(
-      "SELECT firstName, lastName, email, birthDate, gender FROM users WHERE username = ?",
-      [username]
-    );
-
-    if (users.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Không tìm thấy thông tin người dùng.",
-      });
-    }
-
-    const user = users[0];
-    res.json({
-      success: true,
-      user: {
-        name: `${user.firstName} ${user.lastName}`,
-        email: user.email,
-        birthDate: user.birthDate,
-        gender: user.gender,
-      },
-    });
-  } catch (error) {
-    console.error("Error fetching user info:", error);
-    res.status(500).json({
-      success: false,
-      message: "Không thể lấy thông tin người dùng",
-      error: error.message,
-    });
-  }
-});
-
 const PORT = 3000;
 
 async function startServer() {
   await connectToDatabase();
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://192.168.0.103:${PORT}`);
+    console.log("Uploads directory:", uploadsDir);
   });
 }
 

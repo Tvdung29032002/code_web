@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Thông tin cá nhân</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="album/feedback-icon.png"
+    />
     <link rel="stylesheet" href="personal-info-styles.css" />
     <link
       rel="stylesheet"
@@ -40,7 +46,7 @@
             >
           </div>
           <div class="info-item">
-            <span class="info-label">Tên *:</span>
+            <span class="info-label">Tên <span class="required">*</span>:</span>
             <span
               class="info-value"
               id="user-name"
@@ -48,7 +54,9 @@
             ></span>
           </div>
           <div class="info-item">
-            <span class="info-label">Ngày sinh *:</span>
+            <span class="info-label"
+              >Ngày sinh <span class="required">*</span>:</span
+            >
             <span id="user-birthday" class="info-value"></span>
             <input
               type="text"
@@ -58,19 +66,23 @@
             />
           </div>
           <div class="info-item">
-            <span class="info-label">Giới tính *:</span>
+            <span class="info-label"
+              >Giới tính <span class="required">*</span>:</span
+            >
             <span id="user-gender" class="info-value"></span>
             <select id="gender-select" style="display: none">
-              <option value="Nam">Nam</option>
-              <option value="Nữ">Nữ</option>
-              <option value="Khác">Khác</option>
+              <option value="male">Nam</option>
+              <option value="female">Nữ</option>
+              <option value="other">Khác</option>
             </select>
           </div>
         </div>
         <div class="info-section">
           <h3>Thông tin liên hệ</h3>
           <div class="info-item">
-            <span class="info-label">Email *:</span>
+            <span class="info-label"
+              >Email <span class="required">*</span>:</span
+            >
             <span
               class="info-value"
               id="user-email"
@@ -78,7 +90,9 @@
             ></span>
           </div>
           <div class="info-item">
-            <span class="info-label">Điện thoại *:</span>
+            <span class="info-label"
+              >Điện thoại <span class="required">*</span>:</span
+            >
             <span
               class="info-value"
               id="user-phone"

@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="album/feedback-icon.png">
     <link rel="stylesheet" href="login-style.css" />
     <!-- Liên kết đến file CSS để trang trí giao diện -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -81,7 +82,8 @@
             <input type="email" id="email" placeholder="Email" required>
           </div>
           <div class="input-group">
-            <input type="password" id="signupPassword" placeholder="Mật khẩu mới" required>
+            <input type="password" id="signupPassword" placeholder="Mật khẩu" required>
+            <div id="password-strength-message"></div>
           </div>
           <div class="input-group">
             <label>Ngày sinh</label>
@@ -100,15 +102,12 @@
           <div class="input-group">
             <label>Giới tính</label>
             <div class="gender-inputs">
-              <label
-                ><input type="radio" name="gender" value="female" /> Nữ</label
-              >
-              <label
-                ><input type="radio" name="gender" value="male" /> Nam</label
-              >
-              <label
-                ><input type="radio" name="gender" value="other" /> Khác</label
-              >
+              <input type="radio" id="gender-female" name="gender" value="female">
+              <label for="gender-female">Nữ</label>
+              <input type="radio" id="gender-male" name="gender" value="male">
+              <label for="gender-male">Nam</label>
+              <input type="radio" id="gender-other" name="gender" value="other">
+              <label for="gender-other">Khác</label>
             </div>
           </div>
           <button type="submit" id="signupButton">Đăng ký</button>
@@ -141,10 +140,12 @@
           <div class="input-group password-group">
             <input type="password" id="newPassword" placeholder="Mật khẩu mới" required>
             <img src="image_login/eye-closed.png" class="toggle-password" data-target="newPassword">
+            <div id="new-password-strength-message"></div>
           </div>
           <div class="input-group password-group">
             <input type="password" id="confirmNewPassword" placeholder="Xác nhận mật khẩu mới" required>
             <img src="image_login/eye-closed.png" class="toggle-password" data-target="confirmNewPassword">
+            <div id="new-password-strength-message"></div>
           </div>
           <button type="submit">Thay đổi mật khẩu</button>
         </form>

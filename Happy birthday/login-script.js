@@ -182,6 +182,53 @@ function isValidEmail(email) {
   return emailRegex.test(email);
 }
 
+function checkPasswordStrength(password) {
+  // Kiểm tra độ dài
+  if (password.length < 8) {
+    return {
+      strength: "weak",
+      message: "Mật khẩu quá yếu. Cần ít nhất 8 ký tự.",
+    };
+  }
+
+  // Kiểm tra có chữ hoa, chữ thường, số và ký tự đặc biệt
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasLowerCase = /[a-z]/.test(password);
+  const hasNumbers = /\d/.test(password);
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+  if (hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChar) {
+    return { strength: "strong", message: "Mật khẩu mạnh" };
+  } else {
+    return {
+      strength: "medium",
+      message: "Mật khẩu cần có chữ hoa, chữ thường, số và ký tự đặc biệt.",
+    };
+  }
+}
+
+function displayPasswordStrength(password, messageElementId) {
+  const strengthResult = checkPasswordStrength(password);
+  const messageElement = document.getElementById(messageElementId);
+
+  if (messageElement) {
+    messageElement.textContent = strengthResult.message;
+    switch (strengthResult.strength) {
+      case "weak":
+        messageElement.style.color = "red";
+        break;
+      case "medium":
+        messageElement.style.color = "orange";
+        break;
+      case "strong":
+        messageElement.style.color = "green";
+        break;
+    }
+  }
+
+  return strengthResult.strength === "strong";
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const signupForm = document.getElementById("signupForm");
   if (signupForm) {
@@ -231,6 +278,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (!isValidEmail(email)) {
         alert("Vui lòng nhập lại địa chỉ Email hợp lệ.");
+        return;
+      }
+
+      // Kiểm tra độ mạnh của mật khẩu
+      if (!displayPasswordStrength(password, "password-strength-message")) {
+        alert("Vui lòng nhập mật khẩu mạnh hơn.");
         return;
       }
 
@@ -350,6 +403,14 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
+    // Kiểm tra độ mạnh của mật khẩu mới
+    if (
+      !displayPasswordStrength(newPassword, "new-password-strength-message")
+    ) {
+      alert("Vui lòng nhập mật khẩu mạnh hơn.");
+      return;
+    }
+
     fetch("http://192.168.0.103:3000/api/change-password", {
       method: "POST",
       headers: {
@@ -388,4 +449,65 @@ document.addEventListener("DOMContentLoaded", function () {
   closeChangePasswordModal.addEventListener("click", function () {
     changePasswordModal.style.display = "none";
   });
+
+  // Thêm sự kiện lắng nghe cho trường mật khẩu trong form đăng ký
+  const passwordInput = document.getElementById("signupPassword");
+  if (passwordInput) {
+    passwordInput.addEventListener("input", function () {
+      displayPasswordStrength(this.value, "password-strength-message");
+    });
+  }
+
+  // Thêm sự kiện lắng nghe cho các trường mật khẩu trong modal thay đổi mật khẩu
+  const newPasswordInput = document.getElementById("newPassword");
+  const confirmNewPasswordInput = document.getElementById("confirmNewPassword");
+
+  if (newPasswordInput) {
+    newPasswordInput.addEventListener("input", function () {
+      displayPasswordStrength(this.value, "new-password-strength-message");
+    });
+  }
+
+  if (confirmNewPasswordInput) {
+    confirmNewPasswordInput.addEventListener("input", function () {
+      if (this.value !== newPasswordInput.value) {
+        this.setCustomValidity("Mật khẩu không khớp");
+      } else {
+        this.setCustomValidity("");
+      }
+    });
+  }
 });
+
+// Đảm bảo rằng tất cả các modal được đóng khi click bên ngoài
+window.onclick = function (event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+  if (event.target == document.getElementById("forgotPasswordModal")) {
+    document.getElementById("forgotPasswordModal").style.display = "none";
+  }
+  if (event.target == document.getElementById("changePasswordModal")) {
+    document.getElementById("changePasswordModal").style.display = "none";
+  }
+};
+
+// Thêm sự kiện lắng nghe cho các trường mật khẩu trong modal thay đổi mật khẩu
+const newPasswordInput = document.getElementById("newPassword");
+const confirmNewPasswordInput = document.getElementById("confirmNewPassword");
+
+if (newPasswordInput) {
+  newPasswordInput.addEventListener("input", function () {
+    displayPasswordStrength(this.value, "new-password-strength-message");
+  });
+}
+
+if (confirmNewPasswordInput) {
+  confirmNewPasswordInput.addEventListener("input", function () {
+    if (this.value !== newPasswordInput.value) {
+      this.setCustomValidity("Mật khẩu không khớp");
+    } else {
+      this.setCustomValidity("");
+    }
+  });
+}
