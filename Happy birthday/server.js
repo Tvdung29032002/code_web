@@ -38,15 +38,12 @@ async function connectToDatabase() {
   }
 }
 
-// Định nghĩa đường dẫn tuyệt đối cho thư mục uploads
 const uploadsDir = path.join(__dirname, "uploads");
 
-// Đảm bảo thư mục uploads tồn tại
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Cấu hình multer với đường dẫn mới
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadsDir);
@@ -58,7 +55,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Phục vụ các file tĩnh từ thư mục 'uploads'
 app.use("/uploads", express.static(uploadsDir));
 
 app.post("/api/login", async (req, res) => {
@@ -67,7 +63,13 @@ app.post("/api/login", async (req, res) => {
     const { username, password } = req.body;
     console.log("Login attempt for username:", username);
 
-    const query = "SELECT * FROM users WHERE LOWER(username) = LOWER(?)";
+    const query = `
+      SELECT u.*, pi.id AS personal_info_id, 
+      CASE WHEN pi.phone IS NOT NULL OR pi.bio IS NOT NULL THEN true ELSE false END AS has_updated_info
+      FROM users u 
+      LEFT JOIN personal_info pi ON u.id = pi.user_id 
+      WHERE LOWER(u.username) = LOWER(?)
+    `;
     console.log("SQL query:", query, "with username:", username);
 
     console.log("Executing database query...");
@@ -102,6 +104,7 @@ app.post("/api/login", async (req, res) => {
         id: user.id,
         username: user.username,
         email: user.email,
+        hasUpdatedInfo: user.has_updated_info === 1,
       },
     });
   } catch (error) {
@@ -157,7 +160,6 @@ app.post("/api/register", async (req, res) => {
       [firstName, lastName, username, email, hashedPassword, birthDate, gender]
     );
 
-    // Thêm avatar mặc định cho người dùng mới
     const userId = result.insertId;
     await connection.execute(
       "INSERT INTO personal_info (user_id, photo_url) VALUES (?, ?)",
@@ -426,6 +428,57 @@ app.post(
     }
   }
 );
+
+// Thêm endpoint API mới vào server.js
+app.post("/api/add-vocabulary", async (req, res) => {
+  try {
+    const { word, meaning } = req.body;
+
+    if (!word || !meaning) {
+      return res.status(400).json({
+        success: false,
+        message: "Từ và nghĩa không được để trống",
+      });
+    }
+
+    const [result] = await connection.execute(
+      "INSERT INTO vocabulary (word, meaning) VALUES (?, ?)",
+      [word, meaning]
+    );
+
+    res.json({
+      success: true,
+      message: "Từ vựng đã được thêm thành công",
+      id: result.insertId,
+    });
+  } catch (error) {
+    console.error("Error adding vocabulary:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể thêm từ vựng",
+      error: error.message,
+    });
+  }
+});
+// Thêm endpoint API mới vào server.js
+app.get("/api/get-all-vocabulary", async (req, res) => {
+  try {
+    const [rows] = await connection.execute(
+      "SELECT * FROM vocabulary ORDER BY created_at DESC"
+    );
+    res.json({
+      success: true,
+      data: rows,
+    });
+  } catch (error) {
+    console.error("Error fetching vocabulary:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể lấy danh sách từ vựng",
+      error: error.message,
+    });
+  }
+});
 
 app.get("/", (req, res) => {
   res.send("Server is running!");

@@ -43,11 +43,15 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
           localStorage.removeItem("isLoggedIn");
         }
 
-        const personalInfo = JSON.parse(
-          localStorage.getItem(`personalInfo_${username}`)
-        );
-        if (personalInfo && Object.keys(personalInfo).length > 0) {
-          alert("Đăng nhập thành công!");
+        // Kiểm tra xem người dùng đã cập nhật thông tin cá nhân chưa
+        if (data.user && data.user.hasUpdatedInfo !== undefined) {
+          if (data.user.hasUpdatedInfo) {
+            alert("Đăng nhập thành công!");
+          } else {
+            alert(
+              "Đăng nhập thành công! Vui lòng cập nhật thông tin cá nhân của bạn."
+            );
+          }
         } else {
           alert(
             "Đăng nhập thành công! Vui lòng cập nhật thông tin cá nhân của bạn."
