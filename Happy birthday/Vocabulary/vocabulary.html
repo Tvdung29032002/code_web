@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>English Vocabulary Learning</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="dictionary.png" />
+    <link rel="stylesheet" href="vocabulary-style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <nav class="header-left">
+          <a href="/" class="btn-home">Back to Home</a>
+        </nav>
+        <h1>English Vocabulary Learning</h1>
+      </header>
+
+      <main>
+        <section class="vocabulary-form">
+          <h2>Add New Word</h2>
+          <form id="vocabularyForm">
+            <div class="form-group">
+              <label for="word">Word:</label>
+              <input type="text" id="word" name="word" required />
+            </div>
+            <div class="form-group">
+              <label for="meaning">Meaning:</label>
+              <input type="text" id="meaning" name="meaning" required />
+            </div>
+            <div class="form-group">
+              <label for="phonetic">Phonetic:</label>
+              <input type="text" id="phonetic" name="phonetic" required />
+            </div>
+            <div class="form-group">
+              <label for="example">Example:</label>
+              <input type="text" id="example" name="example" required />
+            </div>
+            <div class="form-group">
+              <label for="partOfSpeech">Part of Speech:</label>
+              <select id="partOfSpeech" name="part_of_speech" required>
+                <option value="">Select part of speech</option>
+                <option value="Noun">Noun</option>
+                <option value="Verb">Verb</option>
+                <option value="Adjective">Adjective</option>
+                <option value="Adverb">Adverb</option>
+                <option value="Preposition">Preposition</option>
+                <option value="Conjunction">Conjunction</option>
+                <option value="Pronoun">Pronoun</option>
+                <option value="Interjection">Interjection</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </form>
+        </section>
+
+        <section class="vocabulary-search">
+          <h2>Search Vocabulary</h2>
+          <div class="form-group">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Enter word to search"
+            />
+            <button id="searchButton" class="btn btn-secondary">Search</button>
+          </div>
+        </section>
+
+        <section class="vocabulary-list">
+          <h2>Vocabulary List</h2>
+          <button id="toggleVocabularyList" class="btn btn-secondary">
+            Show Vocabulary List
+          </button>
+          <div id="vocabularyListContainer" style="display: none">
+            <div id="vocabularyList" class="vocabulary-grid"></div>
+          </div>
+        </section>
+      </main>
+
+      <div id="message" class="message"></div>
+    </div>
+    <div id="editModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Edit Vocabulary</h2>
+        <form id="editForm">
+          <input type="hidden" id="editId" />
+          <div class="form-group">
+            <label for="editWord">Word:</label>
+            <input type="text" id="editWord" name="word" required />
+          </div>
+          <div class="form-group">
+            <label for="editMeaning">Meaning:</label>
+            <input type="text" id="editMeaning" name="meaning" required />
+          </div>
+          <div class="form-group">
+            <label for="editPhonetic">Phonetic:</label>
+            <input type="text" id="editPhonetic" name="phonetic" required />
+          </div>
+          <div class="form-group">
+            <label for="editExample">Example:</label>
+            <input type="text" id="editExample" name="example" />
+          </div>
+          <div class="form-group">
+            <label for="editPartOfSpeech">Part of Speech:</label>
+            <select id="editPartOfSpeech" name="part_of_speech" required>
+              <option value="">Select part of speech</option>
+              <option value="Noun">Noun</option>
+              <option value="Verb">Verb</option>
+              <option value="Adjective">Adjective</option>
+              <option value="Adverb">Adverb</option>
+              <option value="Preposition">Preposition</option>
+              <option value="Conjunction">Conjunction</option>
+              <option value="Pronoun">Pronoun</option>
+              <option value="Interjection">Interjection</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+      </div>
+    </div>
+    <script src="vocabulary-script.js"></script>
+  </body>
+</html>
