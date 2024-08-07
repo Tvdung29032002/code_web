@@ -4,8 +4,9 @@ const nodemailer = require("nodemailer");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-
+const { syncToGoogleSheets } = require("./googleSheetsSync");
 const router = express.Router();
+const { google } = require("googleapis");
 
 // Multer setup
 const uploadsDir = path.join(__dirname, "uploads");
@@ -402,7 +403,7 @@ router.post(
   }
 );
 
-// Add vocabulary route
+// Cập nhật route thêm từ vựng
 router.post("/add-vocabulary", async (req, res) => {
   try {
     const { word, meaning, phonetic, part_of_speech, example } = req.body;
@@ -414,24 +415,45 @@ router.post("/add-vocabulary", async (req, res) => {
       });
     }
 
-    // Kiểm tra xem từ đã tồn tại chưa
+    // Kiểm tra xem từ đã tồn tại hay chưa, bao gồm cả từ đã bị soft delete
     const [existingWords] = await req.dbConnection.execute(
       "SELECT * FROM vocabulary WHERE word = ?",
       [word]
     );
 
     if (existingWords.length > 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Từ này đã tồn tại trong cơ sở dữ liệu",
-      });
+      const existingWord = existingWords[0];
+      if (existingWord.is_active) {
+        return res.status(400).json({
+          success: false,
+          message: "Từ này đã tồn tại trong cơ sở dữ liệu",
+        });
+      } else {
+        // Nếu từ đã bị soft delete, kích hoạt lại và cập nhật thông tin
+        await req.dbConnection.execute(
+          "UPDATE vocabulary SET meaning = ?, phonetic = ?, part_of_speech = ?, example = ?, is_active = TRUE, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+          [meaning, phonetic, part_of_speech, example, existingWord.id]
+        );
+
+        // Đồng bộ dữ liệu với Google Sheets
+        await syncToGoogleSheets(req.dbConnection);
+
+        return res.json({
+          success: true,
+          message: "Từ vựng đã được kích hoạt lại và cập nhật thành công",
+          id: existingWord.id,
+        });
+      }
     }
 
-    // Nếu từ chưa tồn tại, tiếp tục thêm vào
+    // Nếu từ chưa tồn tại, thêm mới
     const [result] = await req.dbConnection.execute(
       "INSERT INTO vocabulary (word, meaning, phonetic, part_of_speech, example) VALUES (?, ?, ?, ?, ?)",
       [word, meaning, phonetic, part_of_speech, example]
     );
+
+    // Đồng bộ dữ liệu với Google Sheets
+    await syncToGoogleSheets(req.dbConnection);
 
     res.json({
       success: true,
@@ -456,7 +478,7 @@ router.get("/search-vocabulary", async (req, res) => {
     console.log("Search term:", searchTerm);
 
     const [rows] = await req.dbConnection.execute(
-      "SELECT * FROM vocabulary WHERE word LIKE ? ORDER BY created_at DESC",
+      "SELECT * FROM vocabulary WHERE word LIKE ? AND is_active = TRUE ORDER BY created_at DESC",
       [`%${searchTerm}%`]
     );
 
@@ -480,7 +502,7 @@ router.get("/vocabulary", async (req, res) => {
   console.log("Received request for vocabulary");
   try {
     const [rows] = await req.dbConnection.execute(
-      "SELECT * FROM vocabulary ORDER BY created_at DESC LIMIT 10"
+      "SELECT * FROM vocabulary WHERE is_active = TRUE ORDER BY created_at DESC LIMIT 10"
     );
     console.log("Fetched vocabulary:", rows.length, "items");
     res.json({
@@ -497,13 +519,11 @@ router.get("/vocabulary", async (req, res) => {
   }
 });
 
-// Update vocabulary route
+// Cập nhật route cập nhật từ vựng
 router.put("/update-vocabulary", async (req, res) => {
-  console.log("Received update request for vocabulary");
   try {
     const { id, word, meaning, phonetic, part_of_speech, example } = req.body;
 
-    // Kiểm tra xem từ vựng có tồn tại không
     const [existingWord] = await req.dbConnection.execute(
       "SELECT * FROM vocabulary WHERE id = ?",
       [id]
@@ -516,11 +536,13 @@ router.put("/update-vocabulary", async (req, res) => {
       });
     }
 
-    // Cập nhật từ vựng
     const [result] = await req.dbConnection.execute(
-      "UPDATE vocabulary SET word = ?, meaning = ?, phonetic = ?, part_of_speech = ?, example = ? WHERE id = ?",
+      "UPDATE vocabulary SET word = ?, meaning = ?, phonetic = ?, part_of_speech = ?, example = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
       [word, meaning, phonetic, part_of_speech, example, id]
     );
+
+    // Đồng bộ dữ liệu với Google Sheets
+    await syncToGoogleSheets(req.dbConnection);
 
     if (result.affectedRows > 0) {
       res.json({
@@ -538,6 +560,40 @@ router.put("/update-vocabulary", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Không thể cập nhật từ vựng",
+      error: error.message,
+    });
+  }
+});
+
+// Add a new route for soft deleting vocabulary
+router.delete("/delete-vocabulary/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const [result] = await req.dbConnection.execute(
+      "UPDATE vocabulary SET is_active = FALSE WHERE id = ?",
+      [id]
+    );
+
+    // Đồng bộ dữ liệu với Google Sheets
+    await syncToGoogleSheets(req.dbConnection);
+
+    if (result.affectedRows > 0) {
+      res.json({
+        success: true,
+        message: "Từ vựng đã được xóa thành công",
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: "Không tìm thấy từ vựng để xóa",
+      });
+    }
+  } catch (error) {
+    console.error("Error deleting vocabulary:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể xóa từ vựng",
       error: error.message,
     });
   }

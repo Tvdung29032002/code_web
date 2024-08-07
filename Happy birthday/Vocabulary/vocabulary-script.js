@@ -8,6 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const vocabularyListContainer = document.getElementById(
     "vocabularyListContainer"
   );
+  const editModal = document.getElementById("editModal");
+  const editForm = document.getElementById("editForm");
+  const closeBtn = document.querySelector(".close");
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -101,9 +104,82 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     }
   }
-  const editModal = document.getElementById("editModal");
-  const editForm = document.getElementById("editForm");
-  const closeBtn = document.querySelector(".close");
+
+  function displayVocabulary(vocabularyItems) {
+    vocabularyList.innerHTML = "";
+    if (vocabularyItems.length === 0) {
+      vocabularyList.innerHTML = "<p>No vocabulary items found.</p>";
+      return;
+    }
+    vocabularyItems.forEach((item) => {
+      const vocabularyCard = document.createElement("div");
+      vocabularyCard.className = "vocabulary-item";
+      vocabularyCard.innerHTML = `
+        <h3>${escapeHtml(item.word)}</h3>
+        <div class="vocabulary-details" style="display: none;">
+          <p><strong>Meaning:</strong> ${escapeHtml(item.meaning)}</p>
+          <p><strong>Phonetic:</strong> ${escapeHtml(item.phonetic)}</p>
+          <p><strong>Part of Speech:</strong> ${escapeHtml(
+            item.part_of_speech
+          )}</p>
+          <p><strong>Example:</strong> ${escapeHtml(item.example || "")}</p>
+          <button class="btn btn-edit">Edit</button>
+          <button class="btn btn-delete">Delete</button>
+        </div>
+      `;
+
+      const editButton = vocabularyCard.querySelector(".btn-edit");
+      editButton.addEventListener("click", () => {
+        openEditModal(
+          item.id,
+          item.word,
+          item.meaning,
+          item.phonetic,
+          item.part_of_speech,
+          item.example
+        );
+      });
+
+      const deleteButton = vocabularyCard.querySelector(".btn-delete");
+      deleteButton.addEventListener("click", () => {
+        if (confirm("Are you sure you want to delete this vocabulary item?")) {
+          deleteVocabulary(item.id);
+        }
+      });
+
+      vocabularyCard.addEventListener("click", function (e) {
+        if (!e.target.classList.contains("btn")) {
+          const details = this.querySelector(".vocabulary-details");
+          details.style.display =
+            details.style.display === "none" ? "block" : "none";
+        }
+      });
+
+      vocabularyList.appendChild(vocabularyCard);
+    });
+  }
+
+  function deleteVocabulary(id) {
+    fetch(`http://192.168.0.103:3000/api/delete-vocabulary/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.success) {
+          showMessage(result.message, "success");
+          fetchVocabulary(); // Refresh the vocabulary list
+        } else {
+          showMessage(result.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        showMessage(
+          "An error occurred while deleting the vocabulary item.",
+          "error"
+        );
+      });
+  }
 
   function openEditModal(id, word, meaning, phonetic, partOfSpeech, example) {
     document.getElementById("editId").value = id;
@@ -129,14 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     const formData = new FormData(editForm);
     const vocabularyData = Object.fromEntries(formData.entries());
-
-    // Thêm id vào vocabularyData
     vocabularyData.id = document.getElementById("editId").value;
-
-    console.log(
-      "Submitting updated vocabulary data:",
-      JSON.stringify(vocabularyData, null, 2)
-    );
 
     try {
       const response = await fetch(
@@ -150,11 +219,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       );
 
-      console.log("Response status:", response.status);
-
       const result = await response.json();
-      console.log("Response data:", result);
-
       if (result.success) {
         showMessage(result.message, "success");
         editModal.style.display = "none";
@@ -171,61 +236,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  function displayVocabulary(vocabularyItems) {
-    vocabularyList.innerHTML = "";
-    if (vocabularyItems.length === 0) {
-      vocabularyList.innerHTML = "<p>No vocabulary items found.</p>";
-      return;
-    }
-    vocabularyItems.forEach((item) => {
-      const vocabularyCard = document.createElement("div");
-      vocabularyCard.className = "vocabulary-item";
-      vocabularyCard.innerHTML = `
-        <h3>${escapeHtml(item.word)}</h3>
-        <div class="vocabulary-details" style="display: none;">
-          <p><strong>Meaning:</strong> ${escapeHtml(item.meaning)}</p>
-          <p><strong>Phonetic:</strong> ${escapeHtml(item.phonetic)}</p>
-          <p><strong>Part of Speech:</strong> ${escapeHtml(
-            item.part_of_speech
-          )}</p>
-          <p><strong>Example:</strong> ${escapeHtml(item.example || "")}</p>
-          <button class="btn btn-edit">Edit</button>
-        </div>
-      `;
-
-      const editButton = vocabularyCard.querySelector(".btn-edit");
-      editButton.addEventListener("click", () => {
-        openEditModal(
-          item.id,
-          item.word,
-          item.meaning,
-          item.phonetic,
-          item.example,
-          item.part_of_speech
-        );
-      });
-
-      vocabularyCard.addEventListener("click", function (e) {
-        if (!e.target.classList.contains("btn-edit")) {
-          const details = this.querySelector(".vocabulary-details");
-          details.style.display =
-            details.style.display === "none" ? "block" : "none";
-        }
-      });
-
-      vocabularyList.appendChild(vocabularyCard);
-    });
-  }
-
-  function openEditModal(id, word, meaning, phonetic, example, partOfSpeech) {
-    document.getElementById("editId").value = id;
-    document.getElementById("editWord").value = word;
-    document.getElementById("editMeaning").value = meaning;
-    document.getElementById("editPhonetic").value = phonetic;
-    document.getElementById("editExample").value = example;
-    document.getElementById("editPartOfSpeech").value = partOfSpeech;
-    editModal.style.display = "block";
-  }
   function showMessage(message, type) {
     messageElement.textContent = message;
     messageElement.className = `message ${type} show`;

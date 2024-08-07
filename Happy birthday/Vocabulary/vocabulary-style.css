@@ -276,3 +276,16 @@ input {
   margin: 4px 2px;
   cursor: pointer;
 }
+
+.btn-delete {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
