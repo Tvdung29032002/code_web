@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Trang chủ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.10/css/weather-icons.min.css">
     <link rel="icon" type="image/png" sizes="32x32" href="album/feedback-icon.png">
     <link rel="stylesheet" href="styles.css" />
     <!-- Liên kết đến file CSS để trang trí giao diện -->
@@ -19,8 +20,10 @@
       </div>
         <!-- Biểu tượng mở sidebar -->
         <div class="weather-widget">
-          <img src="album/weather.png" alt="Weather" class="weather-icon">
-          <span class="temperature">--°</span>
+          <span class="weather-icon"></span>
+          <span class="temperature"></span>
+          <span class="weather-tooltip-text"></span>
+        </div>
           <span class="separator">|</span> <!-- Thêm phần tử này -->
           <div class="city-selector">
             <div class="selected-city" id="selectedCity">
@@ -167,6 +170,7 @@
         <div class="sidebar-links">
           <a href="#">Home</a>
           <a href="Vocabulary/vocabulary.html">Vocabulary</a>
+          <a href="query/query.html">Query</a>
           <a href="#">Pull requests</a>
           <a href="#">Projects</a>
         </div>
@@ -232,6 +236,6 @@
     <!-- Script để xử lý bàn phím ảo -->
     <script src="virtualKeyboard.js"></script>
     <!-- Script chính của trang -->
-    <script src="main.js"></script>
+    <script type="module" src="main.js"></script>
   </body>
 </html>

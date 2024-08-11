@@ -3,13 +3,15 @@ const bodyParser = require("body-parser");
 const mysql = require("mysql2/promise");
 const cors = require("cors");
 const path = require("path");
-const routes = require("./routes");
+const vocabularyRoutes = require("./vocabulary-routes");
+const passwordRoutes = require("./password-routes");
+const mainRoutes = require("./main-routes");
 
 const app = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: ["http://192.168.0.103:5501", "http://localhost:5501"],
+  origin: ["http://192.168.0.103:5500", "http://localhost:5500"],
   optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
@@ -19,11 +21,6 @@ app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 app.use(express.static(path.join(__dirname, "Vocabulary")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-// Serve vocabulary.html
-app.get("/vocabulary", (req, res) => {
-  res.sendFile(path.join(__dirname, "Vocabulary", "vocabulary.html"));
-});
 
 // Database configuration
 const dbConfig = {
@@ -54,7 +51,25 @@ app.use((req, res, next) => {
 });
 
 // Use the routes
-app.use("/api", routes);
+app.use("/api", vocabularyRoutes);
+app.use("/api", passwordRoutes); // Make sure this line is present
+app.use("/api", mainRoutes);
+
+// Serve vocabulary.html
+app.get("/vocabulary", (req, res) => {
+  res.sendFile(path.join(__dirname, "Vocabulary", "vocabulary.html"));
+});
+
+// Add this near your other route definitions
+app.get("/api/weather", async (req, res) => {
+  try {
+    const [rows] = await connection.execute("SELECT * FROM weather");
+    res.json(rows);
+  } catch (error) {
+    console.error("Error fetching weather data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 const PORT = 3000;
 
@@ -66,6 +81,13 @@ async function startServer() {
     console.log("Uploads directory:", path.join(__dirname, "uploads"));
   });
 }
+
+// Serve static files for custom query
+app.use(express.static(path.join(__dirname, "query")));
+
+app.get("/custom-query", (req, res) => {
+  res.sendFile(path.join(__dirname, "query", "query.html"));
+});
 
 // Start the server
 startServer();

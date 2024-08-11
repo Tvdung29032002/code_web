@@ -143,26 +143,79 @@ header {
 
 /* Widget thời tiết */
 .weather-widget {
-  display: flex; /* Sử dụng flexbox để bố trí */
-  align-items: center; /* Canh giữa theo chiều dọc */
-  margin-left: 15px; /* Thêm khoảng cách bên trái là 15px */
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
 }
 
-/* Biểu tượng thời tiết */
 .weather-icon {
-  width: 24px; /* Đặt chiều rộng */
-  height: 24px; /* Đặt chiều cao */
-  margin-right: 5px; /* Thêm khoảng cách bên phải là 5px */
+  font-size: 2em;
 }
 
-/* Nhiệt độ */
 .temperature {
-  font-size: 18px;
+  font-size: 1.5em;
   font-weight: bold;
-  color: #333;
-  margin-right: 20px;
 }
 
+.weather-tooltip-text {
+  visibility: hidden;
+  width: 250px;
+  background-color: #ffffff;
+  color: #333333;
+  text-align: left;
+  border-radius: 8px;
+  padding: 15px;
+  position: absolute;
+  z-index: 1000;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.weather-widget:hover .weather-tooltip-text {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(110%);
+}
+
+.weather-tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  margin-left: -8px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent transparent #ffffff transparent;
+}
+
+.weather-tooltip-text h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: #1a73e8;
+}
+
+.weather-tooltip-text p {
+  margin: 5px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.weather-tooltip-text .label {
+  font-weight: bold;
+  color: #5f6368;
+}
+
+.weather-tooltip-text .value {
+  color: #202124;
+}
 .separator {
   margin: 0 10px;
   color: #999;
