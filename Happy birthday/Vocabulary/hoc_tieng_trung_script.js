@@ -1,58 +1,102 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("vocabularyForm");
-  const messageElement = document.getElementById("message");
-  const vocabularyList = document.getElementById("vocabularyList");
+  const characterDisplay = document.getElementById("character-display");
+  const characterPinyin = document.getElementById("character-pinyin");
+  const characterMeaning = document.getElementById("character-meaning");
+  const saveVocabBtn = document.getElementById("save-vocab");
   const toggleVocabularyListButton = document.getElementById(
     "toggleVocabularyList"
   );
   const vocabularyListContainer = document.getElementById(
     "vocabularyListContainer"
   );
+  const vocabularyList = document.getElementById("vocabularyList");
+  const messageElement = document.getElementById("message");
   const editModal = document.getElementById("editModal");
   const editForm = document.getElementById("editForm");
   const closeBtn = document.querySelector(".close");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const formData = new FormData(form);
-    const vocabularyData = Object.fromEntries(formData.entries());
-
-    try {
-      const response = await fetch(
-        "http://192.168.0.103:3000/api/add-vocabulary",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(vocabularyData),
-        }
-      );
-
-      console.log("Response status:", response.status);
-
-      const result = await response.json();
-      console.log("Response data:", result);
-
-      if (result.success) {
-        showMessage(result.message, "success");
-        form.reset();
-        if (vocabularyListContainer.style.display !== "none") {
-          await fetchVocabulary();
-        }
-      } else {
-        if (response.status === 400 && result.message.includes("đã tồn tại")) {
-          showMessage(result.message, "warning");
+  // Daily character function
+  function updateDailyCharacter() {
+    fetch("http://192.168.0.103:3000/api/daily-character")
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          updateDailyCharacterDisplay(
+            data.character,
+            data.pinyin,
+            data.meaning
+          );
         } else {
-          showMessage(result.message || "Không thể thêm từ vựng", "error");
+          showMessage("Failed to fetch daily character", "error");
         }
-      }
-    } catch (error) {
-      console.error("Error details:", error);
-      showMessage(`Đã xảy ra lỗi khi thêm từ vựng: ${error.message}`, "error");
-    }
-  });
+      })
+      .catch((error) => {
+        console.error("Error fetching daily character:", error);
+        showMessage("Error fetching daily character", "error");
+      });
+  }
 
+  function updateDailyCharacterDisplay(character, pinyin, meaning) {
+    characterDisplay.textContent = character;
+    characterPinyin.textContent = pinyin;
+    characterMeaning.textContent = meaning;
+  }
+
+  updateDailyCharacter();
+  setInterval(updateDailyCharacter, 24 * 60 * 60 * 1000);
+
+  // Save vocabulary
+  document
+    .getElementById("addVocabForm")
+    .addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const character = document.getElementById("character").value;
+      const pinyin = document.getElementById("pinyin").value;
+      const meaning = document.getElementById("meaning").value;
+      const example = document.getElementById("example").value;
+
+      const vocabularyData = { character, pinyin, meaning, example };
+
+      try {
+        const response = await fetch(
+          "http://192.168.0.103:3000/api/add-chinese-vocabulary",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(vocabularyData),
+          }
+        );
+
+        const result = await response.json();
+
+        if (result.success) {
+          showMessage(result.message, "success");
+          document.getElementById("addVocabForm").reset();
+          if (vocabularyListContainer.style.display !== "none") {
+            await fetchVocabulary();
+          }
+        } else {
+          if (
+            response.status === 400 &&
+            result.message.includes("đã tồn tại")
+          ) {
+            showMessage(result.message, "warning");
+          } else {
+            showMessage(result.message || "Không thể thêm từ vựng", "error");
+          }
+        }
+      } catch (error) {
+        console.error("Error details:", error);
+        showMessage(
+          `Đã xảy ra lỗi khi thêm từ vựng: ${error.message}`,
+          "error"
+        );
+      }
+    });
+
+  // Function to display messages
   function showMessage(message, type) {
     messageElement.textContent = message;
     messageElement.className = `message ${type} show`;
@@ -61,11 +105,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 3000);
   }
 
-  toggleVocabularyListButton.addEventListener("click", () => {
+  // Toggle vocabulary list
+  toggleVocabularyListButton.addEventListener("click", async () => {
     if (vocabularyListContainer.style.display === "none") {
       vocabularyListContainer.style.display = "block";
       toggleVocabularyListButton.textContent = "Hide Vocabulary List";
-      fetchVocabulary(); // Tải danh sách từ vựng khi hiện
+      await fetchVocabulary();
     } else {
       vocabularyListContainer.style.display = "none";
       toggleVocabularyListButton.textContent = "Show Vocabulary List";
@@ -74,17 +119,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function fetchVocabulary() {
     try {
-      console.log("Fetching vocabulary...");
-      const response = await fetch("http://192.168.0.103:3000/api/vocabulary");
-
-      console.log("Fetch response status:", response.status);
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
+      const response = await fetch(
+        "http://192.168.0.103:3000/api/chinese-vocabulary"
+      );
       const result = await response.json();
-      console.log("Fetched vocabulary data:", result);
 
       if (result.success) {
         displayVocabulary(result.data);
@@ -110,13 +148,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const vocabularyCard = document.createElement("div");
       vocabularyCard.className = "vocabulary-item";
       vocabularyCard.innerHTML = `
-        <h3>${escapeHtml(item.word)}</h3>
+        <h3>${escapeHtml(item.character)}</h3>
         <div class="vocabulary-details" style="display: none;">
+          <p><strong>Pinyin:</strong> ${escapeHtml(item.pinyin)}</p>
           <p><strong>Meaning:</strong> ${escapeHtml(item.meaning)}</p>
-          <p><strong>Phonetic:</strong> ${escapeHtml(item.phonetic)}</p>
-          <p><strong>Part of Speech:</strong> ${escapeHtml(
-            item.part_of_speech
-          )}</p>
           <p><strong>Example:</strong> ${escapeHtml(item.example || "")}</p>
           <button class="btn btn-edit">Edit</button>
           <button class="btn btn-delete">Delete</button>
@@ -127,10 +162,9 @@ document.addEventListener("DOMContentLoaded", () => {
       editButton.addEventListener("click", () => {
         openEditModal(
           item.id,
-          item.word,
+          item.character,
+          item.pinyin,
           item.meaning,
-          item.phonetic,
-          item.part_of_speech,
           item.example
         );
       });
@@ -147,6 +181,11 @@ document.addEventListener("DOMContentLoaded", () => {
           const details = this.querySelector(".vocabulary-details");
           details.style.display =
             details.style.display === "none" ? "block" : "none";
+          updateDailyCharacterDisplay(
+            item.character,
+            item.pinyin,
+            item.meaning
+          );
         }
       });
 
@@ -154,15 +193,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Delete vocabulary
   function deleteVocabulary(id) {
-    fetch(`http://192.168.0.103:3000/api/delete-vocabulary/${id}`, {
+    fetch(`http://192.168.0.103:3000/api/delete-chinese-vocabulary/${id}`, {
       method: "DELETE",
     })
       .then((response) => response.json())
       .then((result) => {
         if (result.success) {
           showMessage(result.message, "success");
-          fetchVocabulary(); // Refresh the vocabulary list
+          fetchVocabulary();
         } else {
           showMessage(result.message, "error");
         }
@@ -176,35 +216,51 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  function openEditModal(id, word, meaning, phonetic, partOfSpeech, example) {
+  // Open edit modal
+  function openEditModal(id, character, pinyin, meaning, example) {
     document.getElementById("editId").value = id;
-    document.getElementById("editWord").value = word;
+    document.getElementById("editCharacter").value = character;
+    document.getElementById("editPinyin").value = pinyin;
     document.getElementById("editMeaning").value = meaning;
-    document.getElementById("editPhonetic").value = phonetic;
-    document.getElementById("editPartOfSpeech").value = partOfSpeech;
     document.getElementById("editExample").value = example || "";
     editModal.style.display = "block";
   }
 
+  // Close modal
   closeBtn.onclick = function () {
-    editModal.style.display = "none";
+    closeEditModal();
   };
 
   window.onclick = function (event) {
     if (event.target == editModal) {
-      editModal.style.display = "none";
+      closeEditModal();
     }
   };
 
+  function closeEditModal() {
+    editModal.style.display = "none";
+  }
+
+  // Edit vocabulary
   editForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const formData = new FormData(editForm);
-    const vocabularyData = Object.fromEntries(formData.entries());
-    vocabularyData.id = document.getElementById("editId").value;
+
+    const id = document.getElementById("editId").value;
+    const character = document.getElementById("editCharacter").value;
+    const pinyin = document.getElementById("editPinyin").value;
+    const meaning = document.getElementById("editMeaning").value;
+    const example = document.getElementById("editExample").value;
+
+    if (!id || !character || !pinyin || !meaning) {
+      showMessage("Id, character, pinyin, and meaning are required", "error");
+      return;
+    }
+
+    const vocabularyData = { id, character, pinyin, meaning, example };
 
     try {
       const response = await fetch(
-        "http://192.168.0.103:3000/api/update-vocabulary",
+        "http://192.168.0.103:3000/api/update-chinese-vocabulary",
         {
           method: "PUT",
           headers: {
@@ -217,27 +273,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await response.json();
       if (result.success) {
         showMessage(result.message, "success");
-        editModal.style.display = "none";
+        closeEditModal();
         await fetchVocabulary();
       } else {
-        showMessage(result.message || "Không thể cập nhật từ vựng", "error");
+        showMessage(result.message || "Unable to update vocabulary", "error");
       }
     } catch (error) {
       console.error("Error updating vocabulary:", error);
       showMessage(
-        `Đã xảy ra lỗi khi cập nhật từ vựng: ${error.message}`,
+        `An error occurred while updating vocabulary: ${error.message}`,
         "error"
       );
     }
   });
-
-  function showMessage(message, type) {
-    messageElement.textContent = message;
-    messageElement.className = `message ${type} show`;
-    setTimeout(() => {
-      messageElement.className = "message";
-    }, 3000);
-  }
 
   function escapeHtml(unsafe) {
     return unsafe
@@ -247,7 +295,6 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
   }
-
   const searchInput = document.getElementById("searchInput");
   const searchButton = document.getElementById("searchButton");
 
@@ -267,7 +314,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const response = await fetch(
-        `http://192.168.0.103:3000/api/search-vocabulary?term=${encodeURIComponent(
+        `http://192.168.0.103:3000/api/search-chinese-vocabulary?term=${encodeURIComponent(
           searchTerm
         )}`
       );
@@ -351,7 +398,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const response = await fetch(
-        "http://192.168.0.103:3000/api/random-english-vocabulary"
+        "http://192.168.0.103:3000/api/random-china-vocabulary"
       );
       const data = await response.json();
 
@@ -370,7 +417,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         currentOptions = shuffleArray(currentOptions);
 
-        gameQuestion.textContent = `What is the meaning of "${currentQuestion.word}" (${currentQuestion.phonetic})?`;
+        gameQuestion.textContent = `What is the meaning of "${currentQuestion.character}" (${currentQuestion.pinyin})?`;
 
         gameOptions.innerHTML = ""; // Xóa các tùy chọn cũ
         currentOptions.forEach((option) => {

@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>English Vocabulary Learning</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="dictionary.png" />
-    <link rel="stylesheet" href="vocabulary-style.css" />
+    <title>ChineseQuest - Learn Chinese</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="china.png" />
+    <link rel="stylesheet" href="hoc_tieng_trung_styles.css" />
   </head>
   <body>
     <div class="container">
@@ -13,60 +13,56 @@
         <nav class="header-left">
           <a href="/" class="btn-home">Back to Home</a>
         </nav>
-        <h1>English Vocabulary Learning</h1>
+        <h1>ChineseQuest - Learn Chinese</h1>
       </header>
 
       <main>
-        <section class="vocabulary-form">
-          <h2>Add New Word</h2>
-          <form id="vocabularyForm">
+        <section class="daily-character">
+          <h2>Character of the Day</h2>
+          <div id="character-display"></div>
+          <p id="character-pinyin"></p>
+          <p id="character-meaning"></p>
+        </section>
+
+        <section class="vocabulary-practice">
+          <h2>Vocabulary Practice</h2>
+          <form id="addVocabForm">
             <div class="form-group">
-              <label for="word">Word:</label>
-              <input type="text" id="word" name="word" required />
+              <label for="character">Character:</label>
+              <input type="text" id="character" required />
+            </div>
+            <div class="form-group">
+              <label for="pinyin">Pinyin:</label>
+              <input type="text" id="pinyin" required />
             </div>
             <div class="form-group">
               <label for="meaning">Meaning:</label>
-              <input type="text" id="meaning" name="meaning" required />
-            </div>
-            <div class="form-group">
-              <label for="phonetic">Phonetic:</label>
-              <input type="text" id="phonetic" name="phonetic" required />
+              <input type="text" id="meaning" required />
             </div>
             <div class="form-group">
               <label for="example">Example:</label>
-              <input type="text" id="example" name="example" required />
+              <input type="text" id="example" />
             </div>
-            <div class="form-group">
-              <label for="partOfSpeech">Part of Speech:</label>
-              <select id="partOfSpeech" name="part_of_speech" required>
-                <option value="">Select part of speech</option>
-                <option value="Noun">Noun</option>
-                <option value="Verb">Verb</option>
-                <option value="Adjective">Adjective</option>
-                <option value="Adverb">Adverb</option>
-                <option value="Preposition">Preposition</option>
-                <option value="Conjunction">Conjunction</option>
-                <option value="Pronoun">Pronoun</option>
-                <option value="Interjection">Interjection</option>
-              </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="submit" id="save-vocab" class="btn btn-primary">
+              Save
+            </button>
           </form>
         </section>
 
         <div class="section vocabulary-list">
           <h2>Vocabulary List</h2>
+
           <div class="vocabulary-search">
             <input
               type="text"
               id="searchInput"
               placeholder="Search vocabulary..."
             />
-            <button id="searchButton" class="btn btn-secondary">Search</button>
+            <button id="searchButton">Search</button>
           </div>
-          <button id="toggleVocabularyList" class="btn btn-secondary">
-            Show Vocabulary List
-          </button>
+
+          <button id="toggleVocabularyList">Show Vocabulary List</button>
+
           <div id="vocabularyListContainer" style="display: none">
             <div id="vocabularyList" class="vocabulary-grid"></div>
           </div>
@@ -120,6 +116,7 @@
 
       <div id="message" class="message"></div>
     </div>
+
     <div id="editModal" class="modal">
       <div class="modal-content">
         <span class="close">&times;</span>
@@ -127,39 +124,26 @@
         <form id="editForm">
           <input type="hidden" id="editId" />
           <div class="form-group">
-            <label for="editWord">Word:</label>
-            <input type="text" id="editWord" name="word" required />
+            <label for="editCharacter">Character:</label>
+            <input type="text" id="editCharacter" required />
+          </div>
+          <div class="form-group">
+            <label for="editPinyin">Pinyin:</label>
+            <input type="text" id="editPinyin" required />
           </div>
           <div class="form-group">
             <label for="editMeaning">Meaning:</label>
-            <input type="text" id="editMeaning" name="meaning" required />
-          </div>
-          <div class="form-group">
-            <label for="editPhonetic">Phonetic:</label>
-            <input type="text" id="editPhonetic" name="phonetic" required />
+            <input type="text" id="editMeaning" required />
           </div>
           <div class="form-group">
             <label for="editExample">Example:</label>
-            <input type="text" id="editExample" name="example" />
-          </div>
-          <div class="form-group">
-            <label for="editPartOfSpeech">Part of Speech:</label>
-            <select id="editPartOfSpeech" name="part_of_speech" required>
-              <option value="">Select part of speech</option>
-              <option value="Noun">Noun</option>
-              <option value="Verb">Verb</option>
-              <option value="Adjective">Adjective</option>
-              <option value="Adverb">Adverb</option>
-              <option value="Preposition">Preposition</option>
-              <option value="Conjunction">Conjunction</option>
-              <option value="Pronoun">Pronoun</option>
-              <option value="Interjection">Interjection</option>
-            </select>
+            <input type="text" id="editExample" />
           </div>
           <button type="submit" class="btn btn-primary">Save Changes</button>
         </form>
       </div>
     </div>
-    <script src="vocabulary-script.js"></script>
+
+    <script src="hoc_tieng_trung_script.js"></script>
   </body>
 </html>
