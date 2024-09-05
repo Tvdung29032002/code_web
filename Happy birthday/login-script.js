@@ -34,7 +34,8 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
       console.log("Server response:", data);
       if (data.success) {
         console.log("Login successful");
-        localStorage.setItem("username", username);
+        // Lưu thông tin người dùng vào localStorage
+        localStorage.setItem("currentUser", JSON.stringify(data.user));
         if (keepLoggedIn) {
           console.log("Saving login info to localStorage");
           localStorage.setItem("isLoggedIn", "true");
@@ -514,4 +515,10 @@ if (confirmNewPasswordInput) {
       this.setCustomValidity("");
     }
   });
+}
+
+function logout() {
+  localStorage.removeItem("currentUser");
+  // Chuyển hướng đến trang đăng nhập hoặc trang chính
+  window.location.href = "/login";
 }

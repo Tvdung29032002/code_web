@@ -424,6 +424,34 @@ document.addEventListener("DOMContentLoaded", () => {
     gameArea.style.display = "none";
     gameSummary.style.display = "block";
     finalScore.textContent = `${score}/${totalQuestions}`;
+
+    const userId = getCurrentUserId();
+    if (userId) {
+      fetch("http://192.168.0.103:3000/api/end-game", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId, score }),
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          if (result.success) {
+            console.log("Điểm số đã được lưu thành công");
+            // Gọi hàm fetchAndDisplayLeaderboard sau khi điểm số được lưu
+            fetchAndDisplayLeaderboard();
+          } else {
+            console.error("Không thể lưu điểm số:", result.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Lỗi khi lưu điểm số:", error);
+        });
+    } else {
+      console.error("Không tìm thấy ID người dùng");
+      // Vẫn gọi fetchAndDisplayLeaderboard ngay cả khi không có ID người dùng
+      fetchAndDisplayLeaderboard();
+    }
   }
 
   function shuffleArray(array) {
@@ -434,8 +462,84 @@ document.addEventListener("DOMContentLoaded", () => {
     return array;
   }
 
+  // Thêm hàm mới để lấy và hiển thị tên người dùng
+  function getCurrentUser() {
+    const userString = localStorage.getItem("currentUser");
+    return userString ? JSON.parse(userString) : null;
+  }
+
+  async function fetchAndDisplayUserName() {
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+      const userNameElement = document.getElementById("userName");
+      if (userNameElement) {
+        userNameElement.textContent = `Xin chào, ${currentUser.firstName} ${currentUser.lastName}!`;
+      }
+    } else {
+      console.error("Không tìm thấy thông tin người dùng");
+    }
+  }
+
+  // Thay thế hàm getCurrentUserId bằng hàm này
+  function getCurrentUserId() {
+    const currentUser = getCurrentUser();
+    return currentUser ? currentUser.id : null;
+  }
+
+  // Thêm hàm mới để lấy và hiển thị bảng xếp hạng
+  async function fetchAndDisplayLeaderboard() {
+    try {
+      const response = await fetch("http://192.168.0.103:3000/api/leaderboard");
+      const result = await response.json();
+      const currentUser = getCurrentUser();
+
+      if (result.success) {
+        const leaderboardBody = document.getElementById("leaderboardBody");
+        leaderboardBody.innerHTML = "";
+
+        result.data.forEach((entry, index) => {
+          const row = document.createElement("tr");
+          let rankDisplay = "";
+
+          if (index === 0) {
+            rankDisplay = '<span class="medal">🥇</span>';
+          } else if (index === 1) {
+            rankDisplay = '<span class="medal">🥈</span>';
+          } else if (index === 2) {
+            rankDisplay = '<span class="medal">🥉</span>';
+          } else {
+            rankDisplay = `<span class="rank-number">${index + 1}</span>`;
+          }
+
+          const displayName =
+            entry.userId === currentUser.id
+              ? `${currentUser.firstName} ${currentUser.lastName}`
+              : entry.username;
+
+          row.innerHTML = `
+            <td class="rank-column">${rankDisplay}</td>
+            <td>${displayName}</td>
+            <td>${entry.max_score}</td>
+          `;
+          leaderboardBody.appendChild(row);
+        });
+      } else {
+        showMessage("Không thể lấy bảng xếp hạng", "error");
+      }
+    } catch (error) {
+      console.error("Error fetching leaderboard:", error);
+      showMessage("Đã xảy ra lỗi khi lấy bảng xếp hạng", "error");
+    }
+  }
+
+  // Gọi hàm fetchAndDisplayLeaderboard khi trang được tải
+  fetchAndDisplayLeaderboard();
+
   // Event listeners for game
   startGameBtn.addEventListener("click", startGame);
   nextQuestionBtn.addEventListener("click", nextQuestion);
   playAgainBtn.addEventListener("click", startGame);
+
+  // Gọi hàm fetchAndDisplayUserName khi trang được tải
+  fetchAndDisplayUserName();
 });

@@ -3,9 +3,11 @@ const bodyParser = require("body-parser");
 const mysql = require("mysql2/promise");
 const cors = require("cors");
 const path = require("path");
-const vocabularyRoutes = require("./vocabulary-routes");
+const englishVocabularyRoutes = require("./english-vocabulary-routes");
+const chineseVocabularyRoutes = require("./chinese-vocabulary-routes");
 const passwordRoutes = require("./password-routes");
 const mainRoutes = require("./main-routes");
+const userManagementRoutes = require("./user_management_routes");
 
 const app = express();
 
@@ -51,9 +53,11 @@ app.use((req, res, next) => {
 });
 
 // Use the routes
-app.use("/api", vocabularyRoutes);
-app.use("/api", passwordRoutes); // Make sure this line is present
+app.use("/api", englishVocabularyRoutes);
+app.use("/api", chineseVocabularyRoutes);
+app.use("/api", passwordRoutes);
 app.use("/api", mainRoutes);
+app.use("/api", userManagementRoutes);
 
 // Serve vocabulary.html
 app.get("/vocabulary", (req, res) => {

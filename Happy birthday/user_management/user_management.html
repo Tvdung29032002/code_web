@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý Tài khoản</title>
+    <link rel="stylesheet" href="user_management_styles.css" />
+  </head>
+  <body>
+    <header>
+      <button id="back-button">&#8592; Quay lại</button>
+      <h1>Quản lý Tài khoản</h1>
+    </header>
+
+    <div class="container">
+      <div class="user-management-container">
+        <table class="user-list">
+          <thead>
+            <tr>
+              <th>Tên người dùng</th>
+              <th>Email</th>
+              <th>Vai trò</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody"></tbody>
+        </table>
+        <button id="addUserBtn" class="add-user-btn">
+          Thêm người dùng mới
+        </button>
+      </div>
+    </div>
+
+    <div id="userModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalTitle" class="modal-title">Thêm Người Dùng Mới</h2>
+        <form id="userForm">
+          <div id="userInfo"></div>
+          <div class="form-group">
+            <label for="firstName">Họ:</label>
+            <input type="text" id="firstName" name="firstName" required />
+          </div>
+          <div class="form-group">
+            <label for="lastName">Tên:</label>
+            <input type="text" id="lastName" name="lastName" required />
+          </div>
+          <div class="form-group">
+            <label for="username">Tên người dùng:</label>
+            <input type="text" id="username" name="username" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+          <div class="form-group">
+            <label for="password">Mật khẩu:</label>
+            <input type="password" id="password" name="password" required />
+          </div>
+          <div class="form-group">
+            <label for="birthDate">Ngày sinh:</label>
+            <input type="date" id="birthDate" name="birthDate" required />
+          </div>
+          <div class="form-group">
+            <label for="gender">Giới tính:</label>
+            <select id="gender" name="gender" required>
+              <option value="">Chọn giới tính</option>
+              <option value="Nam">Nam</option>
+              <option value="Nữ">Nữ</option>
+              <option value="Khác">Khác</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="role">Vai trò:</label>
+            <select id="role" name="role" required>
+              <option value="">Chọn vai trò</option>
+              <option value="User">User</option>
+              <option value="Admin">Admin</option>
+            </select>
+          </div>
+          <div class="modal-buttons">
+            <button type="button" onclick="closeModal()">Hủy</button>
+            <button type="submit">Lưu</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="user_management_script.js"></script>
+  </body>
+</html>
