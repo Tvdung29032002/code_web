@@ -36,6 +36,7 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
         console.log("Login successful");
         // Lưu thông tin người dùng vào localStorage
         localStorage.setItem("currentUser", JSON.stringify(data.user));
+        localStorage.setItem("userId", data.user.id); // Thêm dòng này
         if (keepLoggedIn) {
           console.log("Saving login info to localStorage");
           localStorage.setItem("isLoggedIn", "true");

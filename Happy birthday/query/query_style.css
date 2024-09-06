@@ -1,52 +1,86 @@
 :root {
-  --primary-color: #3498db;
-  --secondary-color: #2c3e50;
-  --background-color: #ecf0f1;
+  --primary-color: #4c8492;
+  --secondary-color: #f5a623;
+  --background-color: #f4f7f9;
   --text-color: #333;
-  --border-color: #bdc3c7;
+  --card-background: #ffffff;
 }
 
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Roboto", sans-serif;
   line-height: 1.6;
   color: var(--text-color);
   background-color: var(--background-color);
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 header {
-  background-color: var(--primary-color);
-  color: white;
   text-align: center;
-  padding: 1.5rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 40px;
 }
 
-header h1 {
+h1 {
+  color: var(--primary-color);
   font-size: 2.5rem;
-  font-weight: 300;
+  margin-bottom: 10px;
+}
+
+h2 {
+  color: var(--secondary-color);
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.btn-home {
+  margin-right: 15px;
+  text-decoration: none;
+  color: #fff; /* Đổi màu chữ */
+  font-weight: bold;
+  font-size: 12px; /* Thêm cỡ chữ nhỏ */
+  padding: 8px 16px; /* Thêm khoảng đệm */
+  border: 2px solid #219c90; /* Thêm viền với màu xanh lá cây */
+  border-radius: 12px; /* Làm tròn các góc */
+  background-color: #219c90; /* Thêm màu nền xanh lá cây */
+  transition: background-color 0.3s, color 0.3s, transform 0.3s; /* Thêm hiệu ứng chuyển màu và transform */
+}
+
+.btn-home:hover {
+  background-color: #186f65; /* Đổi màu nền khi hover */
+  color: #fff; /* Giữ màu chữ trắng khi hover */
+  transform: scale(1.05); /* Tăng kích thước nút một chút khi hover */
 }
 
 main {
-  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
   padding: 2rem;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
 .query-container {
+  flex: 2;
   background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
 }
 
 h2 {
@@ -73,9 +107,10 @@ textarea {
   padding: 0.8rem;
   border: 1px solid var(--border-color);
   border-radius: 4px;
-  font-size: 1rem;
-  font-family: "Courier New", Courier, monospace;
+  font-size: 0.9rem;
+  font-family: "Fira Code", monospace;
   resize: vertical;
+  line-height: 1.5;
 }
 
 .query-options {
@@ -113,6 +148,9 @@ button {
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.1s;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 button:active {
@@ -125,7 +163,7 @@ button:active {
 }
 
 .primary:hover {
-  background-color: #2980b9;
+  background-color: #01646f;
 }
 
 .secondary {
@@ -168,14 +206,6 @@ tr:nth-child(even) {
 
 tr:hover {
   background-color: #e9ecef;
-}
-
-footer {
-  background-color: var(--secondary-color);
-  color: white;
-  text-align: center;
-  padding: 1rem;
-  margin-top: 2rem;
 }
 
 /* Responsive design */
@@ -253,4 +283,47 @@ footer {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+.database-info {
+  flex: 1;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.database-info h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: var(--secondary-color);
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 0.5rem;
+}
+
+#tableList {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.table-item {
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.table-item:hover {
+  background-color: var(--background-color);
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  main {
+    flex-direction: column;
+  }
+
+  .database-info {
+    margin-top: 2rem;
+  }
 }

@@ -650,7 +650,8 @@ input {
   }
 }
 
-.leaderboard {
+.leaderboard,
+.top-incorrect-answers {
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
@@ -658,28 +659,39 @@ input {
   margin-bottom: 2rem;
 }
 
-.leaderboard h3 {
+.leaderboard h3,
+.top-incorrect-answers h2 {
   color: var(--primary-color);
   font-size: 1.8rem;
   margin-bottom: 1.5rem;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 1px;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--primary-color);
 }
 
-#leaderboardTable {
+.table-container {
+  overflow-x: auto;
+}
+
+#leaderboardTable,
+#topIncorrectAnswersTable {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 8px;
 }
 
 #leaderboardTable th,
-#leaderboardTable td {
+#leaderboardTable td,
+#topIncorrectAnswersTable th,
+#topIncorrectAnswersTable td {
   padding: 1rem;
   text-align: left;
 }
 
-#leaderboardTable th {
+#leaderboardTable th,
+#topIncorrectAnswersTable th {
   background-color: var(--primary-color);
   color: #ffffff;
   font-weight: bold;
@@ -688,45 +700,54 @@ input {
   font-size: 0.9rem;
 }
 
-#leaderboardTable tr {
+#leaderboardTable tr,
+#topIncorrectAnswersTable tr {
   background-color: #f8f9fa;
   transition: all 0.3s ease;
 }
 
-#leaderboardTable tr:hover {
+#leaderboardTable tr:hover,
+#topIncorrectAnswersTable tr:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-#leaderboardTable td:first-child {
+#leaderboardTable td:first-child,
+#topIncorrectAnswersTable td:first-child {
   font-weight: bold;
   color: var(--primary-color);
 }
 
-#leaderboardTable td:last-child {
-  font-weight: bold;
-  color: var(--secondary-color);
-}
-
-.rank-column {
-  width: 50px;
-  text-align: center;
-}
-
-.medal {
-  font-size: 1.5rem;
-  display: inline-block;
-  width: 100%;
-  text-align: center;
-}
-
-.rank-number {
-  display: inline-block;
-  width: 100%;
+#topIncorrectAnswersTable td:last-child {
   text-align: center;
   font-weight: bold;
+  color: #dc3545;
 }
 
-#leaderboardTable td {
-  vertical-align: middle;
+.incorrect-count {
+  display: inline-block;
+  padding: 0.25em 0.6em;
+  font-size: 0.75rem;
+  font-weight: bold;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  background-color: #dc3545;
+  color: #ffffff;
+}
+
+.incorrect-count {
+  display: inline-block;
+  padding: 0.25em 0.6em;
+  font-size: 0.75rem;
+  font-weight: bold;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  background-color: #dc3545;
+  color: #ffffff;
 }

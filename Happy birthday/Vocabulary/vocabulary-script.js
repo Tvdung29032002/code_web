@@ -12,10 +12,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const editForm = document.getElementById("editForm");
   const closeBtn = document.querySelector(".close");
 
+  // Thêm hàm để lấy userId từ localStorage
+  function getCurrentUserId() {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    return currentUser ? currentUser.id : null;
+  }
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = new FormData(form);
     const vocabularyData = Object.fromEntries(formData.entries());
+    vocabularyData.userId = getCurrentUserId(); // Thêm userId vào dữ liệu gửi đi
 
     try {
       const response = await fetch(
@@ -155,8 +162,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function deleteVocabulary(id) {
+    const userId = getCurrentUserId();
     fetch(`http://192.168.0.103:3000/api/delete-vocabulary/${id}`, {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId }),
     })
       .then((response) => response.json())
       .then((result) => {
@@ -201,10 +213,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const formData = new FormData(editForm);
     const vocabularyData = Object.fromEntries(formData.entries());
     vocabularyData.id = document.getElementById("editId").value;
+    vocabularyData.userId = getCurrentUserId(); // Thêm userId vào dữ liệu gửi đi
 
     try {
       const response = await fetch(
-        "http://192.168.0.103:3000/api/update-vocabulary",
+        "http://192.168.0.103:3000/api/update-vocabulary/" + vocabularyData.id,
         {
           method: "PUT",
           headers: {
@@ -413,6 +426,8 @@ document.addEventListener("DOMContentLoaded", () => {
           button.classList.add("incorrect");
         }
       });
+      // Lưu câu trả lời sai
+      saveIncorrectAnswer(currentQuestion.id);
     }
 
     nextQuestionBtn.style.display = "block";
@@ -420,6 +435,91 @@ document.addEventListener("DOMContentLoaded", () => {
       questionNumber < totalQuestions ? "Next Question" : "Finish Game";
   }
 
+  async function saveIncorrectAnswer(vocabularyId) {
+    try {
+      const response = await fetch(
+        "http://192.168.0.103:3000/api/update-incorrect-answer",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ vocabularyId }),
+        }
+      );
+      const result = await response.json();
+      if (!result.success) {
+        console.error("Không thể cập nhật câu trả lời sai:", result.message);
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật câu trả lời sai:", error);
+    }
+  }
+
+  async function fetchTopIncorrectAnswers() {
+    try {
+      const response = await fetch(
+        "http://192.168.0.103:3000/api/top-incorrect-answers"
+      );
+      const result = await response.json();
+      if (result.success) {
+        displayTopIncorrectAnswers(result.data);
+      } else {
+        console.error("Failed to fetch top incorrect answers:", result.message);
+      }
+    } catch (error) {
+      console.error("Error fetching top incorrect answers:", error);
+    }
+  }
+
+  function displayTopIncorrectAnswers(data) {
+    const topIncorrectAnswersList = document.getElementById(
+      "topIncorrectAnswersList"
+    );
+    topIncorrectAnswersList.innerHTML = "";
+    data.forEach((item, index) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${escapeHtml(item.word)}</td>
+        <td>${escapeHtml(item.meaning)}</td>
+        <td><span class="incorrect-count">${item.count}</span></td>
+      `;
+      row.style.opacity = "0";
+      row.style.transform = "translateY(20px)";
+      topIncorrectAnswersList.appendChild(row);
+
+      setTimeout(() => {
+        row.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+        row.style.opacity = "1";
+        row.style.transform = "translateY(0)";
+      }, index * 100);
+    });
+  }
+
+  // Gọi hàm fetchTopIncorrectAnswers khi trang được tải
+  fetchTopIncorrectAnswers();
+
+  // Thêm hàm mới để tải lại top 5 câu hỏi sai nhiều nhất
+  async function reloadTopIncorrectAnswers() {
+    try {
+      const response = await fetch(
+        "http://192.168.0.103:3000/api/top-incorrect-answers"
+      );
+      const result = await response.json();
+      if (result.success) {
+        displayTopIncorrectAnswers(result.data);
+      } else {
+        console.error(
+          "Không thể tải top 5 câu hỏi sai nhiều nhất:",
+          result.message
+        );
+      }
+    } catch (error) {
+      console.error("Lỗi khi tải top 5 câu hỏi sai nhiều nhất:", error);
+    }
+  }
+
+  // Sửa đổi hàm endGame để gọi reloadTopIncorrectAnswers
   function endGame() {
     gameArea.style.display = "none";
     gameSummary.style.display = "block";
@@ -440,6 +540,8 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("Điểm số đã được lưu thành công");
             // Gọi hàm fetchAndDisplayLeaderboard sau khi điểm số được lưu
             fetchAndDisplayLeaderboard();
+            // Thêm dòng này để tải lại top 5 câu hỏi sai nhiều nhất
+            reloadTopIncorrectAnswers();
           } else {
             console.error("Không thể lưu điểm số:", result.message);
           }
@@ -449,8 +551,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     } else {
       console.error("Không tìm thấy ID người dùng");
-      // Vẫn gọi fetchAndDisplayLeaderboard ngay cả khi không có ID người dùng
+      // Vẫn gọi fetchAndDisplayLeaderboard và reloadTopIncorrectAnswers ngay cả khi không có ID người dùng
       fetchAndDisplayLeaderboard();
+      reloadTopIncorrectAnswers();
     }
   }
 
@@ -516,10 +619,13 @@ document.addEventListener("DOMContentLoaded", () => {
               ? `${currentUser.firstName} ${currentUser.lastName}`
               : entry.username;
 
+          const playTime = new Date(entry.play_time).toLocaleString("vi-VN");
+
           row.innerHTML = `
             <td class="rank-column">${rankDisplay}</td>
             <td>${displayName}</td>
             <td>${entry.max_score}</td>
+            <td>${playTime}</td>
           `;
           leaderboardBody.appendChild(row);
         });

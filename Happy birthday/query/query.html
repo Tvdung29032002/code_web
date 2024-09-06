@@ -4,51 +4,68 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Advanced SQL Query Tool</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Fira+Code&display=swap"
+    />
+    <link rel="icon" type="image/png" sizes="32x32" href="query.png" />
     <link rel="stylesheet" href="query_style.css" />
   </head>
   <body>
-    <header>
-      <h1>Advanced SQL Query Tool</h1>
-    </header>
+    <div class="container">
+      <header>
+        <nav class="header-left">
+          <a href="/" class="btn-home">Back to Home</a>
+        </nav>
+        <h1>Advanced SQL Query Tool</h1>
+      </header>
+      <main>
+        <div class="query-container">
+          <h2>Custom SQL Query Interface</h2>
 
-    <main>
-      <div class="query-container">
-        <h2>Custom SQL Query Interface</h2>
+          <div class="query-input">
+            <label for="sqlQuery">Enter your SQL query:</label>
+            <textarea
+              id="sqlQuery"
+              rows="8"
+              placeholder="SELECT * FROM your_table"
+            ></textarea>
+          </div>
 
-        <div class="query-input">
-          <label for="sqlQuery">Enter your SQL query:</label>
-          <textarea
-            id="sqlQuery"
-            rows="6"
-            placeholder="SELECT * FROM your_table"
-          ></textarea>
+          <div class="query-options">
+            <label> <input type="checkbox" id="saveQuery" /> Save query </label>
+            <label>
+              <input type="checkbox" id="limitResults" /> Limit results to
+              <input
+                type="number"
+                id="resultLimit"
+                value="100"
+                min="1"
+                max="1000"
+              />
+            </label>
+          </div>
+
+          <div class="button-group">
+            <button id="executeQuery" class="primary">Execute Query</button>
+            <button id="clearQuery" class="secondary">Clear</button>
+            <button id="loadSavedQuery" class="secondary">
+              Load Saved Query
+            </button>
+          </div>
+
+          <div id="results">
+            <!-- Results will be displayed here -->
+          </div>
         </div>
-
-        <div class="query-options">
-          <label> <input type="checkbox" id="saveQuery" /> Save query </label>
-          <label>
-            <input type="checkbox" id="limitResults" /> Limit results
-            <input type="number" id="resultLimit" value="100" min="1" />
-          </label>
+        <div class="database-info">
+          <h3>Cấu trúc cơ sở dữ liệu</h3>
+          <div id="tableList">
+            <!-- Danh sách bảng sẽ được hiển thị ở đây -->
+          </div>
         </div>
-
-        <div class="button-group">
-          <button id="executeQuery" class="primary">Execute Query</button>
-          <button id="clearQuery" class="secondary">Clear</button>
-          <button id="loadSavedQuery" class="secondary">
-            Load Saved Query
-          </button>
-        </div>
-
-        <div id="results">
-          <!-- Results will be displayed here -->
-        </div>
-      </div>
-    </main>
-
-    <footer>
-      <p>&copy; 2024 Advanced SQL Query Tool. All rights reserved.</p>
-    </footer>
+      </main>
+    </div>
 
     <script src="query_script.js"></script>
   </body>

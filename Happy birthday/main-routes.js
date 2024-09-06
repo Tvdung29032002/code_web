@@ -277,15 +277,20 @@ router.post(
 
 router.post("/execute-custom-query", async (req, res) => {
   try {
-    const { query } = req.body;
+    const { query, limit } = req.body;
 
-    // CAUTION: This is potentially dangerous and should only be used in a controlled environment
-    // Consider implementing additional security measures like query validation or whitelisting
-    const [rows] = await req.dbConnection.execute(query);
+    // CẢNH BÁO: Điều này có thể nguy hiểm và chỉ nên được sử dụng trong môi trường có kiểm soát
+    // Cân nhắc thực hiện các biện pháp bảo mật bổ sung như xác thực truy vấn hoặc danh sách trắng
+    let modifiedQuery = query;
+    if (limit) {
+      modifiedQuery += ` LIMIT ${limit}`;
+    }
+
+    const [rows] = await req.dbConnection.execute(modifiedQuery);
 
     res.json({ success: true, data: rows });
   } catch (error) {
-    console.error("Error executing custom query:", error);
+    console.error("Lỗi khi thực hiện truy vấn tùy chỉnh:", error);
     res.status(500).json({
       success: false,
       message: "Không thể thực hiện truy vấn",
@@ -330,6 +335,22 @@ router.get("/check-db-connection", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Database connection failed",
+      error: error.message,
+    });
+  }
+});
+
+// Route để lấy danh sách bảng
+router.get("/get-table-list", async (req, res) => {
+  try {
+    const [rows] = await req.dbConnection.execute("SHOW TABLES");
+    const tables = rows.map((row) => Object.values(row)[0]);
+    res.json({ success: true, tables });
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách bảng:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể lấy danh sách bảng",
       error: error.message,
     });
   }

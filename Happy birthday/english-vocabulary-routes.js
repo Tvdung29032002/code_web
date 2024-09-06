@@ -6,6 +6,7 @@ const { syncToGoogleSheets } = require("./googleSheetsSync");
 router.post("/add-vocabulary", async (req, res) => {
   try {
     const { word, meaning, phonetic, part_of_speech, example } = req.body;
+    const userId = req.body.userId; // Lấy userId từ request body
 
     if (!word || !meaning || !phonetic || !part_of_speech || !example) {
       return res.status(400).json({
@@ -47,8 +48,8 @@ router.post("/add-vocabulary", async (req, res) => {
 
     // If the word doesn't exist, add it
     const [result] = await req.dbConnection.execute(
-      "INSERT INTO vocabulary (word, meaning, phonetic, part_of_speech, example) VALUES (?, ?, ?, ?, ?)",
-      [word, meaning, phonetic, part_of_speech, example]
+      "INSERT INTO vocabulary (word, meaning, phonetic, part_of_speech, example, user_id) VALUES (?, ?, ?, ?, ?, ?)",
+      [word, meaning, phonetic, part_of_speech, example, userId]
     );
 
     // Sync data with Google Sheets
@@ -122,6 +123,7 @@ router.get("/vocabulary", async (req, res) => {
 router.put("/update-vocabulary", async (req, res) => {
   try {
     const { id, word, meaning, phonetic, part_of_speech, example } = req.body;
+    const userId = req.body.userId; // Lấy userId từ request body
 
     const [existingWord] = await req.dbConnection.execute(
       "SELECT * FROM vocabulary WHERE id = ?",
@@ -136,8 +138,8 @@ router.put("/update-vocabulary", async (req, res) => {
     }
 
     const [result] = await req.dbConnection.execute(
-      "UPDATE vocabulary SET word = ?, meaning = ?, phonetic = ?, part_of_speech = ?, example = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
-      [word, meaning, phonetic, part_of_speech, example, id]
+      "UPDATE vocabulary SET word = ?, meaning = ?, phonetic = ?, part_of_speech = ?, example = ? WHERE id = ? AND user_id = ?",
+      [word, meaning, phonetic, part_of_speech, example, id, userId]
     );
 
     // Sync data with Google Sheets
@@ -168,10 +170,11 @@ router.put("/update-vocabulary", async (req, res) => {
 router.delete("/delete-vocabulary/:id", async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = req.body.userId; // Lấy userId từ request body
 
     const [result] = await req.dbConnection.execute(
-      "UPDATE vocabulary SET is_active = FALSE WHERE id = ?",
-      [id]
+      "UPDATE vocabulary SET is_active = FALSE WHERE id = ? AND user_id = ?",
+      [id, userId]
     );
 
     // Sync data with Google Sheets
@@ -270,7 +273,7 @@ router.post("/end-game", async (req, res) => {
 router.get("/leaderboard", async (req, res) => {
   try {
     const [rows] = await req.dbConnection.execute(`
-      SELECT CONCAT(u.firstName, ' ', u.lastName) as username, s.score as max_score
+      SELECT CONCAT(u.firstName, ' ', u.lastName) as username, s.score as max_score, s.created_at as play_time
       FROM users u
       JOIN scores s ON u.id = s.user_id
       ORDER BY max_score DESC
@@ -325,6 +328,96 @@ router.get("/user-info", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Không thể lấy thông tin người dùng",
+      error: error.message,
+    });
+  }
+});
+
+// Sửa đổi route lấy top các câu trả lời sai
+router.get("/top-incorrect-answers", async (req, res) => {
+  try {
+    const [rows] = await req.dbConnection.execute(`
+      SELECT v.word, v.meaning, ia.count as incorrect_count
+      FROM incorrect_answers ia
+      JOIN vocabulary v ON ia.vocabulary_id = v.id
+      ORDER BY ia.count DESC
+      LIMIT 5
+    `);
+
+    res.json({
+      success: true,
+      data: rows.map((row) => ({
+        word: row.word,
+        meaning: row.meaning,
+        count: row.incorrect_count, // Đảm bảo sử dụng tên đúng của cột
+      })),
+    });
+  } catch (error) {
+    console.error("Lỗi khi lấy top các câu trả lời sai:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể lấy top các câu trả lời sai",
+      error: error.message,
+    });
+  }
+});
+
+// Thêm route mới để cập nhật số lần trả lời sai
+router.post("/update-incorrect-answer", async (req, res) => {
+  try {
+    const { vocabularyId } = req.body;
+
+    if (!vocabularyId) {
+      return res.status(400).json({
+        success: false,
+        message: "vocabularyId là bắt buộc",
+      });
+    }
+
+    // Kiểm tra xem từ vựng có tồn tại không
+    const [vocabularyExists] = await req.dbConnection.execute(
+      "SELECT id FROM vocabulary WHERE id = ?",
+      [vocabularyId]
+    );
+
+    if (vocabularyExists.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy từ vựng",
+      });
+    }
+
+    // Kiểm tra xem đã có bản ghi cho từ vựng này chưa
+    const [existingRecord] = await req.dbConnection.execute(
+      "SELECT id, count FROM incorrect_answers WHERE vocabulary_id = ?",
+      [vocabularyId]
+    );
+
+    let result;
+    if (existingRecord.length > 0) {
+      // Nếu đã có bản ghi, cập nhật count
+      const newCount = existingRecord[0].count + 1;
+      [result] = await req.dbConnection.execute(
+        "UPDATE incorrect_answers SET count = ? WHERE id = ?",
+        [newCount, existingRecord[0].id]
+      );
+    } else {
+      // Nếu chưa có bản ghi, thêm mới
+      [result] = await req.dbConnection.execute(
+        "INSERT INTO incorrect_answers (vocabulary_id, count) VALUES (?, 1)",
+        [vocabularyId]
+      );
+    }
+
+    res.json({
+      success: true,
+      message: "Đã cập nhật số lần trả lời sai",
+    });
+  } catch (error) {
+    console.error("Lỗi khi cập nhật số lần trả lời sai:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể cập nhật số lần trả lời sai",
       error: error.message,
     });
   }
