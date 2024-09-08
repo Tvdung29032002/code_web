@@ -338,6 +338,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Thêm hàm mới để bắt đầu phiên chơi game
+  async function startGameSession() {
+    const userId = getCurrentUserId();
+    if (userId) {
+      try {
+        const response = await fetch(
+          "http://192.168.0.103:3000/api/start-game-session",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userId }),
+          }
+        );
+        const result = await response.json();
+        if (result.success) {
+          console.log("Phiên chơi game đã được lưu thành công");
+        } else {
+          console.error("Không thể lưu phiên chơi game:", result.message);
+        }
+      } catch (error) {
+        console.error("Lỗi khi lưu phiên chơi game:", error);
+      }
+    } else {
+      console.error("Không tìm thấy ID người dùng");
+    }
+  }
+
+  // Sửa đổi hàm startGame để gọi startGameSession
   function startGame() {
     gameIntro.style.display = "none";
     gameArea.style.display = "block";
@@ -345,8 +375,15 @@ document.addEventListener("DOMContentLoaded", () => {
     score = 0;
     questionNumber = 0;
     updateProgressBar(0);
+    startGameSession(); // Thêm dòng này
     nextQuestion();
   }
+
+  // Cập nhật event listener cho nút "Play Again"
+  playAgainBtn.addEventListener("click", () => {
+    startGameSession(); // Thêm dòng này
+    startGame();
+  });
 
   async function nextQuestion() {
     if (questionNumber >= totalQuestions) {

@@ -4,13 +4,83 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>English Learning Schedule</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="schedule-style.css" />
   </head>
   <body>
-    <h1>English Learning Schedule</h1>
-    <div id="monthYear"></div>
-    <div id="calendar"></div>
+    <div class="container">
+      <header>
+        <button id="backToHome" class="back-button">
+          <i class="fas fa-home"></i>
+          <span>Trang chủ</span>
+        </button>
+        <h1>English & Chinese Learning Schedule</h1>
+      </header>
 
+      <main>
+        <div id="calendar-container">
+          <div id="calendar-header">
+            <div id="monthYear"></div>
+            <div id="calendar-actions">
+              <div id="viewToggle">
+                <button id="monthView" class="active">
+                  <i class="fas fa-calendar-alt"></i> Tháng
+                </button>
+                <button id="weekView">
+                  <i class="fas fa-calendar-week"></i> Tuần
+                </button>
+              </div>
+              <button id="exportCalendar">
+                <i class="fas fa-file-export"></i> Xuất lịch
+              </button>
+            </div>
+          </div>
+
+          <div id="calendar-navigation">
+            <button id="prevMonth">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <div id="searchContainer">
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Tìm kiếm nhiệm vụ..."
+              />
+              <button id="searchButton"><i class="fas fa-search"></i></button>
+            </div>
+            <button id="nextMonth">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+          <div id="calendar"></div>
+        </div>
+
+        <div id="sidebar">
+          <div id="statistics">
+            <h2>Thống kê học tập</h2>
+            <canvas id="progressChart"></canvas>
+          </div>
+
+          <div id="searchResultsContainer" class="hidden">
+            <div class="search-results-header">
+              <h3>Kết quả tìm kiếm</h3>
+              <button id="closeSearchResults" class="close-button">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <ul id="searchResultsList" class="search-results-list"></ul>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"
+      defer
+    ></script>
     <script src="schedule-script.js"></script>
   </body>
 </html>

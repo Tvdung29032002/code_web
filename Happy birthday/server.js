@@ -8,6 +8,7 @@ const chineseVocabularyRoutes = require("./chinese-vocabulary-routes");
 const passwordRoutes = require("./password-routes");
 const mainRoutes = require("./main-routes");
 const userManagementRoutes = require("./user_management_routes");
+const scheduleRoutes = require("./routes/schedule-routes");
 
 const app = express();
 
@@ -58,6 +59,7 @@ app.use("/api", chineseVocabularyRoutes);
 app.use("/api", passwordRoutes);
 app.use("/api", mainRoutes);
 app.use("/api", userManagementRoutes);
+app.use("/api", scheduleRoutes);
 
 // Serve vocabulary.html
 app.get("/vocabulary", (req, res) => {
