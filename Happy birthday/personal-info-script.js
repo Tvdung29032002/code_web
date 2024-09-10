@@ -10,6 +10,34 @@ document.addEventListener("DOMContentLoaded", function () {
     photoUrl: "album/avatar.jpg",
   };
 
+  function getCurrentUsername() {
+    return localStorage.getItem("username") || "";
+  }
+
+  function checkUserLoggedIn() {
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    const username = getCurrentUsername();
+    if (!isLoggedIn || !username) {
+      console.log("User not logged in, redirecting to login page");
+      window.location.href = "login.html";
+      return false;
+    }
+    return true;
+  }
+
+  // Kiểm tra đăng nhập ngay khi trang tải
+  if (!checkUserLoggedIn()) {
+    return;
+  }
+
+  currentUsername = getCurrentUsername();
+  if (currentUsername) {
+    updateInfoDisplay();
+  } else {
+    console.log("Username not found in localStorage");
+    window.location.href = "login.html";
+  }
+
   const editButton = document.getElementById("edit-button");
   const saveButton = document.getElementById("save-button");
   const cancelButton = document.getElementById("cancel-button");
@@ -23,10 +51,15 @@ document.addEventListener("DOMContentLoaded", function () {
   const genderSelect = document.getElementById("gender-select");
   const birthdaySpan = document.getElementById("user-birthday");
   const birthdayPicker = document.getElementById("birthday-picker");
-
-  function getCurrentUsername() {
-    return localStorage.getItem("username") || "";
-  }
+  const changePasswordButton = document.getElementById(
+    "change-password-button"
+  );
+  const changePasswordModal = document.getElementById("change-password-modal");
+  const closeModal = changePasswordModal.querySelector(".close");
+  const changePasswordForm = document.getElementById("change-password-form");
+  const cancelPasswordChangeButton = document.getElementById(
+    "cancel-password-change"
+  );
 
   function fetchUserInfo(username) {
     return fetch(`http://192.168.0.103:3000/api/user-details/${username}`, {
@@ -191,14 +224,6 @@ document.addEventListener("DOMContentLoaded", function () {
     errorPopup.style.display = "none";
   }
 
-  currentUsername = getCurrentUsername();
-  if (currentUsername) {
-    updateInfoDisplay();
-  } else {
-    console.log("User not logged in");
-    window.location.href = "login.html";
-  }
-
   editButton.addEventListener("click", function () {
     toggleEditMode(true);
   });
@@ -333,5 +358,62 @@ document.addEventListener("DOMContentLoaded", function () {
     localStorage.removeItem("username");
     localStorage.removeItem("isLoggedIn");
     window.location.href = "login.html";
+  });
+
+  changePasswordButton.addEventListener("click", function () {
+    changePasswordModal.style.display = "block";
+  });
+
+  closeModal.addEventListener("click", function () {
+    changePasswordModal.style.display = "none";
+  });
+
+  window.addEventListener("click", function (event) {
+    if (event.target == changePasswordModal) {
+      changePasswordModal.style.display = "none";
+    }
+  });
+
+  changePasswordForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const currentPassword = document.getElementById("current-password").value;
+    const newPassword = document.getElementById("new-password").value;
+    const confirmNewPassword = document.getElementById(
+      "confirm-new-password"
+    ).value;
+
+    if (newPassword !== confirmNewPassword) {
+      alert("Mật khẩu mới và xác nhận mật khẩu không khớp.");
+      return;
+    }
+
+    // Gửi yêu cầu thay đổi mật khẩu đến server
+    fetch("http://192.168.0.103:3000/api/change-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: currentUsername,
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          alert("Mật khẩu đã được thay đổi thành công.");
+          changePasswordModal.style.display = "none";
+          changePasswordForm.reset();
+        } else {
+          alert(
+            data.message || "Không thể thay đổi mật khẩu. Vui lòng thử lại."
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+      });
   });
 });

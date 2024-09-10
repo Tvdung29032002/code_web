@@ -149,19 +149,79 @@ router.post("/tasks/fixed", async (req, res) => {
   }
 });
 
+// Thêm nhiệm vụ mới (giao việc)
+router.post("/assign-task", async (req, res) => {
+  try {
+    const { userId, taskName, taskDescription, startDate, endDate, priority } =
+      req.body;
+
+    if (!userId || !taskName || !startDate || !endDate || !priority) {
+      return res.status(400).json({
+        success: false,
+        message: "Thiếu thông tin cần thiết để giao nhiệm vụ",
+      });
+    }
+
+    const [result] = await req.dbConnection.execute(
+      "INSERT INTO assigned_tasks (user_id, task_name, task_description, start_date, end_date, priority) VALUES (?, ?, ?, ?, ?, ?)",
+      [userId, taskName, taskDescription, startDate, endDate, priority]
+    );
+
+    res.json({
+      success: true,
+      message: "Nhiệm vụ đã được giao thành công",
+      taskId: result.insertId,
+    });
+  } catch (error) {
+    console.error("Lỗi khi giao nhiệm vụ:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể giao nhiệm vụ",
+      error: error.message,
+    });
+  }
+});
+
+// Lấy danh sách nhiệm vụ đã giao
+router.get("/assigned-tasks/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const [tasks] = await req.dbConnection.execute(
+      "SELECT * FROM assigned_tasks WHERE user_id = ? ORDER BY start_date",
+      [userId]
+    );
+    res.json({ success: true, tasks: tasks });
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách nhiệm vụ đã giao:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể lấy danh sách nhiệm vụ đã giao",
+      error: error.message,
+    });
+  }
+});
+
 // Thêm route mới để kiểm tra hoàn thành nhiệm vụ game tiếng Anh
 router.get("/check-english-game-completion/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
     const [completedTasks] = await req.dbConnection.execute(
       `
-      SELECT t.user_id, t.date 
+      SELECT t.id, t.user_id, t.date 
       FROM game_sessions gs 
       JOIN tasks t ON t.user_id = gs.user_id AND DATE(t.date) = DATE(gs.start_time)
       WHERE t.type = 'english' AND t.activity = 'game' AND t.user_id = ?
     `,
       [userId]
     );
+
+    // Cập nhật trạng thái hoàn thành trong bảng tasks
+    for (const task of completedTasks) {
+      await req.dbConnection.execute(
+        "UPDATE tasks SET completed = 1 WHERE id = ?",
+        [task.id]
+      );
+    }
 
     const completedDates = completedTasks.map((task) => formatDate(task.date));
 
@@ -189,18 +249,26 @@ router.get("/check-english-vocabulary-completion/:userId", async (req, res) => {
     const [completedTasks] = await req.dbConnection.execute(
       `
       WITH a AS (
-        SELECT v.user_id, t.date
+        SELECT v.user_id, t.id, t.date
         FROM vocabulary v
         JOIN tasks t ON t.user_id = v.user_id AND DATE(t.date) = DATE(v.created_at)
         WHERE t.type = 'english' AND t.activity = 'vocabulary' AND t.user_id = ?
       )
-      SELECT user_id, date, COUNT(*) AS count_word
+      SELECT id, user_id, date, COUNT(*) AS count_word
       FROM a
-      GROUP BY user_id, date
+      GROUP BY id, user_id, date
       HAVING count_word >= 10
     `,
       [userId]
     );
+
+    // Cập nhật trạng thái hoàn thành trong bảng tasks
+    for (const task of completedTasks) {
+      await req.dbConnection.execute(
+        "UPDATE tasks SET completed = 1 WHERE id = ?",
+        [task.id]
+      );
+    }
 
     const completedDates = completedTasks.map((task) => formatDate(task.date));
 
@@ -216,6 +284,104 @@ router.get("/check-english-vocabulary-completion/:userId", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Không thể kiểm tra hoàn thành nhiệm vụ từ vựng tiếng Anh",
+      error: error.message,
+    });
+  }
+});
+
+// Lấy nhiệm vụ của ngày hiện tại cho người dùng cụ thể
+router.get("/tasks/today/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const today = new Date().toISOString().split("T")[0]; // Lấy ngày hiện tại
+
+    const [tasks] = await req.dbConnection.execute(
+      "SELECT *, is_fixed AS isFixed FROM tasks WHERE user_id = ? AND date = ? ORDER BY date",
+      [userId, today]
+    );
+
+    const formattedTasks = tasks.map((task) => ({
+      ...task,
+      date: formatDate(task.date),
+    }));
+
+    res.json({ success: true, tasks: formattedTasks });
+  } catch (error) {
+    console.error("Lỗi khi lấy nhiệm vụ ngày hiện tại:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể lấy nhiệm vụ ngày hiện tại",
+      error: error.message,
+    });
+  }
+});
+
+// Thêm route mới để lấy các nhiệm vụ sắp đến hạn
+router.get("/upcoming-tasks/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const today = new Date();
+    const threeDaysLater = new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000);
+
+    const [tasks] = await req.dbConnection.execute(
+      `SELECT * FROM assigned_tasks 
+       WHERE user_id = ? 
+       AND end_date BETWEEN ? AND ? 
+       ORDER BY end_date ASC 
+       LIMIT 5`,
+      [userId, formatDate(today), formatDate(threeDaysLater)]
+    );
+
+    res.json({ success: true, tasks: tasks });
+  } catch (error) {
+    console.error("Lỗi khi lấy nhiệm vụ sắp đến hạn:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể lấy nhiệm vụ sắp đến hạn",
+      error: error.message,
+    });
+  }
+});
+
+// Thêm route mới để cập nhật trạng thái hoàn thành của nhiệm vụ
+router.put("/assigned-tasks/:taskId/complete", async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const { completed } = req.body;
+
+    await req.dbConnection.execute(
+      "UPDATE assigned_tasks SET completed = ? WHERE id = ?",
+      [completed, taskId]
+    );
+
+    res.json({
+      success: true,
+      message: "Trạng thái hoàn thành nhiệm vụ đã được cập nhật",
+    });
+  } catch (error) {
+    console.error("Lỗi khi cập nhật trạng thái hoàn thành nhiệm vụ:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể cập nhật trạng thái hoàn thành nhiệm vụ",
+      error: error.message,
+    });
+  }
+});
+
+// Cập nhật route lấy danh sách nhiệm vụ đã giao để bao gồm trạng thái hoàn thành
+router.get("/assigned-tasks/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const [tasks] = await req.dbConnection.execute(
+      "SELECT * FROM assigned_tasks WHERE user_id = ? ORDER BY start_date",
+      [userId]
+    );
+    res.json({ success: true, tasks: tasks });
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách nhiệm vụ đã giao:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể lấy danh sách nhiệm vụ đã giao",
       error: error.message,
     });
   }

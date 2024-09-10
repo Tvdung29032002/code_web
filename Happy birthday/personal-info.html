@@ -113,6 +113,16 @@
             <div class="char-count"><span id="bio-char-count">0</span>/150</div>
           </div>
         </div>
+        <div class="info-section security-section">
+          <h3>Bảo mật</h3>
+          <div class="info-item">
+            <span class="info-label">Mật khẩu:</span>
+            <span class="info-value password-value">••••••••</span>
+            <button id="change-password-button" class="btn btn-primary">
+              Đổi mật khẩu
+            </button>
+          </div>
+        </div>
         <button id="edit-button">Sửa thông tin</button>
         <button id="save-button" style="display: none">Lưu</button>
         <button id="cancel-button" style="display: none">Hủy</button>
@@ -127,6 +137,65 @@
     <div id="error-popup" class="error-popup">
       <p id="error-message"></p>
       <button id="error-ok-button">OK</button>
+    </div>
+
+    <!-- Thêm modal đổi mật khẩu -->
+    <div id="change-password-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Đổi mật khẩu</h2>
+          <span class="close">&times;</span>
+        </div>
+        <form id="change-password-form">
+          <div class="form-group">
+            <label for="current-password">Mật khẩu hiện tại:</label>
+            <div class="password-input-wrapper">
+              <input type="password" id="current-password" required />
+              <img
+                src="image_login/eye-closed.png"
+                class="toggle-password"
+                data-target="current-password"
+                alt="Toggle password visibility"
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="new-password">Mật khẩu mới:</label>
+            <div class="password-input-wrapper">
+              <input type="password" id="new-password" required />
+              <img
+                src="image_login/eye-closed.png"
+                class="toggle-password"
+                data-target="new-password"
+                alt="Toggle password visibility"
+              />
+            </div>
+            <div id="new-password-strength" class="password-strength"></div>
+          </div>
+          <div class="form-group">
+            <label for="confirm-new-password">Xác nhận mật khẩu mới:</label>
+            <div class="password-input-wrapper">
+              <input type="password" id="confirm-new-password" required />
+              <img
+                src="image_login/eye-closed.png"
+                class="toggle-password"
+                data-target="confirm-new-password"
+                alt="Toggle password visibility"
+              />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Xác nhận</button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              id="cancel-password-change"
+            >
+              Hủy
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </body>
 </html>

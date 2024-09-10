@@ -3,6 +3,23 @@ const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const router = express.Router();
 
+// Hàm kiểm tra độ mạnh của mật khẩu
+function checkPasswordStrength(password) {
+  const minLength = 8;
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasLowerCase = /[a-z]/.test(password);
+  const hasNumbers = /\d/.test(password);
+  const hasNonalphas = /\W/.test(password);
+
+  if (password.length < minLength) {
+    return "Mật khẩu phải có ít nhất 8 ký tự.";
+  }
+  if (!hasUpperCase || !hasLowerCase || !hasNumbers || !hasNonalphas) {
+    return "Mật khẩu phải chứa ít nhất một chữ hoa, một chữ thường, một số và một ký tự đặc biệt.";
+  }
+  return null; // Mật khẩu đủ mạnh
+}
+
 // Reset password route
 router.post("/reset-password", async (req, res) => {
   try {
@@ -81,39 +98,68 @@ router.post("/reset-password", async (req, res) => {
 // Change password route
 router.post("/change-password", async (req, res) => {
   try {
-    const { email, tempPassword, newPassword } = req.body;
+    const { username, currentPassword, newPassword } = req.body;
+
+    if (!username || !currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Vui lòng cung cấp đầy đủ thông tin: username, currentPassword và newPassword.",
+      });
+    }
+
+    // Kiểm tra độ mạnh của mật khẩu mới
+    const passwordStrengthError = checkPasswordStrength(newPassword);
+    if (passwordStrengthError) {
+      return res.status(400).json({
+        success: false,
+        message: passwordStrengthError,
+      });
+    }
 
     const [users] = await req.dbConnection.execute(
-      "SELECT * FROM users WHERE email = ?",
-      [email]
+      "SELECT * FROM users WHERE username = ?",
+      [username]
     );
 
     if (users.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "Không tìm thấy tài khoản với email này.",
+        message: "Không tìm thấy tài khoản với username này.",
       });
     }
 
     const user = users[0];
 
-    const isValidTempPassword = await bcrypt.compare(
-      tempPassword,
+    const isValidCurrentPassword = await bcrypt.compare(
+      currentPassword,
       user.password
     );
 
-    if (!isValidTempPassword) {
+    if (!isValidCurrentPassword) {
       return res.status(400).json({
         success: false,
-        message: "Mật khẩu tạm thời không đúng.",
+        message: "Mật khẩu hiện tại không đúng.",
+      });
+    }
+
+    // Kiểm tra xem mật khẩu mới có giống mật khẩu cũ không
+    const isSameAsOldPassword = await bcrypt.compare(
+      newPassword,
+      user.password
+    );
+    if (isSameAsOldPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Mật khẩu mới phải khác mật khẩu hiện tại.",
       });
     }
 
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
     await req.dbConnection.execute(
-      "UPDATE users SET password = ?, password_updated_at = CURRENT_TIMESTAMP WHERE email = ?",
-      [hashedNewPassword, email]
+      "UPDATE users SET password = ?, password_updated_at = CURRENT_TIMESTAMP WHERE username = ?",
+      [hashedNewPassword, username]
     );
 
     res.json({

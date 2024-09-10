@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", async function () {
   const appsMenu = document.getElementById("appsMenu");
   const helpIcon = document.getElementById("helpIcon");
   const helpMenu = document.getElementById("helpMenu");
+  const notificationIcon = document.getElementById("notificationIcon");
+  const notificationMenu = document.getElementById("notificationMenu");
   const feedbackContainer = document.getElementById("feedback-container");
   const feedbackOverlay = document.getElementById("feedback-overlay");
   const openFeedbackButton = document.getElementById("open-feedback");
@@ -93,6 +95,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     dropdownMenu.style.display = "none";
     appsMenu.classList.remove("show");
     helpMenu.style.display = "none";
+    notificationMenu.style.display = "none";
 
     if (cityDropdown.style.display === "block") {
       cityDropdown.style.display = "none";
@@ -142,6 +145,18 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   });
 
+  notificationIcon.addEventListener("click", (event) => {
+    event.stopPropagation();
+    const isMenuOpen = notificationMenu.style.display === "block";
+    closeAllMenus();
+    if (!isMenuOpen) {
+      notificationMenu.style.display = "block";
+      toggleTooltips(false);
+    } else {
+      toggleTooltips(true);
+    }
+  });
+
   openFeedbackButton.addEventListener("click", function () {
     feedbackContainer.style.display = "block";
     feedbackOverlay.style.display = "block";
@@ -170,8 +185,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   });
 
-  window.addEventListener("click", (event) => {
+  document.addEventListener("click", (event) => {
     if (
+      !notificationIcon.contains(event.target) &&
+      !notificationMenu.contains(event.target) &&
       !avatarIcon.contains(event.target) &&
       !dropdownMenu.contains(event.target) &&
       !appsIcon.contains(event.target) &&
@@ -197,6 +214,175 @@ document.addEventListener("DOMContentLoaded", async function () {
       e.preventDefault();
       console.log("Đăng xuất");
     });
+
+  // Thêm xử lý cho nút "Thông tin cá nhân"
+  const personalInfoButton = document.querySelector(
+    ".dropdown-item:first-child"
+  );
+  personalInfoButton.addEventListener("click", function (e) {
+    e.preventDefault();
+    const username = localStorage.getItem("username");
+    if (username) {
+      window.location.href = "personal-info.html";
+    } else {
+      console.log("Username not found, redirecting to login");
+      window.location.href = "login.html";
+    }
+  });
+
+  // Thêm hàm mới để lấy nhiệm vụ của ngày hiện tại
+  async function fetchTodayTasks() {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      console.error("Không tìm thấy userId");
+      return [];
+    }
+
+    try {
+      const response = await fetch(
+        `http://192.168.0.103:3000/api/tasks/today/${userId}`
+      );
+      const data = await response.json();
+      if (data.success) {
+        return data.tasks;
+      } else {
+        console.error("Lỗi khi lấy nhiệm vụ ngày hiện tại:", data.message);
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy nhiệm vụ ngày hiện tại:", error);
+    }
+    return [];
+  }
+
+  // Hàm để hiển thị nhiệm vụ
+  function displayTodayTasks(tasks) {
+    const taskList = document.getElementById("taskList");
+    taskList.innerHTML = "";
+
+    if (tasks.length === 0) {
+      taskList.innerHTML = "<li>Không có nhiệm vụ nào cho hôm nay</li>";
+      return;
+    }
+
+    tasks.forEach((task) => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <div class="task-info">
+          <span class="task-name ${task.completed ? "completed" : ""}">${
+        task.name
+      }</span>
+          <div class="task-details">
+            <span class="task-type ${task.type}">${
+        task.type === "english" ? "Tiếng Anh" : "Tiếng Trung"
+      }</span>
+            <span class="task-activity ${task.activity}">${
+        task.activity === "vocabulary" ? "Từ vựng" : "Minigame"
+      }</span>
+          </div>
+        </div>
+        <div class="task-status">
+          <span class="status-icon ${
+            task.completed ? "completed" : "pending"
+          }"></span>
+          <span class="status-text">${
+            task.completed ? "Đã hoàn thành" : "Chưa hoàn thành"
+          }</span>
+        </div>
+      `;
+      taskList.appendChild(li);
+    });
+  }
+
+  // Thêm hàm mới để lấy nhiệm vụ sắp đến hạn
+  async function fetchUpcomingTasks() {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      console.error("Không tìm thấy userId");
+      return [];
+    }
+
+    try {
+      const response = await fetch(
+        `http://192.168.0.103:3000/api/upcoming-tasks/${userId}`
+      );
+      const data = await response.json();
+      if (data.success) {
+        return data.tasks;
+      } else {
+        console.error("Lỗi khi lấy nhiệm vụ sắp đến hạn:", data.message);
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy nhiệm vụ sắp đến hạn:", error);
+    }
+    return [];
+  }
+
+  // Hàm để hiển thị thông báo nhiệm vụ
+  function displayNotifications(tasks) {
+    const notificationMenu = document.getElementById("notificationMenu");
+    notificationMenu.innerHTML = "";
+
+    if (tasks.length === 0) {
+      notificationMenu.innerHTML =
+        "<div class='notification-empty'>Không có thông báo mới</div>";
+      return;
+    }
+
+    const notificationHeader = document.createElement("div");
+    notificationHeader.className = "notification-header";
+    notificationHeader.textContent = "Thông báo";
+    notificationMenu.appendChild(notificationHeader);
+
+    tasks.forEach((task) => {
+      const notification = document.createElement("div");
+      notification.className = "notification-item";
+      notification.innerHTML = `
+        <div class="notification-icon">${task.completed ? "✅" : "📅"}</div>
+        <div class="notification-content">
+          <div class="notification-title">${task.task_name}</div>
+          <div class="notification-message">
+            ${
+              task.completed ? "Nhiệm vụ đã hoàn thành" : "Nhiệm vụ sắp đến hạn"
+            }
+          </div>
+          <div class="notification-date">Hạn: ${formatDate(task.end_date)}</div>
+          <div class="notification-status ${
+            task.completed ? "completed" : "pending"
+          }">
+            ${task.completed ? "Đã hoàn thành" : "Chưa hoàn thành"}
+          </div>
+        </div>
+      `;
+      notificationMenu.appendChild(notification);
+    });
+
+    const viewAllButton = document.createElement("button");
+    viewAllButton.className = "view-all-notifications";
+    viewAllButton.textContent = "Xem tất cả";
+    viewAllButton.onclick = () => {
+      // Implement view all notifications logic
+    };
+    notificationMenu.appendChild(viewAllButton);
+  }
+
+  // Thêm hàm formatDate nếu chưa có
+  function formatDate(dateString) {
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString("vi-VN", options);
+  }
+
+  // Cập nhật hàm DOMContentLoaded để bao gồm việc lấy và hiển thị nhiệm vụ
+  const todayTasks = await fetchTodayTasks();
+  displayTodayTasks(todayTasks);
+
+  const upcomingTasks = await fetchUpcomingTasks();
+  displayNotifications(upcomingTasks);
+
+  // Cập nhật số lượng thông báo
+  const notificationCount = document.createElement("span");
+  notificationCount.className = "notification-count";
+  notificationCount.textContent = upcomingTasks.length;
+  notificationIcon.appendChild(notificationCount);
 
   // Khởi tạo weather
   await initWeather(

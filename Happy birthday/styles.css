@@ -23,14 +23,12 @@ header {
   height: 30px; /* Chiều cao của header */
 }
 
-.header-left,
-.header-right {
+.header-left {
   display: flex; /* Sử dụng Flexbox để căn chỉnh các phần tử bên trong */
   align-items: center; /* Căn giữa các phần tử theo chiều dọc */
 }
 
-.header-left img,
-.header-right img {
+.header-left img {
   width: 35px; /* Chiều rộng của ảnh trong header-left và header-right */
   height: 35px; /* Chiều cao của ảnh trong header-left và header-right */
   margin: 0 8px; /* Khoảng cách giữa các ảnh */
@@ -325,36 +323,77 @@ header {
 }
 
 .sidebar {
-  display: flex; /* Sử dụng Flexbox để căn chỉnh các phần tử bên trong sidebar */
-  flex-direction: column; /* Xếp các phần tử theo chiều dọc */
-  height: 100%; /* Chiều cao của sidebar bằng 100% chiều cao của màn hình */
-  width: 250px; /* Chiều rộng của sidebar */
-  position: fixed; /* Cố định vị trí của sidebar */
-  z-index: 1100; /* Đưa sidebar lên trên các phần tử khác */
-  top: 0; /* Đặt sidebar ở mép trên */
-  left: -250px; /* Đặt sidebar ra ngoài màn hình bên trái khi đóng */
-  background-color: #24292e; /* Màu nền của sidebar */
-  overflow-x: hidden; /* Ẩn thanh cuộn ngang của sidebar */
-  transition: 0.3s; /* Hiệu ứng chuyển động khi mở/đóng sidebar */
-  padding-top: 64px; /* Khoảng cách trên của sidebar */
-  justify-content: space-between; /* Căn đều khoảng cách giữa các phần tử trong sidebar */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 280px;
+  position: fixed;
+  z-index: 1100;
+  top: 0;
+  left: -280px;
+  background-color: #ffffff;
+  overflow-x: hidden;
+  transition: 0.3s;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar.open {
-  left: 0; /* Đưa sidebar vào trong màn hình khi mở */
+  left: 0;
 }
 
-.sidebar a {
-  padding: 8px 8px 8px 32px; /* Khoảng cách padding của các liên kết trong sidebar */
-  text-decoration: none; /* Bỏ gạch chân của liên kết */
-  font-size: 18px; /* Kích thước font chữ của liên kết */
-  color: #818181; /* Màu chữ của liên kết */
-  display: block; /* Hiển thị liên kết dưới dạng khối */
-  transition: 0.3s; /* Hiệu ứng chuyển động khi hover vào liên kết */
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-.sidebar a:hover {
-  color: #f1f1f1; /* Đổi màu chữ của liên kết khi hover */
+.sidebar-close {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.sidebar-content {
+  padding: 20px 0;
+  overflow-y: auto;
+}
+
+.sidebar-section {
+  margin-bottom: 20px;
+}
+
+.sidebar-section-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #5f6368;
+  padding: 0 24px;
+  margin-bottom: 8px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 24px;
+  color: #3c4043;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+  background-color: #f1f3f4;
+}
+
+.sidebar-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 16px;
+}
+
+.sidebar-link span {
+  font-size: 14px;
 }
 
 footer {
@@ -398,199 +437,9 @@ footer p {
   height: auto; /* Chiều cao tự động của avatar-img để giữ tỷ lệ hình ảnh */
 }
 
-.help-tooltip-wrapper,
-.settings-tooltip-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.help-tooltip-text,
-.settings-tooltip-text {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: white;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
-  position: absolute;
-  z-index: 1;
-  bottom: -30px;
-  left: 50%;
-  margin-left: -60px;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.help-tooltip-text::after,
-.settings-tooltip-text::after {
-  content: "";
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 5px;
-  border-style: solid;
-  border-color: transparent transparent black transparent;
-}
-
-.help-tooltip-wrapper:hover .help-tooltip-text,
-.settings-tooltip-wrapper:hover .settings-tooltip-text {
-  visibility: visible;
-  opacity: 1;
-}
-
-.help-tooltip-wrapper.menu-open .help-tooltip-text {
-  display: none;
-}
-
-.help-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-  padding: 8px 0;
-  min-width: 200px;
-  z-index: 1000;
-}
-
-.help-item {
-  padding: 8px 16px;
-  cursor: pointer;
-  white-space: nowrap;
-  font-size: 14px;
-  color: #3c4043;
-}
-
-.help-item:hover {
-  background-color: #f1f3f4;
-}
-
 .apps-container {
   position: relative;
   display: inline-block;
-}
-
-.apps-menu {
-  display: none;
-  position: absolute;
-  top: 50px;
-  right: -10px;
-  background-color: #fff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  z-index: 1000;
-  width: 320px;
-  padding: 16px;
-  transition: all 0.3s ease;
-  opacity: 0;
-  transform: translateY(-10px);
-}
-
-.apps-menu.show {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.apps-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-
-.apps-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  cursor: pointer;
-  padding: 12px 8px;
-  border-radius: 8px;
-  transition: background-color 0.2s ease;
-}
-
-.apps-item img {
-  width: 48px;
-  height: 48px;
-  margin-bottom: 8px;
-  transition: transform 0.2s ease;
-}
-
-.apps-item span {
-  font-size: 13px;
-  color: #5f6368;
-  font-weight: 500;
-}
-
-.apps-item:hover {
-  background-color: #f1f3f4;
-}
-
-.apps-item:hover img {
-  transform: scale(1.05);
-}
-
-/* Thêm mũi tên chỉ lên trên menu */
-.apps-menu::before {
-  content: "";
-  position: absolute;
-  top: -10px;
-  right: 16px;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid #fff;
-}
-
-/* Thêm thanh cuộn khi có nhiều ứng dụng */
-.apps-grid {
-  max-height: 400px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #dadce0 #f1f3f4;
-}
-
-.apps-grid::-webkit-scrollbar {
-  width: 8px;
-}
-
-.apps-grid::-webkit-scrollbar-track {
-  background: #f1f3f4;
-}
-
-.apps-grid::-webkit-scrollbar-thumb {
-  background-color: #dadce0;
-  border-radius: 4px;
-  border: 2px solid #f1f3f4;
-}
-
-.dropdown-menu {
-  display: none; /* Ẩn menu dropdown theo mặc định */
-  position: absolute; /* Định vị tuyệt đối cho menu dropdown */
-  top: 50px; /* Vị trí từ mép trên, điều chỉnh tùy theo thiết kế của bạn */
-  right: 0; /* Đặt menu dropdown ở mép phải */
-  background-color: white; /* Màu nền trắng cho menu dropdown */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Đổ bóng cho menu dropdown */
-  z-index: 1; /* Đưa menu dropdown lên trên các phần tử khác */
-  min-width: 200px; /* Chiều rộng tối thiểu của menu dropdown */
-  border-radius: 5px; /* Bo tròn góc của menu dropdown */
-  overflow: hidden; /* Ẩn các phần tử tràn ra ngoài menu dropdown */
-}
-
-.dropdown-item {
-  padding: 12px 16px; /* Khoảng cách bên trong của từng mục trong menu dropdown */
-  text-decoration: none; /* Bỏ gạch chân của mục trong menu dropdown */
-  display: block; /* Hiển thị mục dưới dạng khối */
-  color: black; /* Màu chữ đen của mục trong menu dropdown */
-  cursor: pointer; /* Đổi con trỏ chuột khi hover vào mục trong menu dropdown */
-}
-
-.dropdown-item:hover {
-  background-color: #f1f1f1; /* Màu nền của mục khi hover */
 }
 
 #feedback-overlay {
@@ -692,52 +541,350 @@ footer p {
   opacity: 1;
 }
 
-.apps-tooltip-wrapper,
-.avatar-tooltip-wrapper {
-  position: relative;
+.today-tasks {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 600px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+}
+
+.today-tasks-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.today-tasks-header h2 {
+  margin: 0;
+  color: #1a73e8;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.schedule-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.schedule-icon {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.2s ease;
+}
+
+.schedule-link:hover .schedule-icon {
+  transform: scale(1.1);
+}
+
+.today-tasks ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.today-tasks li {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.today-tasks li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.task-info {
+  flex-grow: 1;
+}
+
+.task-name {
+  font-size: 16px;
+  color: #202124;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.task-name.completed {
+  text-decoration: line-through;
+  color: #5f6368;
+}
+
+.task-details {
+  display: flex;
+  gap: 8px;
+}
+
+.task-type,
+.task-activity {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.task-type.english {
+  background-color: #e8f0fe;
+  color: #1967d2;
+}
+
+.task-type.chinese {
+  background-color: #fce8e6;
+  color: #d93025;
+}
+
+.task-activity.vocabulary {
+  background-color: #e6f4ea;
+  color: #137333;
+}
+
+.task-activity.game {
+  background-color: #fff0e0;
+  color: #e37400;
+}
+
+.task-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
   display: inline-block;
 }
 
-.apps-tooltip-text,
-.avatar-tooltip-text {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: white;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
-  position: absolute;
-  z-index: 1;
-  bottom: -30px;
-  left: 50%;
-  margin-left: -60px;
-  opacity: 0;
-  transition: opacity 0.3s;
+.status-icon.completed {
+  background-color: #34a853;
 }
 
-.apps-tooltip-text::after,
-.avatar-tooltip-text::after {
-  content: "";
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 5px;
-  border-style: solid;
-  border-color: transparent transparent black transparent;
+.status-icon.pending {
+  background-color: #fbbc05;
 }
 
-.apps-tooltip-wrapper:hover .apps-tooltip-text,
-.avatar-tooltip-wrapper:hover .avatar-tooltip-text {
-  visibility: visible;
-  opacity: 1;
+.status-text {
+  font-size: 12px;
+  color: #5f6368;
 }
 
-.tooltip-disabled .help-tooltip-text,
-.tooltip-disabled .settings-tooltip-text,
-.tooltip-disabled .search-tooltip-text,
-.tooltip-disabled .apps-tooltip-text,
-.tooltip-disabled .avatar-tooltip-text {
-  display: none !important;
+@media (max-width: 768px) {
+  .today-tasks {
+    margin: 20px 15px;
+  }
+
+  .today-tasks li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .task-status {
+    margin-top: 8px;
+  }
+}
+
+.today-tasks {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 600px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+}
+
+.today-tasks-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.today-tasks-header h2 {
+  margin: 0;
+  color: #1a73e8;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.schedule-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.schedule-icon {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.2s ease;
+}
+
+.schedule-link:hover .schedule-icon {
+  transform: scale(1.1);
+}
+
+.task-info {
+  flex-grow: 1;
+}
+
+.task-name {
+  font-size: 14px;
+  color: #202124;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.task-name.completed {
+  text-decoration: line-through;
+  color: #5f6368;
+}
+
+.task-details {
+  display: flex;
+  gap: 8px;
+}
+
+.task-type,
+.task-activity {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.task-type.english {
+  background-color: #e8f0fe;
+  color: #1967d2;
+}
+
+.task-type.chinese {
+  background-color: #fce8e6;
+  color: #d93025;
+}
+
+.task-activity.vocabulary {
+  background-color: #e6f4ea;
+  color: #137333;
+}
+
+.task-activity.game {
+  background-color: #fff0e0;
+  color: #e37400;
+}
+
+.task-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-icon.completed {
+  background-color: #34a853;
+}
+
+.status-icon.pending {
+  background-color: #fbbc05;
+}
+
+.status-text {
+  font-size: 12px;
+  color: #5f6368;
+}
+
+@media (max-width: 768px) {
+  .today-tasks {
+    margin: 20px 15px;
+  }
+
+  .today-tasks li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .task-status {
+    margin-top: 8px;
+  }
+}
+
+.today-tasks .task-type,
+.today-tasks .task-activity {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.today-tasks .task-type {
+  margin-right: 5px;
+}
+
+.today-tasks .task-type.english {
+  background-color: #e8f0fe;
+  color: #1967d2;
+}
+
+.today-tasks .task-type.chinese {
+  background-color: #fce8e6;
+  color: #d93025;
+}
+
+.today-tasks .task-activity.vocabulary {
+  background-color: #e6f4ea;
+  color: #137333;
+}
+
+.today-tasks .task-activity.game {
+  background-color: #fff0e0;
+  color: #e37400;
+}
+
+@media (max-width: 768px) {
+  .today-tasks {
+    margin: 20px 15px;
+  }
+
+  .today-tasks h2 {
+    font-size: 20px;
+  }
+
+  .today-tasks li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .today-tasks .task-name {
+    margin-bottom: 5px;
+  }
+
+  .today-tasks .task-type,
+  .today-tasks .task-activity {
+    margin-top: 5px;
+  }
+}
+
+.today-tasks .task-activity.game {
+  background-color: #fff5e6;
+  color: #cc6600;
 }
