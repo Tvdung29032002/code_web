@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quản lý Tài khoản</title>
     <link rel="stylesheet" href="user_management_styles.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="user_management.png"
+    />
   </head>
   <body>
     <header>
@@ -33,54 +39,83 @@
 
     <div id="userModal" class="modal">
       <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2 id="modalTitle" class="modal-title">Thêm Người Dùng Mới</h2>
+        <div class="modal-header">
+          <div class="modal-icon">
+            <i class="fas fa-user-plus"></i>
+          </div>
+          <h2 id="modalTitle" class="modal-title">Thêm Người Dùng Mới</h2>
+        </div>
         <form id="userForm">
-          <div id="userInfo"></div>
-          <div class="form-group">
-            <label for="firstName">Họ:</label>
-            <input type="text" id="firstName" name="firstName" required />
+          <div class="form-grid">
+            <div class="form-group">
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                required
+                placeholder="Họ"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                required
+                placeholder="Tên"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="text"
+                id="username"
+                name="username"
+                required
+                placeholder="Tên người dùng"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                placeholder="Email"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                required
+                placeholder="Mật khẩu"
+              />
+            </div>
+            <div class="form-group">
+              <input type="date" id="birthDate" name="birthDate" required />
+            </div>
+            <div class="form-group">
+              <select id="gender" name="gender" required>
+                <option value="">Chọn giới tính</option>
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Khác">Khác</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <select id="role" name="role" required>
+                <option value="">Chọn vai trò</option>
+                <option value="User">User</option>
+                <option value="Admin">Admin</option>
+              </select>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="lastName">Tên:</label>
-            <input type="text" id="lastName" name="lastName" required />
-          </div>
-          <div class="form-group">
-            <label for="username">Tên người dùng:</label>
-            <input type="text" id="username" name="username" required />
-          </div>
-          <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required />
-          </div>
-          <div class="form-group">
-            <label for="password">Mật khẩu:</label>
-            <input type="password" id="password" name="password" required />
-          </div>
-          <div class="form-group">
-            <label for="birthDate">Ngày sinh:</label>
-            <input type="date" id="birthDate" name="birthDate" required />
-          </div>
-          <div class="form-group">
-            <label for="gender">Giới tính:</label>
-            <select id="gender" name="gender" required>
-              <option value="">Chọn giới tính</option>
-              <option value="Nam">Nam</option>
-              <option value="Nữ">Nữ</option>
-              <option value="Khác">Khác</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="role">Vai trò:</label>
-            <select id="role" name="role" required>
-              <option value="">Chọn vai trò</option>
-              <option value="User">User</option>
-              <option value="Admin">Admin</option>
-            </select>
-          </div>
-          <div class="modal-buttons">
-            <button type="button" onclick="closeModal()">Hủy</button>
-            <button type="submit">Lưu</button>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancelButton">
+              Hủy
+            </button>
+            <button type="submit" class="btn btn-primary">Lưu</button>
           </div>
         </form>
       </div>

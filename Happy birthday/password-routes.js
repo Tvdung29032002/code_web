@@ -23,63 +23,48 @@ function checkPasswordStrength(password) {
 // Reset password route
 router.post("/reset-password", async (req, res) => {
   try {
-    const { email } = req.body;
-    console.log("Received email for password reset:", email);
+    const { username, email } = req.body;
+    console.log("Received request for password reset:", { username, email });
 
     const [users] = await req.dbConnection.execute(
-      "SELECT * FROM users WHERE email = ?",
-      [email]
+      "SELECT * FROM users WHERE username = ? AND email = ?",
+      [username, email]
     );
     console.log("Users found:", users.length);
 
     if (users.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "Email không tồn tại trong hệ thống.",
+        message: "Không tìm thấy tài khoản với tên đăng nhập và email này.",
       });
     }
 
-    const user = users[0];
+    const user = users[0]; // Định nghĩa biến user
 
+    console.log("Generating new password");
     const newPassword = Math.random().toString(36).slice(-8);
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    console.log("New password generated");
+    console.log("New password generated and hashed");
 
+    console.log("Updating user in database");
     await req.dbConnection.execute(
-      "UPDATE users SET password = ? WHERE email = ?",
-      [hashedPassword, email]
+      "UPDATE users SET password = ?, failed_login_attempts = 0, account_locked_until = NULL WHERE id = ?",
+      [hashedPassword, user.id]
     );
-    console.log("Password updated in database");
+    console.log("User updated in database");
 
-    let transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "vboyht35@gmail.com",
-        pass: "rwzb tatw piem seuj",
-      },
-    });
-
+    console.log("Preparing to send email");
+    // Gửi email với mật khẩu mới
     let mailOptions = {
-      from: "vboyht35@gmail.com",
-      to: email,
-      subject: "Thông tin tài khoản của bạn",
-      html: `
-        <h2>Thông tin tài khoản của bạn</h2>
-        <p><strong>Họ và tên:</strong> ${user.firstName} ${user.lastName}</p>
-        <p><strong>Tên đăng nhập:</strong> ${user.username}</p>
-        <p><strong>Email:</strong> ${user.email}</p>
-        <p><strong>Ngày sinh:</strong> ${new Date(
-          user.birthDate
-        ).toLocaleDateString()}</p>
-        <p><strong>Giới tính:</strong> ${user.gender}</p>
-        <p><strong>Mật khẩu tạm thời của bạn là:</strong> ${newPassword}</p>
-        <p>Vui lòng đăng nhập và thay đổi mật khẩu của bạn ngay sau khi nhận được email này.</p>
-      `,
+      from: '"Admin" <your-email@gmail.com>',
+      to: user.email,
+      subject: "Đặt lại mật khẩu",
+      text: `Mật khẩu mới của bạn là: ${newPassword}. Vui lòng đăng nhập và thay đổi mật khẩu ngay lập tức.`,
     };
 
     await transporter.sendMail(mailOptions);
-    console.log("Email sent successfully");
 
+    console.log("Password reset email sent");
     res.json({
       success: true,
       message:
@@ -98,13 +83,12 @@ router.post("/reset-password", async (req, res) => {
 // Change password route
 router.post("/change-password", async (req, res) => {
   try {
-    const { username, currentPassword, newPassword } = req.body;
+    const { email, tempPassword, newPassword } = req.body;
 
-    if (!username || !currentPassword || !newPassword) {
+    if (!email || !tempPassword || !newPassword) {
       return res.status(400).json({
         success: false,
-        message:
-          "Vui lòng cung cấp đầy đủ thông tin: username, currentPassword và newPassword.",
+        message: "Vui lòng cung cấp đầy đủ thông tin.",
       });
     }
 
@@ -118,28 +102,28 @@ router.post("/change-password", async (req, res) => {
     }
 
     const [users] = await req.dbConnection.execute(
-      "SELECT * FROM users WHERE username = ?",
-      [username]
+      "SELECT * FROM users WHERE email = ?",
+      [email]
     );
 
     if (users.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "Không tìm thấy tài khoản với username này.",
+        message: "Không tìm thấy tài khoản với email này.",
       });
     }
 
     const user = users[0];
 
-    const isValidCurrentPassword = await bcrypt.compare(
-      currentPassword,
+    const isValidTempPassword = await bcrypt.compare(
+      tempPassword,
       user.password
     );
 
-    if (!isValidCurrentPassword) {
+    if (!isValidTempPassword) {
       return res.status(400).json({
         success: false,
-        message: "Mật khẩu hiện tại không đúng.",
+        message: "Mật khẩu tạm thời không đúng.",
       });
     }
 
@@ -151,15 +135,15 @@ router.post("/change-password", async (req, res) => {
     if (isSameAsOldPassword) {
       return res.status(400).json({
         success: false,
-        message: "Mật khẩu mới phải khác mật khẩu hiện tại.",
+        message: "Mật khẩu mới phải khác mật khẩu tạm thời.",
       });
     }
 
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
     await req.dbConnection.execute(
-      "UPDATE users SET password = ?, password_updated_at = CURRENT_TIMESTAMP WHERE username = ?",
-      [hashedNewPassword, username]
+      "UPDATE users SET password = ?, password_updated_at = CURRENT_TIMESTAMP WHERE email = ?",
+      [hashedNewPassword, email]
     );
 
     res.json({
@@ -174,6 +158,14 @@ router.post("/change-password", async (req, res) => {
       error: error.message,
     });
   }
+});
+
+let transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "vboyht35@gmail.com",
+    pass: "rwzb tatw piem seuj",
+  },
 });
 
 module.exports = router;

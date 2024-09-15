@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Giao Việc - Hệ Thống Quản Lý Nhiệm Vụ</title>
+    <title>Quản Lý Nhiệm Vụ - Tương Lai Của Công Việc</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
     <link
@@ -13,126 +13,135 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
     />
     <link rel="stylesheet" href="assign-tasks-style.css" />
+    <link rel="icon" type="image/png" sizes="32x32" href="tasks-icon.png" />
   </head>
   <body>
-    <header>
-      <nav>
-        <button id="backToHome" class="back-button">
-          <i class="fas fa-home"></i> Trang chủ
-        </button>
-        <h1>Giao Việc - Hệ Thống Quản Lý Nhiệm Vụ</h1>
-      </nav>
-    </header>
-
-    <main class="assign-tasks-container">
-      <section class="task-form-section">
-        <h2>Giao nhiệm vụ mới</h2>
-        <form id="assignTaskForm">
-          <div class="form-group">
-            <label for="taskName">Tên nhiệm vụ:</label>
-            <input type="text" id="taskName" required />
-          </div>
-
-          <div class="form-group">
-            <label for="taskDescription">Mô tả nhiệm vụ:</label>
-            <textarea id="taskDescription" required></textarea>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="startDate">Ngày bắt đầu:</label>
-              <input type="date" id="startDate" required />
-            </div>
-
-            <div class="form-group">
-              <label for="endDate">Ngày kết thúc:</label>
-              <input type="date" id="endDate" required />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Mức độ ưu tiên:</label>
-            <div class="priority-options">
-              <div class="priority-option">
-                <input
-                  type="radio"
-                  id="lowPriority"
-                  name="priority"
-                  value="low"
-                  required
-                />
-                <label for="lowPriority"
-                  ><i class="fas fa-arrow-down"></i> Thấp</label
-                >
-              </div>
-              <div class="priority-option">
-                <input
-                  type="radio"
-                  id="mediumPriority"
-                  name="priority"
-                  value="medium"
-                />
-                <label for="mediumPriority"
-                  ><i class="fas fa-minus"></i> Trung bình</label
-                >
-              </div>
-              <div class="priority-option">
-                <input
-                  type="radio"
-                  id="highPriority"
-                  name="priority"
-                  value="high"
-                />
-                <label for="highPriority"
-                  ><i class="fas fa-arrow-up"></i> Cao</label
-                >
-              </div>
-            </div>
-          </div>
-
-          <div class="btn-group">
-            <button type="button" class="btn btn-cancel" id="cancelAssign">
-              <i class="fas fa-times"></i> Hủy
-            </button>
-            <button type="submit" class="btn btn-save">
-              <i class="fas fa-paper-plane"></i> Giao việc
-            </button>
-          </div>
-        </form>
-      </section>
-
-      <section class="assigned-tasks-section">
-        <h2>Danh sách nhiệm vụ đã giao</h2>
-        <div class="task-filter">
-          <input
-            type="text"
-            id="taskSearch"
-            placeholder="Tìm kiếm nhiệm vụ..."
-          />
-          <select id="priorityFilter">
-            <option value="">Tất cả mức độ ưu tiên</option>
-            <option value="low">Thấp</option>
-            <option value="medium">Trung bình</option>
-            <option value="high">Cao</option>
-          </select>
+    <div class="app-container">
+      <aside class="sidebar">
+        <div class="logo">
+          <i class="fas fa-tasks"></i>
+          <span>TaskMaster</span>
         </div>
-        <ul id="taskList" class="task-list"></ul>
-        <div class="pagination">
-          <button id="prevPage" class="btn btn-pagination">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          <span id="currentPage">Trang 1</span>
-          <button id="nextPage" class="btn btn-pagination">
-            <i class="fas fa-chevron-right"></i>
-          </button>
+        <nav>
+          <a href="#" class="active"><i class="fas fa-home"></i> Tổng quan</a>
+          <a href="#"><i class="fas fa-calendar-alt"></i> Lịch</a>
+          <a href="#"><i class="fas fa-chart-bar"></i> Báo cáo</a>
+        </nav>
+      </aside>
+
+      <main class="main-content">
+        <header>
+          <div class="header-left">
+            <button id="backToHome" class="back-button">
+              <i class="fas fa-home"></i> Trang chủ
+            </button>
+            <h1>Quản Lý Nhiệm Vụ</h1>
+          </div>
+          <div class="search-bar">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Tìm kiếm nhiệm vụ..."
+            />
+            <i class="fas fa-search" id="searchButton"></i>
+          </div>
+        </header>
+
+        <section class="task-overview">
+          <div class="task-card">
+            <h3>Tổng nhiệm vụ</h3>
+            <span class="task-count">0</span>
+          </div>
+          <div class="task-card">
+            <h3>Đang thực hiện</h3>
+            <span class="task-count">0</span>
+          </div>
+          <div class="task-card">
+            <h3>Hoàn thành</h3>
+            <span class="task-count">0</span>
+          </div>
+          <div class="task-card overdue">
+            <h3>Quá hạn</h3>
+            <span class="task-count">0</span>
+          </div>
+        </section>
+
+        <section class="task-list">
+          <h2>Danh sách nhiệm vụ</h2>
+          <ul id="taskList"></ul>
+        </section>
+      </main>
+
+      <div class="add-task-button" id=" ">
+        <i class="fas fa-plus"></i>
+      </div>
+
+      <div class="modal" id="taskModal">
+        <div class="modal-content">
+          <button class="close">&times;</button>
+          <h2 class="modal-title">Tạo nhiệm vụ mới</h2>
+          <form id="taskForm">
+            <div class="form-group floating">
+              <input type="text" id="taskName" required placeholder=" " />
+              <label for="taskName">Tên nhiệm vụ</label>
+            </div>
+
+            <div class="form-group floating">
+              <textarea
+                id="taskDescription"
+                required
+                placeholder=" "
+              ></textarea>
+              <label for="taskDescription">Mô tả nhiệm vụ</label>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="startDate">Ngày bắt đầu</label>
+                <input type="date" id="startDate" required />
+              </div>
+              <div class="form-group">
+                <label for="startTime">Giờ bắt đầu</label>
+                <input type="time" id="startTime" required />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="endDate">Ngày kết thúc</label>
+                <input type="date" id="endDate" required />
+              </div>
+              <div class="form-group">
+                <label for="endTime">Giờ kết thúc</label>
+                <input type="time" id="endTime" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Mức độ ưu tiên</label>
+              <div class="priority-buttons">
+                <button type="button" class="priority-btn" data-priority="low">
+                  Thấp
+                </button>
+                <button
+                  type="button"
+                  class="priority-btn"
+                  data-priority="medium"
+                >
+                  Trung bình
+                </button>
+                <button type="button" class="priority-btn" data-priority="high">
+                  Cao
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-submit">Tạo nhiệm vụ</button>
+          </form>
         </div>
-      </section>
-    </main>
+      </div>
 
-    <footer>
-      <p>&copy; 2023 Hệ Thống Quản Lý Nhiệm Vụ. Bảo lưu mọi quyền.</p>
-    </footer>
-
-    <script src="assign-tasks-script.js"></script>
+      <script src="assign-tasks-script.js"></script>
+    </div>
   </body>
 </html>

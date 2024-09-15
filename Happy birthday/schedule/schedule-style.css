@@ -75,12 +75,7 @@ main {
   gap: 10px;
 }
 
-#viewToggle {
-  display: flex;
-  gap: 5px;
-}
-
-#viewToggle button,
+/* Giữ lại phần CSS cho nút exportCalendar */
 #exportCalendar {
   background-color: var(--primary-color);
   color: white;
@@ -91,12 +86,7 @@ main {
   transition: background-color 0.3s ease;
 }
 
-#viewToggle button:hover,
 #exportCalendar:hover {
-  background-color: var(--secondary-color);
-}
-
-#viewToggle button.active {
   background-color: var(--secondary-color);
 }
 
@@ -234,7 +224,96 @@ main {
 
 #statistics h2 {
   margin-top: 0;
+  margin-bottom: 20px;
   color: var(--secondary-color);
+}
+
+#statisticsControls {
+  margin-bottom: 20px;
+}
+
+.statistics-period {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.select-group {
+  display: flex;
+  gap: 5px;
+}
+
+.select-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.select-wrapper::after {
+  content: "\25BC";
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--secondary-color);
+}
+
+#statisticsControls select {
+  width: 100%;
+  padding: 8px 30px 8px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: white;
+  appearance: none;
+  font-size: 14px;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+#statisticsControls select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+#statisticsControls button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+#statisticsAll {
+  width: 100%;
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+#statisticsMonthly {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+#statisticsControls button:hover {
+  opacity: 0.9;
+}
+
+@media (min-width: 768px) {
+  .statistics-period {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  #statisticsAll {
+    width: auto;
+  }
+
+  .select-group {
+    flex: 1;
+  }
 }
 
 #searchResultsContainer {
@@ -476,4 +555,44 @@ main {
 .btn-cancel:hover {
   background-color: var(--secondary-color);
   color: white;
+}
+
+.btn-export {
+  background-color: var(--secondary-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.btn-export:hover {
+  background-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-export i {
+  font-size: 16px;
+}
+
+.export-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: var(--success-color);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+}
+
+.export-notification.show {
+  opacity: 1;
+  transform: translateY(0);
 }

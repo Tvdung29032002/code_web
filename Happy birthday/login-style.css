@@ -1,3 +1,4 @@
+/* Header styles */
 .header-login {
   display: flex;
   justify-content: center;
@@ -18,7 +19,7 @@
 .header-title {
   font-size: 14px;
   font-weight: bold;
-  color: #ef50c7; /* Màu vàng để nổi bật */
+  color: #ef50c7;
   white-space: nowrap;
   position: absolute;
   right: 0;
@@ -34,7 +35,17 @@
   }
 }
 
-/* Phần style cho toàn bộ nội dung body */
+/* Body and background styles */
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background: none;
+}
+
 #background-video {
   position: fixed;
   top: 50%;
@@ -49,107 +60,50 @@
   overflow: hidden;
 }
 
-body {
-  font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-  background: none; /* Bỏ màu nền để hiển thị video */
-}
-
-/* Phần style cho khung đăng nhập */
+/* Login container styles */
 .login-container {
-  background-color: white; /* Thiết lập màu nền trắng */
-  padding: 2rem; /* Thêm khoảng đệm bên trong khung */
-  border-radius: 5px; /* Làm tròn góc cho khung */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Thêm đổ bóng nhẹ */
-  width: 300px; /* Đặt chiều rộng cố định cho khung */
+  background-color: white;
+  padding: 2rem;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
 }
 
-/* Phần style cho container của logo */
 .logo-container {
   text-align: center;
   margin-bottom: 1.5rem;
 }
 
-/* Thay đổi này */
-#loginUsername,
-#loginPassword {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 3px;
-  box-sizing: border-box;
-}
-
-/* Thêm style cho nút hiển thị/ẩn mật khẩu */
-#togglePassword {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  width: 20px;
-  height: auto;
-  z-index: 10;
-}
-
-/* Phần style cho hình ảnh logo */
 .login-logo {
-  max-width: 100px; /* Điều chỉnh kích thước tối đa của logo */
+  max-width: 100px;
   height: auto;
-  border-radius: 50%; /* Bo tròn logo */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Thêm đổ bóng */
-  transition: box-shadow 0.3s ease; /* Hiệu ứng mượt mà khi hover */
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
 }
 
-/* Phần style cho nhóm input */
-.input-group {
-  margin-bottom: 1rem; /* Thêm margin phía dưới giữa các nhóm input */
+/* Form styles */
+.login-form {
+  width: 100%;
 }
 
-/* Phần style cho nhãn (label) */
-label {
-  display: block; /* Biến nhãn thành phần tử block */
-  margin-bottom: 0.5rem; /* Thêm margin phía dưới */
-}
-
-/* Phần style cho input */
-input {
-  width: 100%; /* Chiếm toàn bộ chiều rộng của container */
-  padding: 0.5rem; /* Thêm padding bên trong input */
-  border: 1px solid #ddd; /* Đặt viền màu xám nhạt */
-  border-radius: 3px; /* Làm tròn góc của input */
-}
-
-/* Phần style cho nút (button) */
-button {
-  width: 100%; /* Chiếm toàn bộ chiều rộng của container */
-  padding: 0.75rem; /* Thêm padding bên trong nút */
-  background-color: #3498db; /* Đặt màu nền cho nút */
-  color: white; /* Đặt màu văn bản là trắng */
-  border: none; /* Bỏ viền của nút */
-  border-radius: 3px; /* Làm tròn góc của nút */
-  cursor: pointer; /* Đổi con trỏ chuột thành pointer khi di chuột qua */
-}
-
-/* Phần style hover cho nút */
-button:hover {
-  background-color: #2980b9; /* Đậm màu nền của nút khi hover */
-}
 .input-group {
   margin-bottom: 1rem;
-  width: 100%; /* Đảm bảo tất cả input group có chiều rộng 100% */
 }
 
-.input-group input {
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.input-group input[type="text"],
+.input-group input[type="password"] {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #ddd;
   border-radius: 3px;
-  box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước tổng thể */
+  font-size: 1rem;
 }
 
 .password-group {
@@ -158,75 +112,18 @@ button:hover {
 
 .password-input-wrapper {
   position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.password-input-wrapper input[type="password"],
-.password-input-wrapper input[type="text"] {
-  width: 100%;
-  padding-right: 35px; /* Tạo khoảng trống cho biểu tượng */
 }
 
 .toggle-password {
   position: absolute;
-  right: 10px;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
   cursor: pointer;
   width: 20px;
   height: auto;
-  z-index: 10;
-}
-/* Phần style cho Google reCAPTCHA */
-.g-recaptcha {
-  margin-bottom: 15px; /* Thêm margin phía dưới cho phần Google reCAPTCHA */
 }
 
-/* Phần style cho các tùy chọn bổ sung */
-.additional-options {
-  margin-top: 1rem;
-  text-align: center;
-}
-
-/* Phần style cho liên kết "Quên mật khẩu?" */
-.forgot-password {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #3498db;
-  text-decoration: none;
-}
-
-/* Phần style cho nút "Tạo tài khoản mới" */
-.create-account {
-  background-color: #2ecc71;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 3px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.create-account:hover {
-  background-color: #27ae60;
-}
-
-footer {
-  position: fixed; /* Cố định vị trí của footer */
-  left: 0; /* Đặt footer ở mép trái */
-  bottom: 0; /* Đặt footer ở mép dưới */
-  width: 100%; /* Chiều rộng của footer bằng 100% chiều rộng màn hình */
-  background-color: #333333; /* Màu nền của footer */
-  color: white; /* Màu chữ trắng của footer */
-  text-align: center; /* Căn giữa văn bản trong footer */
-  padding: 6px 0; /* Khoảng cách padding trên và dưới của footer */
-}
-
-footer p {
-  margin: 0; /* Bỏ khoảng cách bên ngoài của đoạn văn */
-  font-size: 12px; /* Kích thước font chữ của đoạn văn */
-}
-
-/* Phần style cho checkbox "Duy trì đăng nhập" */
 .keep-logged-in {
   display: flex;
   align-items: center;
@@ -235,20 +132,66 @@ footer p {
 
 .keep-logged-in input[type="checkbox"] {
   margin-right: 0.5rem;
-  width: auto;
 }
 
-.keep-logged-in label {
-  margin-bottom: 0;
+.recaptcha-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.btn-login {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-login:hover {
+  background-color: #2980b9;
+}
+
+.additional-options {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.forgot-password,
+.create-account {
+  color: #3498db;
+  text-decoration: none;
   font-size: 0.9rem;
-  color: #333;
 }
 
-#keepLoggedIn {
-  width: auto;
-  margin-right: 0.5rem;
+.forgot-password:hover,
+.create-account:hover {
+  text-decoration: underline;
 }
 
+/* Footer styles */
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #333333;
+  color: white;
+  text-align: center;
+  padding: 6px 0;
+}
+
+footer p {
+  margin: 0;
+  font-size: 12px;
+}
+
+/* Modal styles */
 .modal {
   display: none;
   position: fixed;
@@ -266,45 +209,73 @@ footer p {
   margin: 5% auto;
   padding: 20px;
   border: none;
-  width: 432px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  border-radius: 5px;
+  width: 300px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .close {
-  color: #606770;
+  color: #aaa;
   float: right;
   font-size: 28px;
   font-weight: bold;
   cursor: pointer;
 }
 
-h2 {
-  color: #1c1e21;
-  font-size: 32px;
-  line-height: 38px;
-  margin-bottom: 0;
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
 }
 
-.modal-content p {
-  color: #606770;
-  font-size: 15px;
-  line-height: 24px;
+#forgotPasswordModal h2 {
+  margin-top: 0;
+  color: #333;
 }
 
-.input-group {
-  margin-bottom: 10px;
+#forgotPasswordModal p {
+  margin-bottom: 20px;
+  color: #666;
 }
 
-.input-group input,
-.input-group select {
+#forgotPasswordForm .input-group {
+  margin-bottom: 15px;
+}
+
+#forgotPasswordForm label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+#forgotPasswordForm input[type="text"],
+#forgotPasswordForm input[type="email"] {
   width: 100%;
-  padding: 11px;
-  font-size: 15px;
-  border: 1px solid #ccd0d5;
-  border-radius: 5px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 14px;
 }
 
+#forgotPasswordForm .btn-submit {
+  width: 100%;
+  padding: 10px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#forgotPasswordForm .btn-submit:hover {
+  background-color: #2980b9;
+}
+
+/* Signup form styles */
 .birthday-inputs,
 .gender-inputs {
   display: flex;
@@ -346,17 +317,14 @@ h2 {
   background-color: #42b72a;
 }
 
-#loginForm {
-  width: 100%;
-}
-
+/* Error message styles */
 .error-message {
   color: #ff0000;
   font-size: 0.9rem;
   margin-top: 0.5rem;
 }
 
-/* Style cho modal thay đổi mật khẩu */
+/* Change password modal styles */
 #changePasswordModal .modal-content {
   max-width: 400px;
   margin: 20px auto;
@@ -407,4 +375,137 @@ h2 {
 
 #changePasswordForm button[type="submit"]:hover {
   background-color: #45a049;
+}
+
+/* Contact admin button styles */
+.contact-admin-button {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  background-color: #4a90e2;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s, box-shadow 0.3s;
+  overflow: hidden;
+}
+
+.contact-admin-button img {
+  width: 70%;
+  height: auto;
+  transition: transform 0.3s;
+}
+
+.contact-admin-button:hover {
+  background-color: #3a7bc8;
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.contact-admin-button:hover img {
+  transform: scale(1.1);
+}
+
+/* Signup Modal Styles */
+.signup-modal {
+  max-width: 400px;
+  width: 100%;
+}
+
+.signup-modal h2 {
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.signup-subtitle {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+.signup-modal input[type="text"],
+.signup-modal input[type="email"],
+.signup-modal input[type="password"],
+.signup-modal select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 14px;
+}
+
+.birthday-inputs,
+.gender-inputs {
+  display: flex;
+  gap: 10px;
+}
+
+.birthday-inputs select {
+  flex: 1;
+}
+
+.gender-inputs label {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.gender-inputs input[type="radio"] {
+  display: none;
+}
+
+.gender-inputs input[type="radio"]:checked + label {
+  background-color: #e7f3ff;
+  border-color: #3498db;
+  color: #3498db;
+}
+
+.terms {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 15px;
+}
+
+.btn-signup {
+  width: 100%;
+  padding: 10px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-signup:hover {
+  background-color: #2980b9;
+}
+
+.password-strength {
+  font-size: 12px;
+  margin-top: 5px;
+  color: #666;
 }

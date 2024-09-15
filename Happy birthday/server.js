@@ -9,6 +9,7 @@ const passwordRoutes = require("./password-routes");
 const mainRoutes = require("./main-routes");
 const userManagementRoutes = require("./user_management_routes");
 const scheduleRoutes = require("./routes/schedule-routes");
+const infoForumRoutes = require("./routes/info-forum-routes");
 
 const app = express();
 
@@ -60,6 +61,7 @@ app.use("/api", passwordRoutes);
 app.use("/api", mainRoutes);
 app.use("/api", userManagementRoutes);
 app.use("/api", scheduleRoutes);
+app.use("/api", infoForumRoutes);
 
 // Serve vocabulary.html
 app.get("/vocabulary", (req, res) => {

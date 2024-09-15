@@ -31,9 +31,11 @@ router.post("/login", async (req, res) => {
 
     const query = `
       SELECT u.*, pi.id AS personal_info_id, 
-      CASE WHEN pi.phone IS NOT NULL OR pi.bio IS NOT NULL THEN true ELSE false END AS has_updated_info
+      CASE WHEN pi.phone IS NOT NULL OR pi.bio IS NOT NULL THEN true ELSE false END AS has_updated_info,
+      ura.role, u.failed_login_attempts, u.account_locked_until
       FROM users u 
       LEFT JOIN personal_info pi ON u.id = pi.user_id 
+      LEFT JOIN user_roles_actions ura ON u.id = ura.user_id
       WHERE LOWER(u.username) = LOWER(?)
     `;
     console.log("SQL query:", query, "with username:", username);
@@ -53,14 +55,64 @@ router.post("/login", async (req, res) => {
     const user = users[0];
     console.log("User found:", user.username);
 
+    // Kiểm tra xem tài khoản có bị khóa không
+    if (
+      user.account_locked_until &&
+      new Date() < new Date(user.account_locked_until)
+    ) {
+      return res.json({
+        success: false,
+        message: `Tài khoản của bạn đã bị khóa. Vui lòng thử lại sau ${new Date(
+          user.account_locked_until
+        ).toLocaleString()}.`,
+      });
+    }
+
     console.log("Comparing passwords...");
     const isPasswordValid = await bcrypt.compare(password, user.password);
     console.log("Password valid:", isPasswordValid);
 
     if (!isPasswordValid) {
       console.log("Invalid password");
-      return res.json({ success: false, message: "Mật khẩu không đúng" });
+
+      // Tăng số lần đăng nhập thất bại
+      const newFailedAttempts = user.failed_login_attempts + 1;
+      let updateQuery =
+        "UPDATE users SET failed_login_attempts = ? WHERE id = ?";
+      let updateParams = [newFailedAttempts, user.id];
+
+      // Nếu đã đạt đến 5 lần thất bại, khóa tài khoản
+      if (newFailedAttempts >= 5) {
+        const lockUntil = new Date(Date.now() + 30 * 60000); // Khóa trong 30 phút
+        updateQuery =
+          "UPDATE users SET failed_login_attempts = ?, account_locked_until = ? WHERE id = ?";
+        updateParams = [newFailedAttempts, lockUntil, user.id];
+      }
+
+      await req.dbConnection.execute(updateQuery, updateParams);
+
+      // Trả về thông báo tương ứng
+      if (newFailedAttempts >= 5) {
+        return res.json({
+          success: false,
+          message:
+            "Tài khoản của bạn đã bị khóa do nhập sai mật khẩu quá 5 lần. Vui lòng sử dụng chức năng quên mật khẩu để đặt lại mật khẩu.",
+        });
+      } else if (newFailedAttempts >= 3) {
+        return res.json({
+          success: false,
+          message: `Mật khẩu không đúng. Cảnh báo: Bạn đã nhập sai ${newFailedAttempts} lần. Tài khoản sẽ bị khóa sau 5 lần nhập sai.`,
+        });
+      } else {
+        return res.json({ success: false, message: "Mật khẩu không đúng" });
+      }
     }
+
+    // Đặt lại số lần đăng nhập thất bại khi đăng nhập thành công
+    await req.dbConnection.execute(
+      "UPDATE users SET failed_login_attempts = 0, account_locked_until = NULL WHERE id = ?",
+      [user.id]
+    );
 
     console.log("Login successful");
     res.json({
@@ -72,6 +124,7 @@ router.post("/login", async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        role: user.role,
         hasUpdatedInfo: user.has_updated_info === 1,
       },
     });
@@ -151,6 +204,8 @@ router.post("/register", async (req, res) => {
 router.get("/user-details/:username", async (req, res) => {
   try {
     const { username } = req.params;
+    console.log("Fetching user details for username:", username);
+
     const [users] = await req.dbConnection.execute(
       `SELECT u.id, u.firstName, u.lastName, u.email, u.birthDate, u.gender, 
               pi.phone, pi.bio, pi.photo_url 
@@ -160,7 +215,10 @@ router.get("/user-details/:username", async (req, res) => {
       [username]
     );
 
+    console.log("Query result:", users);
+
     if (users.length === 0) {
+      console.log("User not found");
       return res.status(404).json({
         success: false,
         message: "Không tìm thấy thông tin người dùng.",
@@ -168,6 +226,8 @@ router.get("/user-details/:username", async (req, res) => {
     }
 
     const user = users[0];
+    console.log("Sending user data:", user);
+
     res.json({
       success: true,
       user: {

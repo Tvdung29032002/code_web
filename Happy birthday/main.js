@@ -1,6 +1,20 @@
 // Import các hàm từ weather.js
 import { initWeather, updateToggleIcon } from "./weather.js";
 
+function checkUserRole() {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  console.log("Checking user role:", currentUser?.role);
+  if (currentUser && currentUser.role === "Admin") {
+    document
+      .querySelectorAll(".admin-only")
+      .forEach((el) => (el.style.display = "block"));
+  } else {
+    document
+      .querySelectorAll(".admin-only")
+      .forEach((el) => (el.style.display = "none"));
+  }
+}
+
 // Khai báo các biến và hàm cần thiết
 document.addEventListener("DOMContentLoaded", async function () {
   const sidebarToggle = document.getElementById("sidebarToggle");
@@ -233,8 +247,12 @@ document.addEventListener("DOMContentLoaded", async function () {
   // Thêm hàm mới để lấy nhiệm vụ của ngày hiện tại
   async function fetchTodayTasks() {
     const userId = localStorage.getItem("userId");
+    console.log("UserId from localStorage:", userId); // Thêm log này
+
     if (!userId) {
       console.error("Không tìm thấy userId");
+      // Có thể thêm xử lý khác ở đây, ví dụ: chuyển hướng đến trang đăng nhập
+      // window.location.href = "login.html";
       return [];
     }
 
@@ -392,4 +410,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     citySearch,
     selectedCity
   );
+
+  // Kiểm tra và áp dụng phân quyền
+  checkUserRole();
 });

@@ -152,10 +152,16 @@ router.post("/tasks/fixed", async (req, res) => {
 // Thêm nhiệm vụ mới (giao việc)
 router.post("/assign-task", async (req, res) => {
   try {
-    const { userId, taskName, taskDescription, startDate, endDate, priority } =
-      req.body;
+    const {
+      userId,
+      taskName,
+      taskDescription,
+      startDateTime,
+      endDateTime,
+      priority,
+    } = req.body;
 
-    if (!userId || !taskName || !startDate || !endDate || !priority) {
+    if (!userId || !taskName || !startDateTime || !endDateTime || !priority) {
       return res.status(400).json({
         success: false,
         message: "Thiếu thông tin cần thiết để giao nhiệm vụ",
@@ -164,7 +170,7 @@ router.post("/assign-task", async (req, res) => {
 
     const [result] = await req.dbConnection.execute(
       "INSERT INTO assigned_tasks (user_id, task_name, task_description, start_date, end_date, priority) VALUES (?, ?, ?, ?, ?, ?)",
-      [userId, taskName, taskDescription, startDate, endDate, priority]
+      [userId, taskName, taskDescription, startDateTime, endDateTime, priority]
     );
 
     res.json({
@@ -382,6 +388,66 @@ router.get("/assigned-tasks/:userId", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Không thể lấy danh sách nhiệm vụ đã giao",
+      error: error.message,
+    });
+  }
+});
+
+// Thêm route mới để lấy tổng quan nhiệm vụ
+router.get("/task-overview/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const [overview] = await req.dbConnection.execute(
+      `
+      SELECT 
+        COUNT(*) as total,
+        SUM(CASE WHEN completed = 0 AND end_date >= CURDATE() THEN 1 ELSE 0 END) as pending,
+        SUM(CASE WHEN completed = 0 AND end_date < CURDATE() THEN 1 ELSE 0 END) as overdue,
+        SUM(CASE WHEN completed = 1 THEN 1 ELSE 0 END) as completed
+      FROM assigned_tasks
+      WHERE user_id = ?
+    `,
+      [userId]
+    );
+
+    res.json({
+      success: true,
+      overview: {
+        total: overview[0].total || 0,
+        pending: overview[0].pending || 0,
+        inProgress: overview[0].pending || 0, // Đang thực hiện được coi là đang chờ
+        completed: overview[0].completed || 0,
+        overdue: overview[0].overdue || 0,
+      },
+    });
+  } catch (error) {
+    console.error("Lỗi khi lấy tổng quan nhiệm vụ:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể lấy tổng quan nhiệm vụ",
+      error: error.message,
+    });
+  }
+});
+
+// Thêm route tìm kiếm nhiệm vụ đã giao
+router.get("/assigned-tasks/search/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { searchTerm } = req.query;
+    const [tasks] = await req.dbConnection.execute(
+      `SELECT * FROM assigned_tasks 
+       WHERE user_id = ? 
+       AND (task_name LIKE ? OR task_description LIKE ?)
+       ORDER BY start_date`,
+      [userId, `%${searchTerm}%`, `%${searchTerm}%`]
+    );
+    res.json({ success: true, tasks: tasks });
+  } catch (error) {
+    console.error("Lỗi khi tìm kiếm nhiệm vụ đã giao:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể tìm kiếm nhiệm vụ đã giao",
       error: error.message,
     });
   }

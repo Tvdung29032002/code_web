@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  const assignTaskForm = document.getElementById("assignTaskForm");
+  const assignTaskForm = document.getElementById("taskForm");
   const taskList = document.getElementById("taskList");
   const backToHomeButton = document.getElementById("backToHome");
 
@@ -18,16 +18,37 @@ document.addEventListener("DOMContentLoaded", function () {
     window.location.href = "../index.html";
   });
 
+  const priorityButtons = document.querySelectorAll(".priority-btn");
+  let selectedPriority = null;
+
+  priorityButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      priorityButtons.forEach((btn) => btn.classList.remove("active"));
+      this.classList.add("active");
+      selectedPriority = this.dataset.priority;
+    });
+  });
+
   assignTaskForm.addEventListener("submit", async function (e) {
     e.preventDefault();
+
+    if (!selectedPriority) {
+      alert("Vui lòng chọn mức độ ưu tiên");
+      return;
+    }
+
+    const startDate = document.getElementById("startDate").value;
+    const startTime = document.getElementById("startTime").value;
+    const endDate = document.getElementById("endDate").value;
+    const endTime = document.getElementById("endTime").value;
 
     const formData = {
       userId: userId,
       taskName: document.getElementById("taskName").value,
       taskDescription: document.getElementById("taskDescription").value,
-      startDate: document.getElementById("startDate").value,
-      endDate: document.getElementById("endDate").value,
-      priority: document.querySelector('input[name="priority"]:checked').value,
+      startDateTime: `${startDate}T${startTime}`,
+      endDateTime: `${endDate}T${endTime}`,
+      priority: selectedPriority,
     };
 
     try {
@@ -51,19 +72,17 @@ document.addEventListener("DOMContentLoaded", function () {
       if (result.success) {
         alert(result.message);
         assignTaskForm.reset();
+        priorityButtons.forEach((btn) => btn.classList.remove("active"));
+        selectedPriority = null;
+        taskModal.style.display = "none";
         loadAssignedTasks();
+        loadTaskOverview();
       } else {
         alert("Lỗi: " + result.message);
       }
     } catch (error) {
       console.error("Lỗi:", error);
-      let errorMessage = "Đã xảy ra lỗi khi giao nhiệm vụ";
-      if (error instanceof Response) {
-        errorMessage += `: ${error.status} ${error.statusText}`;
-      } else {
-        errorMessage += `: ${error.message}`;
-      }
-      alert(errorMessage);
+      alert("Đã xảy ra lỗi khi giao nhiệm vụ: " + error.message);
     }
   });
 
@@ -87,14 +106,42 @@ document.addEventListener("DOMContentLoaded", function () {
   function displayAssignedTasks(tasks) {
     taskList.innerHTML = "";
     tasks.forEach((task) => {
+      const startDateTime = new Date(task.start_date);
+      const endDateTime = new Date(task.end_date);
+      const formattedStartDate = startDateTime.toLocaleDateString("vi-VN");
+      const formattedStartTime = startDateTime.toLocaleTimeString("vi-VN", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      const formattedEndDate = endDateTime.toLocaleDateString("vi-VN");
+      const formattedEndTime = endDateTime.toLocaleTimeString("vi-VN", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
       const li = document.createElement("li");
+      li.className = `task-item ${task.completed ? "completed" : ""}`;
       li.innerHTML = `
-        <span class="${task.completed ? "completed" : ""}">${
-        task.task_name
-      } - Ưu tiên: ${task.priority}</span>
-        <input type="checkbox" class="task-checkbox" data-task-id="${
-          task.id
-        }" ${task.completed ? "checked" : ""}>
+        <div class="task-header">
+          <h3 class="task-name">${task.task_name}</h3>
+          <span class="task-priority ${task.priority}">${task.priority}</span>
+        </div>
+        <div class="task-body">
+          <p class="task-description">${task.task_description}</p>
+          <div class="task-time">
+            <span class="task-start-time">Bắt đầu: ${formattedStartDate} ${formattedStartTime}</span>
+            <span class="task-end-time">Kết thúc: ${formattedEndDate} ${formattedEndTime}</span>
+          </div>
+        </div>
+        <div class="task-footer">
+          <label class="task-status">
+            <input type="checkbox" class="task-checkbox" data-task-id="${
+              task.id
+            }" ${task.completed ? "checked" : ""}>
+            <span class="checkmark"></span>
+            ${task.completed ? "Đã hoàn thành" : "Chưa hoàn thành"}
+          </label>
+        </div>
       `;
       taskList.appendChild(li);
     });
@@ -125,9 +172,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const result = await response.json();
 
           if (result.success) {
-            this.closest("li")
-              .querySelector("span")
-              .classList.toggle("completed", completed);
+            this.closest(".task-item").classList.toggle("completed", completed);
           } else {
             alert("Lỗi: " + result.message);
             this.checked = !completed; // Revert checkbox state if update failed
@@ -143,4 +188,91 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Load danh sách nhiệm vụ khi trang được tải
   loadAssignedTasks();
+
+  // Thêm hàm mới để lấy và hiển thị tổng quan nhiệm vụ
+  async function loadTaskOverview() {
+    try {
+      const response = await fetch(
+        `http://192.168.0.103:3000/api/task-overview/${userId}`
+      );
+      const result = await response.json();
+
+      if (result.success) {
+        displayTaskOverview(result.overview);
+      } else {
+        console.error("Lỗi khi tải tổng quan nhiệm vụ:", result.message);
+      }
+    } catch (error) {
+      console.error("Lỗi:", error);
+    }
+  }
+
+  function displayTaskOverview(overview) {
+    document.querySelector(".task-card:nth-child(1) .task-count").textContent =
+      overview.total;
+    document.querySelector(".task-card:nth-child(2) .task-count").textContent =
+      overview.inProgress;
+    document.querySelector(".task-card:nth-child(3) .task-count").textContent =
+      overview.completed;
+    document.querySelector(".task-card:nth-child(4) .task-count").textContent =
+      overview.overdue;
+  }
+
+  // Gọi hàm loadTaskOverview khi trang được tải
+  loadTaskOverview();
+
+  const addTaskButton = document.getElementById("addTaskButton");
+  const taskModal = document.getElementById("taskModal");
+
+  addTaskButton.addEventListener("click", function () {
+    taskModal.style.display = "block";
+  });
+
+  // Thêm sự kiện đóng modal
+  const closeModal = document.getElementsByClassName("close")[0];
+  closeModal.addEventListener("click", function () {
+    taskModal.style.display = "none";
+  });
+
+  // Đóng modal khi click bên ngoài
+  window.addEventListener("click", function (event) {
+    if (event.target == taskModal) {
+      taskModal.style.display = "none";
+    }
+  });
+
+  const searchInput = document.getElementById("searchInput");
+  const searchButton = document.getElementById("searchButton");
+
+  searchButton.addEventListener("click", performSearch);
+  searchInput.addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+      performSearch();
+    }
+  });
+
+  async function performSearch() {
+    const searchTerm = searchInput.value.trim();
+    if (searchTerm === "") {
+      loadAssignedTasks(); // Nếu ô tìm kiếm trống, load lại tất cả nhiệm vụ
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://192.168.0.103:3000/api/assigned-tasks/search/${userId}?searchTerm=${encodeURIComponent(
+          searchTerm
+        )}`
+      );
+      const result = await response.json();
+
+      if (result.success) {
+        displayAssignedTasks(result.tasks);
+      } else {
+        console.error("Lỗi khi tìm kiếm nhiệm vụ:", result.message);
+      }
+    } catch (error) {
+      console.error("Lỗi:", error);
+    }
+  }
 });

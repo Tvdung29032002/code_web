@@ -34,20 +34,24 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
       console.log("Server response:", data);
       if (data.success) {
         console.log("Login successful");
-        // Lưu thông tin người dùng vào localStorage
-        localStorage.setItem("currentUser", JSON.stringify(data.user));
-        localStorage.setItem("username", data.user.username); // Thêm dòng này
-        localStorage.setItem("userId", data.user.id);
-        if (keepLoggedIn) {
-          console.log("Saving login info to localStorage");
-          localStorage.setItem("isLoggedIn", "true");
-        } else {
-          console.log("Removing isLoggedIn from localStorage");
-          localStorage.removeItem("isLoggedIn");
-        }
+        localStorage.setItem("username", data.user.username);
+        localStorage.setItem("isLoggedIn", "true");
+        console.log("User role from server:", data.user.role); // Thêm dòng này
+        const currentUser = {
+          id: data.user.id,
+          username: data.user.username,
+          firstName: data.user.firstName,
+          lastName: data.user.lastName,
+          email: data.user.email,
+          role: data.user.role,
+        };
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        console.log("User data saved to localStorage:", currentUser); // Thêm dòng này
+        localStorage.setItem("userId", data.user.id); // Đảm bảo lưu userId
+        console.log("User role saved:", data.user.role);
+        console.log("UserId saved:", data.user.id); // Thêm log này
 
-        // Kiểm tra xem người dùng đã cập nhật thông tin cá nhân chưa
-        if (data.user && data.user.hasUpdatedInfo !== undefined) {
+        if (data.user.hasUpdatedInfo !== undefined) {
           if (data.user.hasUpdatedInfo) {
             alert("Đăng nhập thành công!");
           } else {
@@ -109,6 +113,25 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
   }
+
+  // Xử lý nút liên hệ quản trị viên
+  const contactAdminBtn = document.getElementById("contactAdminBtn");
+  const contactAdminModal = document.getElementById("contactAdminModal");
+  const closeContactAdminModal = contactAdminModal.querySelector(".close");
+
+  contactAdminBtn.addEventListener("click", function () {
+    contactAdminModal.style.display = "block";
+  });
+
+  closeContactAdminModal.addEventListener("click", function () {
+    contactAdminModal.style.display = "none";
+  });
+
+  window.addEventListener("click", function (event) {
+    if (event.target == contactAdminModal) {
+      contactAdminModal.style.display = "none";
+    }
+  });
 });
 
 window.addEventListener("load", function () {
@@ -120,23 +143,36 @@ window.addEventListener("load", function () {
   }
 });
 
-var modal = document.getElementById("signupModal");
-var btn = document.querySelector(".create-account");
-var span = document.getElementsByClassName("close")[0];
-
-if (btn) {
-  btn.onclick = function () {
-    modal.style.display = "block";
-  };
-}
-
-if (span) {
-  span.onclick = function () {
-    modal.style.display = "none";
-  };
-}
-
 document.addEventListener("DOMContentLoaded", function () {
+  var modal = document.getElementById("signupModal");
+  var btn = document.querySelector(".create-account");
+  var span = modal.querySelector(".close");
+
+  if (btn) {
+    btn.onclick = function () {
+      modal.style.display = "block";
+    };
+  }
+
+  if (span) {
+    span.onclick = function () {
+      modal.style.display = "none";
+    };
+  }
+
+  // Đảm bảo rằng tất cả các modal được đóng khi click bên ngoài
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+    if (event.target == document.getElementById("forgotPasswordModal")) {
+      document.getElementById("forgotPasswordModal").style.display = "none";
+    }
+    if (event.target == document.getElementById("changePasswordModal")) {
+      document.getElementById("changePasswordModal").style.display = "none";
+    }
+  };
+
   const daySelect = document.getElementById("day");
   const monthSelect = document.getElementById("month");
   const yearSelect = document.getElementById("year");
@@ -360,7 +396,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   forgotPasswordForm.addEventListener("submit", function (e) {
     e.preventDefault();
+    const username = document
+      .getElementById("forgotPasswordUsername")
+      .value.trim();
     const email = document.getElementById("forgotPasswordEmail").value.trim();
+
+    if (!username || !email) {
+      alert("Vui lòng nhập đầy đủ tên đăng nhập và email.");
+      return;
+    }
 
     if (!isValidEmail(email)) {
       alert("Vui lòng nhập một địa chỉ email hợp lệ.");
@@ -372,7 +416,7 @@ document.addEventListener("DOMContentLoaded", function () {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ username, email }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -404,6 +448,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const newPassword = document.getElementById("newPassword").value;
     const confirmNewPassword =
       document.getElementById("confirmNewPassword").value;
+
+    if (!tempPassword || !newPassword || !confirmNewPassword) {
+      alert("Vui lòng điền đầy đủ thông tin.");
+      return;
+    }
 
     if (newPassword !== confirmNewPassword) {
       alert("Mật khẩu mới và xác nhận mật khẩu không khớp.");
@@ -521,7 +570,8 @@ if (confirmNewPasswordInput) {
 
 function logout() {
   localStorage.removeItem("currentUser");
-  localStorage.removeItem("userId"); // Thêm dòng này
+  localStorage.removeItem("userId");
+  localStorage.removeItem("isLoggedIn");
   // Chuyển hướng đến trang đăng nhập hoặc trang chính
-  window.location.href = "/login";
+  window.location.href = "login.html";
 }

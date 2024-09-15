@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diễn đàn Trao đổi Thông tin</title>
+    <link rel="stylesheet" href="info-forum-styles.css" />
+    <link rel="icon" type="image/png" sizes="32x32" href="socialize.png" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.0/dist/index.js"
+      type="module"
+    ></script>
+  </head>
+  <body>
+    <header>
+      <h1>Diễn đàn Trao đổi Thông tin</h1>
+      <!-- Thêm liên kết trở về trang chủ -->
+      <a href="../index.html" class="home-link">Trở về Trang chủ</a>
+    </header>
+
+    <div class="container">
+      <div class="forum-header">
+        <div class="category-filter">
+          <button class="category-btn active">Tất cả chủ đề</button>
+          <button class="category-btn">Tiếng Anh</button>
+          <button class="category-btn">Tiếng Trung</button>
+          <button class="category-btn">Lịch trình học tập</button>
+          <button class="category-btn">Khác</button>
+        </div>
+        <div class="search-bar">
+          <input type="text" placeholder="Tìm kiếm chủ đề..." />
+          <button class="search-btn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="search-icon"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="forum-actions">
+          <button class="new-topic-btn">Tạo chủ đề mới</button>
+          <div class="sort-dropdown">
+            <label for="sort-select">Sắp xếp theo:</label>
+            <select id="sort-select">
+              <option value="newest">Mới nhất</option>
+              <option value="most-viewed">Xem nhiều nhất</option>
+              <option value="most-replied">Trả lời nhiều nhất</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-list">
+        <!-- Nội dung sẽ được thêm động bằng JavaScript -->
+      </div>
+
+      <div class="pagination">
+        <!-- Nút phân trang sẽ được thêm động bằng JavaScript -->
+      </div>
+    </div>
+
+    <!-- Modal tạo chủ đề mới -->
+    <div id="new-topic-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Tạo chủ đề mới</h2>
+        <form id="new-topic-form">
+          <div class="form-group">
+            <label for="new-topic-title">Tiêu đề:</label>
+            <input type="text" id="new-topic-title" required />
+          </div>
+          <div class="form-group">
+            <label for="new-topic-content">Nội dung:</label>
+            <textarea id="new-topic-content" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="new-topic-category">Danh mục:</label>
+            <select id="new-topic-category" required>
+              <option value="Tiếng Anh">Tiếng Anh</option>
+              <option value="Tiếng Trung">Tiếng Trung</option>
+              <option value="Lịch trình học tập">Lịch trình học tập</option>
+              <option value="Khác">Khác</option>
+            </select>
+          </div>
+          <button type="submit">Tạo chủ đề</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal chi tiết chủ đề -->
+    <div id="topic-details-modal" class="modal">
+      <div class="modal-content topic-details-content">
+        <span class="close">&times;</span>
+        <div class="topic-header">
+          <h2 class="topic-title"></h2>
+          <div class="topic-meta">
+            <span class="topic-author"></span>
+            <span class="topic-date"></span>
+          </div>
+        </div>
+        <div class="topic-body"></div>
+        <div class="topic-stats">
+          <span class="view-count"></span>
+          <span class="reply-count"></span>
+        </div>
+        <h3>Trả lời:</h3>
+        <div class="replies-list"></div>
+        <form id="reply-form">
+          <div class="reply-input-container">
+            <textarea
+              id="reply-content"
+              placeholder="Nhập trả lời của bạn..."
+              required
+            ></textarea>
+            <button type="button" id="emoji-button">😊</button>
+            <div id="emoji-picker" style="display: none"></div>
+          </div>
+          <button type="submit">Gửi trả lời</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="info-forum-script.js" type="module"></script>
+  </body>
+</html>

@@ -153,101 +153,115 @@ header h1 {
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto; /* Cho phép cuộn nếu nội dung vượt quá */
+  overflow-y: auto;
   background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
-  background-color: #fefefe;
+  background-color: #ffffff;
   margin: 5% auto;
-  padding: 30px;
+  padding: 0;
   border-radius: 8px;
   width: 90%;
   max-width: 600px;
-  max-height: 80vh; /* Giới hạn chiều cao tối đa */
-  overflow-y: auto; /* Cho phép cuộn theo chiều dọc nếu cần */
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
-.modal h2 {
-  margin-top: 0;
-  margin-bottom: 20px;
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-icon {
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+}
+
+.modal-icon i {
+  font-size: 20px;
+  color: white;
+}
+
+.modal-title {
+  font-size: 22px;
+  font-weight: 600;
   color: #202124;
-  font-size: 24px;
-  text-align: center;
-  position: sticky; /* Giữ tiêu đề cố định khi cuộn */
-  top: 0;
-  background-color: #fefefe;
-  padding: 10px 0;
-  z-index: 1;
+  margin: 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  padding: 20px;
 }
 
 .form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: #5f6368;
-  font-size: 14px;
+  margin-bottom: 15px;
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   border: 1px solid #dadce0;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 14px;
   transition: border-color 0.3s;
 }
 
 .form-group input:focus,
 .form-group select:focus {
-  outline: none;
   border-color: #1a73e8;
+  outline: none;
   box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
 }
 
-.modal-buttons {
-  text-align: right;
-  margin-top: 30px;
-  position: sticky; /* Giữ các nút cố định ở dưới cùng */
-  bottom: 0;
-  background-color: #fefefe;
-  padding: 10px 0;
-  z-index: 1;
+.form-group input::placeholder {
+  color: #80868b;
 }
 
-.modal-buttons button {
-  padding: 12px 24px;
+.modal-footer {
+  padding: 15px 20px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+  text-align: right;
+}
+
+.btn {
+  padding: 8px 16px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 14px;
   transition: background-color 0.3s, transform 0.1s;
 }
 
-.modal-buttons button:hover {
-  transform: translateY(-1px);
-}
-
-.close {
+.btn-secondary {
+  background-color: #f1f3f4;
   color: #5f6368;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: color 0.3s;
+  margin-right: 10px;
 }
 
-.close:hover,
-.close:focus {
-  color: #202124;
-  text-decoration: none;
+.btn-primary {
+  background-color: #1a73e8;
+  color: white;
+}
+
+.btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {
@@ -275,32 +289,26 @@ header h1 {
 
   .modal-content {
     width: 95%;
-    padding: 20px;
-    margin: 2% auto; /* Giảm khoảng cách từ trên xuống */
-    max-height: 90vh; /* Tăng chiều cao tối đa trên thiết bị di động */
+    margin: 5% auto;
+    max-height: 90vh;
   }
 
-  .modal h2 {
-    font-size: 20px;
-  }
-
-  .form-group label {
-    font-size: 13px;
-  }
-
-  .form-group input,
-  .form-group select {
-    padding: 10px;
-    font-size: 14px;
-  }
-
-  .modal-buttons button {
-    padding: 10px 20px;
-    font-size: 14px;
+  .form-grid {
+    grid-template-columns: 1fr;
   }
 
   .modal-title {
     font-size: 20px;
-    padding: 10px 0;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .btn {
+    padding: 8px 14px;
+    font-size: 14px;
   }
 }

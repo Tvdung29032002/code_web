@@ -4,17 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="album/feedback-icon.png">
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="album/feedback-icon.png"
+    />
     <link rel="stylesheet" href="login-style.css" />
-    <!-- Liên kết đến file CSS để trang trí giao diện -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <!-- Script để tích hợp Google reCAPTCHA -->
   </head>
   <body>
     <video autoplay muted loop id="background-video">
       <source src="image_login/cc.mp4" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
+
     <header>
       <div class="header-login">
         <span class="header-title"
@@ -26,64 +30,121 @@
         >
       </div>
     </header>
-    <d<div class="login-container">
+
+    <div class="login-container">
       <div class="logo-container">
-        <img src="image_login/logo_login.jpg" alt="Login Logo" class="login-logo">
+        <img
+          src="image_login/logo_login.jpg"
+          alt="Login Logo"
+          class="login-logo"
+        />
       </div>
-    
-      <form id="loginForm">
+
+      <form id="loginForm" class="login-form">
         <div class="input-group">
-          Username
-          <input type="text" id="loginUsername" name="loginUsername" required>
+          <label for="loginUsername">Tên đăng nhập:</label>
+          <input type="text" id="loginUsername" name="loginUsername" required />
         </div>
-    
+
         <div class="input-group password-group">
-          Password
+          <label for="loginPassword">Mật khẩu:</label>
           <div class="password-input-wrapper">
-            <input type="password" id="loginPassword" name="loginPassword" required>
-            <img src="image_login/eye-open.png" id="togglePassword" class="toggle-password">
+            <input
+              type="password"
+              id="loginPassword"
+              name="loginPassword"
+              required
+            />
+            <img
+              src="image_login/eye-closed.png"
+              id="togglePassword"
+              class="toggle-password"
+              alt="Hiển thị/Ẩn mật khẩu"
+            />
           </div>
         </div>
-    
-        <div class="g-recaptcha" data-sitekey="6Lf4uAwqAAAAAEa8uloD2SVNHxL1o6ggY0w1KV8n"></div>
-    
+
         <div class="keep-logged-in">
-          <input type="checkbox" id="keepLoggedIn">
+          <input type="checkbox" id="keepLoggedIn" name="keepLoggedIn" />
           <label for="keepLoggedIn">Duy trì đăng nhập</label>
         </div>
-    
-        <button type="submit">Đăng nhập</button>
-    
+
+        <div class="recaptcha-container">
+          <div
+            class="g-recaptcha"
+            data-sitekey="6Lf4uAwqAAAAAEa8uloD2SVNHxL1o6ggY0w1KV8n"
+          ></div>
+        </div>
+
+        <button type="submit" class="btn-login">Đăng nhập</button>
+
         <div class="additional-options">
           <a href="#" class="forgot-password">Quên mật khẩu?</a>
           <a href="#" class="create-account">Tạo tài khoản mới</a>
         </div>
       </form>
     </div>
+
     <footer>
       <p>Copyright © 2024, Tran Van Dung</p>
     </footer>
-    <div id="signupModal" class="modal">
+
+    <div class="contact-admin-button" id="contactAdminBtn">
+      <img src="contact.png" alt="Liên hệ quản trị viên" />
+    </div>
+
+    <!-- Modals -->
+    <div id="contactAdminModal" class="modal">
       <div class="modal-content">
         <span class="close">&times;</span>
-        <h2>Đăng ký</h2>
-        <p>Nhanh chóng và dễ dàng.</p>
+        <h2>Liên hệ Quản trị viên</h2>
+        <p>Nếu bạn cần hỗ trợ, vui lòng liên hệ với quản trị viên:</p>
+        <ul>
+          <li>Email: vboyht35@gmail.com</li>
+          <li>Điện thoại: 0915599258</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="signupModal" class="modal">
+      <div class="modal-content signup-modal">
+        <span class="close">&times;</span>
+        <h2>Đăng ký tài khoản mới</h2>
+        <p class="signup-subtitle">Nhanh chóng và dễ dàng.</p>
         <form id="signupForm">
-          <div class="input-group">
-            <input type="text" id="firstName" placeholder="Họ" required>
+          <div class="input-row">
+            <div class="input-group">
+              <input type="text" id="firstName" placeholder="Họ" required />
+            </div>
+            <div class="input-group">
+              <input type="text" id="lastName" placeholder="Tên" required />
+            </div>
           </div>
           <div class="input-group">
-            <input type="text" id="lastName" placeholder="Tên" required>
+            <input
+              type="text"
+              id="signupUsername"
+              placeholder="Tên đăng nhập"
+              required
+            />
           </div>
           <div class="input-group">
-            <input type="text" id="signupUsername" placeholder="Tên đăng nhập" required>
+            <input type="email" id="email" placeholder="Email" required />
           </div>
-          <div class="input-group">
-            <input type="email" id="email" placeholder="Email" required>
-          </div>
-          <div class="input-group">
-            <input type="password" id="signupPassword" placeholder="Mật khẩu" required>
-            <div id="password-strength-message"></div>
+          <div class="input-group password-group">
+            <input
+              type="password"
+              id="signupPassword"
+              placeholder="Mật khẩu"
+              required
+            />
+            <img
+              src="image_login/eye-closed.png"
+              class="toggle-password"
+              data-target="signupPassword"
+              alt="Hiển thị/Ẩn mật khẩu"
+            />
+            <div id="password-strength-message" class="password-strength"></div>
           </div>
           <div class="input-group">
             <label>Ngày sinh</label>
@@ -102,56 +163,128 @@
           <div class="input-group">
             <label>Giới tính</label>
             <div class="gender-inputs">
-              <input type="radio" id="gender-female" name="gender" value="female">
-              <label for="gender-female">Nữ</label>
-              <input type="radio" id="gender-male" name="gender" value="male">
-              <label for="gender-male">Nam</label>
-              <input type="radio" id="gender-other" name="gender" value="other">
-              <label for="gender-other">Khác</label>
+              <label for="gender-female">
+                <input
+                  type="radio"
+                  id="gender-female"
+                  name="gender"
+                  value="female"
+                />
+                Nữ
+              </label>
+              <label for="gender-male">
+                <input
+                  type="radio"
+                  id="gender-male"
+                  name="gender"
+                  value="male"
+                />
+                Nam
+              </label>
+              <label for="gender-other">
+                <input
+                  type="radio"
+                  id="gender-other"
+                  name="gender"
+                  value="other"
+                />
+                Khác
+              </label>
             </div>
           </div>
-          <button type="submit" id="signupButton">Đăng ký</button>
+          <p class="terms">
+            Bằng cách nhấp vào Đăng ký, bạn đồng ý với Điều khoản, Chính sách dữ
+            liệu và Chính sách cookie của chúng tôi.
+          </p>
+          <button type="submit" id="signupButton" class="btn-signup">
+            Đăng ký
+          </button>
         </form>
       </div>
     </div>
+
     <div id="forgotPasswordModal" class="modal">
       <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Quên mật khẩu</h2>
-        <p>Nhập email của bạn để nhận mật khẩu mới.</p>
+        <p>Nhập tên đăng nhập và email của bạn để nhận mật khẩu mới.</p>
         <form id="forgotPasswordForm">
           <div class="input-group">
-            <input type="email" id="forgotPasswordEmail" placeholder="Email" required>
+            <label for="forgotPasswordUsername">Tên đăng nhập</label>
+            <input
+              type="text"
+              id="forgotPasswordUsername"
+              name="forgotPasswordUsername"
+              required
+            />
           </div>
-          <button type="submit">Gửi mật khẩu mới</button>
+          <div class="input-group">
+            <label for="forgotPasswordEmail">Email</label>
+            <input
+              type="email"
+              id="forgotPasswordEmail"
+              name="forgotPasswordEmail"
+              required
+            />
+          </div>
+          <button type="submit" class="btn-submit">
+            Gửi yêu cầu đặt lại mật khẩu
+          </button>
         </form>
-      </div> 
+      </div>
     </div>
-    <!-- Trong modal thay đổi mật khẩu -->
+
     <div id="changePasswordModal" class="modal">
       <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Thay đổi mật khẩu</h2>
         <form id="changePasswordForm">
           <div class="input-group password-group">
-            <input type="password" id="tempPassword" placeholder="Mật khẩu tạm thời từ email" required>
-            <img src="image_login/eye-closed.png" class="toggle-password" data-target="tempPassword">
+            <input
+              type="password"
+              id="tempPassword"
+              placeholder="Mật khẩu tạm thời từ email"
+              required
+            />
+            <img
+              src="image_login/eye-closed.png"
+              class="toggle-password"
+              data-target="tempPassword"
+            />
           </div>
           <div class="input-group password-group">
-            <input type="password" id="newPassword" placeholder="Mật khẩu mới" required>
-            <img src="image_login/eye-closed.png" class="toggle-password" data-target="newPassword">
+            <input
+              type="password"
+              id="newPassword"
+              placeholder="Mật khẩu mới"
+              required
+            />
+            <img
+              src="image_login/eye-closed.png"
+              class="toggle-password"
+              data-target="newPassword"
+            />
             <div id="new-password-strength-message"></div>
           </div>
           <div class="input-group password-group">
-            <input type="password" id="confirmNewPassword" placeholder="Xác nhận mật khẩu mới" required>
-            <img src="image_login/eye-closed.png" class="toggle-password" data-target="confirmNewPassword">
+            <input
+              type="password"
+              id="confirmNewPassword"
+              placeholder="Xác nhận mật khẩu mới"
+              required
+            />
+            <img
+              src="image_login/eye-closed.png"
+              class="toggle-password"
+              data-target="confirmNewPassword"
+            />
             <div id="new-password-strength-message"></div>
           </div>
           <button type="submit">Thay đổi mật khẩu</button>
         </form>
       </div>
     </div>
+
     <script src="login-script.js"></script>
   </body>
 </html>
-
