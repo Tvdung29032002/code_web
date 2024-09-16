@@ -224,9 +224,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const addTaskButton = document.getElementById("addTaskButton");
   const taskModal = document.getElementById("taskModal");
 
-  addTaskButton.addEventListener("click", function () {
-    taskModal.style.display = "block";
-  });
+  if (addTaskButton) {
+    addTaskButton.addEventListener("click", function () {
+      taskModal.style.display = "block";
+    });
+  } else {
+    console.error("Không tìm thấy phần tử có ID 'addTaskButton'");
+  }
 
   // Thêm sự kiện đóng modal
   const closeModal = document.getElementsByClassName("close")[0];

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đánh giá và Góp ý</title>
+    <link rel="stylesheet" href="feedback-styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <a href="http://192.168.0.103:5500/index.html" class="home-btn">
+          Quay lại trang chủ
+        </a>
+        <h1>Đánh giá và Góp ý</h1>
+      </header>
+
+      <main class="content-wrapper">
+        <section class="form-container">
+          <form id="feedbackForm">
+            <div class="form-section">
+              <h2>Đánh giá của bạn</h2>
+              <div class="rating">
+                <input type="radio" id="star5" name="rating" value="5" />
+                <label for="star5" title="Tuyệt vời"></label>
+                <input type="radio" id="star4" name="rating" value="4" />
+                <label for="star4" title="Tốt"></label>
+                <input type="radio" id="star3" name="rating" value="3" />
+                <label for="star3" title="Bình thường"></label>
+                <input type="radio" id="star2" name="rating" value="2" />
+                <label for="star2" title="Không tốt"></label>
+                <input type="radio" id="star1" name="rating" value="1" />
+                <label for="star1" title="Tệ"></label>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h2>Góp ý chi tiết</h2>
+              <label for="feedbackCategory">Danh mục:</label>
+              <select id="feedbackCategory" name="feedbackCategory" required>
+                <option value="">Chọn danh mục</option>
+                <option value="design">Thiết kế</option>
+                <option value="functionality">Chức năng</option>
+                <option value="performance">Hiệu suất</option>
+                <option value="other">Khác</option>
+              </select>
+
+              <label for="feedbackContent">Ý kiến của bạn:</label>
+              <textarea
+                id="feedbackContent"
+                name="feedbackContent"
+                rows="5"
+                placeholder="Hãy chia sẻ ý kiến của bạn..."
+                required
+              ></textarea>
+            </div>
+
+            <div class="button-group">
+              <button type="submit" class="submit-btn">
+                Gửi đánh giá và góp ý
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section class="feedback-display">
+          <h2>Đánh giá gần đây</h2>
+          <div class="feedback-controls">
+            <input type="text" id="searchInput" placeholder="Tìm kiếm..." />
+            <select id="filterCategory">
+              <option value="">Tất cả danh mục</option>
+              <option value="design">Thiết kế</option>
+              <option value="functionality">Chức năng</option>
+              <option value="performance">Hiệu suất</option>
+              <option value="other">Khác</option>
+            </select>
+            <select id="sortBy">
+              <option value="newest">Mới nhất</option>
+              <option value="oldest">Cũ nhất</option>
+              <option value="highest">Đánh giá cao nhất</option>
+              <option value="lowest">Đánh giá thấp nhất</option>
+              <option value="most_helpful">Hữu ích nhất</option>
+            </select>
+          </div>
+          <ul id="feedbackList"></ul>
+        </section>
+      </main>
+    </div>
+    <script src="feedback-script.js"></script>
+  </body>
+</html>

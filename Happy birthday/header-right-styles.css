@@ -302,3 +302,116 @@
 .tooltip-container.tooltip-disabled .settings-tooltip-text {
   display: none;
 }
+
+.settings-menu {
+  display: none;
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  background-color: white !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px !important;
+  padding: 16px !important;
+  min-width: 250px !important;
+  z-index: 9999 !important; /* Đảm bảo menu hiển thị trên các phần tử khác */
+}
+
+.settings-menu.show {
+  display: block !important;
+}
+
+.settings-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.settings-item:last-child {
+  border-bottom: none;
+}
+
+.settings-item span {
+  font-weight: 500;
+  color: #202124;
+}
+
+.settings-item select {
+  padding: 6px 24px 6px 8px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  background-color: #f1f3f4;
+  color: #202124;
+  font-size: 14px;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px top 50%;
+  background-size: 12px auto;
+}
+
+/* Styles cho switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #1a73e8;
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.settings-item label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  color: #5f6368;
+}
+
+.settings-item label input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.tooltip-container.menu-open .help-tooltip-text,
+.tooltip-container.menu-open .notification-tooltip-text,
+.tooltip-container.menu-open .settings-tooltip-text,
+.tooltip-container.menu-open .apps-tooltip-text,
+.tooltip-container.menu-open .avatar-tooltip-text {
+  display: none;
+}

@@ -25,6 +25,7 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ username, password }),
+    credentials: "include", // Quan trọng: cho phép server set cookie
   })
     .then((response) => {
       console.log("Received response from server");
@@ -50,6 +51,7 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
         localStorage.setItem("userId", data.user.id); // Đảm bảo lưu userId
         console.log("User role saved:", data.user.role);
         console.log("UserId saved:", data.user.id); // Thêm log này
+        localStorage.setItem("token", data.token); // Lưu token vào localStorage
 
         if (data.user.hasUpdatedInfo !== undefined) {
           if (data.user.hasUpdatedInfo) {

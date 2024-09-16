@@ -14,12 +14,9 @@ async function fetchCities() {
       cities = JSON.parse(text);
       showCityList();
     } catch (parseError) {
-      console.error("Error parsing JSON:", parseError);
-      console.error("Response text:", text);
       throw new Error("Invalid JSON response");
     }
   } catch (error) {
-    console.error("Error fetching cities:", error);
     const cityList = document.getElementById("cityList");
     cityList.innerHTML = `<li>Lỗi khi tải danh sách thành phố: ${error.message}</li>`;
   }
@@ -66,20 +63,17 @@ function toggleCityDropdown(e) {
 }
 
 async function displayWeather(lat, lon) {
-  console.log("Displaying weather for lat:", lat, "lon:", lon);
   const temperature = document.querySelector(".temperature");
 
   try {
     temperature.textContent = "Đang tải...";
     const weatherData = await fetchWeatherData(lat, lon);
-    console.log("Weather data received:", weatherData);
     if (weatherData && weatherData.main && weatherData.main.temp) {
       updateWeatherWidget(weatherData);
     } else {
       throw new Error("Invalid weather data received");
     }
   } catch (error) {
-    console.error("Error in displayWeather:", error);
     temperature.textContent = "Không có dữ liệu";
     temperature.classList.add("error");
   }
@@ -87,23 +81,19 @@ async function displayWeather(lat, lon) {
 
 async function fetchWeatherData(lat, lon) {
   const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${WEATHER_API_KEY}&lang=vi`;
-  console.log("Fetching weather data from:", url);
   try {
     const response = await fetch(url);
-    console.log("Response status:", response.status);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    console.log("Weather API response:", data);
     return data;
   } catch (error) {
-    console.error("Error fetching weather data:", error);
     if (
       error instanceof TypeError &&
       error.message.includes("Failed to fetch")
     ) {
-      console.error("Lỗi kết nối. Vui lòng kiểm tra kết nối internet của bạn.");
+      // Có thể xử lý lỗi kết nối ở đây nếu cần
     }
     throw error;
   }

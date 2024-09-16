@@ -314,12 +314,14 @@ header {
 }
 
 .overlay {
-  position: absolute; /* Định vị tuyệt đối cho overlay */
-  top: 0; /* Đặt overlay ở mép trên */
-  left: 0; /* Đặt overlay ở mép trái */
-  width: 100%; /* Chiều rộng của overlay bằng 100% chiều rộng của container */
-  height: 100%; /* Chiều cao của overlay bằng 100% chiều cao của container */
-  background-color: rgba(0, 0, 0, 0.5); /* Màu nền đen trong suốt của overlay */
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
 }
 
 .sidebar {
@@ -440,39 +442,6 @@ footer p {
 .apps-container {
   position: relative;
   display: inline-block;
-}
-
-#feedback-overlay {
-  display: none; /* Ban đầu ẩn overlay */
-  position: fixed; /* Định vị cố định overlay */
-  top: 0; /* Đặt overlay ở mép trên */
-  left: 0; /* Đặt overlay ở mép trái */
-  width: 100%; /* Chiều rộng của overlay bằng 100% chiều rộng màn hình */
-  height: 100%; /* Chiều cao của overlay bằng 100% chiều cao màn hình */
-  background-color: rgba(0, 0, 0, 0.5); /* Màu nền đen trong suốt của overlay */
-  z-index: 999; /* Đảm bảo overlay nằm dưới bảng feedback */
-}
-
-#feedback-container {
-  display: none; /* Ban đầu ẩn bảng feedback */
-  position: fixed; /* Định vị cố định bảng feedback */
-  top: 50%; /* Đặt bảng feedback ở giữa màn hình theo chiều dọc */
-  left: 50%; /* Đặt bảng feedback ở giữa màn hình theo chiều ngang */
-  transform: translate(
-    -50%,
-    -50%
-  ); /* Dịch chuyển bảng feedback để căn giữa hoàn toàn */
-  background-color: #fff; /* Màu nền trắng của bảng feedback */
-  padding: 20px; /* Khoảng cách bên trong của bảng feedback */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Đổ bóng cho bảng feedback */
-  z-index: 1000; /* Đưa bảng feedback lên trên các phần tử khác */
-  width: 400px; /* Chiều rộng của bảng feedback */
-  max-width: 90%; /* Chiều rộng tối đa của bảng feedback bằng 90% chiều rộng màn hình */
-  border-radius: 8px; /* Bo tròn góc của bảng feedback */
-}
-
-#feedback-container h2 {
-  margin-top: 0; /* Bỏ khoảng cách bên trên của tiêu đề trong bảng feedback */
 }
 
 #close-feedback {
@@ -887,4 +856,60 @@ footer p {
 .today-tasks .task-activity.game {
   background-color: #fff5e6;
   color: #cc6600;
+}
+
+/* Dark mode styles */
+body.dark-mode {
+  background-color: #333;
+  color: #fff;
+}
+
+body.dark-mode header {
+  background-color: #222;
+  box-shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .search-bar input {
+  background-color: #444;
+  color: #fff;
+  border-color: #555;
+}
+
+body.dark-mode .sidebar {
+  background-color: #222;
+}
+
+body.dark-mode .sidebar-link {
+  color: #ddd;
+}
+
+body.dark-mode .sidebar-link:hover,
+body.dark-mode .sidebar-link.active {
+  background-color: #444;
+}
+
+body.dark-mode .today-tasks {
+  background-color: rgba(51, 51, 51, 0.9);
+}
+
+body.dark-mode .today-tasks-header h2 {
+  color: #4285f4;
+}
+
+body.dark-mode .today-tasks li {
+  background-color: #444;
+  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .task-name {
+  color: #fff;
+}
+
+body.dark-mode .task-name.completed {
+  color: #aaa;
+}
+
+body.dark-mode footer {
+  background-color: #222;
+  color: #ddd;
 }

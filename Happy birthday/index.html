@@ -78,8 +78,38 @@
         </div>
         <!-- Biểu tượng cài đặt -->
         <div class="settings-tooltip-wrapper tooltip-container">
-          <img src="album/settings-icon.png" alt="Settings" class="icon" />
+          <img src="album/settings-icon.png" alt="Settings" class="icon" id="settingsIcon" />
           <span class="settings-tooltip-text">Cài đặt</span>
+          <div id="settingsMenu" class="settings-menu">
+            <div class="settings-item">
+              <span>Chế độ tối</span>
+              <label class="switch">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="settings-item">
+              <span>Ngôn ngữ</span>
+              <select id="languageSelect">
+                <option value="vi">Tiếng Việt</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+            <div class="settings-item">
+              <span>Widget trang chủ</span>
+              <div>
+                <label><input type="checkbox" id="widgetWeather"> Thời tiết</label>
+                <label><input type="checkbox" id="widgetTasks"> Nhiệm vụ</label>
+              </div>
+            </div>
+            <div class="settings-item">
+              <span>Quyền riêng tư</span>
+              <div>
+                <label><input type="checkbox" id="privacyProfile"> Hồ sơ công khai</label>
+                <label><input type="checkbox" id="privacyActivity"> Hoạt động công khai</label>
+              </div>
+            </div>
+          </div>      
         </div>
         <!-- Biểu tượng ứng dụng -->
         <div class="apps-tooltip-wrapper tooltip-container">
@@ -241,51 +271,23 @@
       "
     ></iframe>
     <!-- Iframe để hiển thị bàn phím ảo -->
-
-    <div id="feedback-overlay" class="feedback-overlay"></div>
-    <!-- Overlay cho form đóng góp ý kiến -->
-    <div id="feedback-container" class="feedback-container">
-      <!-- Form đóng góp ý kiến -->
+    <div id="feedback-container">
       <h2>Đóng góp ý kiến để cải thiện</h2>
-      <img
-        id="close-feedback"
-        src="album/close-feedback.png"
-        alt="Đóng"
-        class="album/close-feedback-icon"
-      />
-      <!-- Biểu tượng đóng form -->
-      <div class="feedback-option">
-        <img src="album/logo_laptop.png" alt="web Icon" class="feedback-icon" />
-        <!-- Biểu tượng trang web -->
-        <div>
-          <h3>Chung tay cải thiện trang web</h3>
-          <p>Đóng góp ý kiến về trải nghiệm sử dụng trang web của bạn.</p>
-        </div>
-      </div>
-      <div class="feedback-option">
-        <img
-          src="album/error-icon.png"
-          alt="Error Icon"
-          class="feedback-icon"
-        />
-        <!-- Biểu tượng lỗi -->
-        <div>
-          <h3>Đã xảy ra lỗi</h3>
-          <p>Hãy cho chúng tôi biết về tính năng bị lỗi.</p>
-        </div>
-      </div>
     </div>
 
     <footer>
       <p>Copyright © 2024, Tran Van Dung</p>
     </footer>
     <!-- Footer -->
-
+    <!-- Script để xử lý cài đặt -->
+    <script src="modal-settings.js"></script>
     <!-- Script để xử lý đăng nhập -->
      <script src="auth.js"></script>
     <!-- Script để xử lý bàn phím ảo -->
     <script src="virtualKeyboard.js"></script>
     <!-- Script chính của trang -->
     <script type="module" src="main.js"></script>
+    <script type="module" src="tasks.js"></script>
+    <script type="module" src="ui.js"></script> 
   </body>
 </html>

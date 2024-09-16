@@ -12,6 +12,7 @@ function logout() {
   localStorage.removeItem("isLoggedIn");
   localStorage.removeItem("userRole");
   localStorage.removeItem("currentUser");
+  localStorage.removeItem("token");
   // Chuyển hướng về trang đăng nhập
   window.location.href = "login.html";
 }
@@ -25,35 +26,27 @@ async function login(username, password) {
       body: JSON.stringify({ username, password }),
     });
     const data = await response.json();
-    console.log("Login response:", data);
     if (data.success) {
       const currentUser = {
         id: data.user.id,
         username: data.user.username,
         role: data.user.role,
       };
-      console.log("Current user data:", currentUser);
       localStorage.setItem("currentUser", JSON.stringify(currentUser));
-      localStorage.setItem("userId", currentUser.id); // Đảm bảo lưu userId
+      localStorage.setItem("userId", currentUser.id);
       localStorage.setItem("isLoggedIn", "true");
-      console.log("User role saved:", currentUser.role);
-      console.log("UserId saved:", currentUser.id); // Thêm log này
       checkUserRole();
       window.location.href = "index.html";
-    } else {
-      console.error("Đăng nhập thất bại");
     }
   } catch (error) {
-    console.error("Lỗi đăng nhập:", error);
+    // Xử lý lỗi nếu cần
   }
 }
 
 // Cập nhật hàm kiểm tra vai trò người dùng
 function checkUserRole() {
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  console.log("Current user data from localStorage:", currentUser);
   if (currentUser && currentUser.role) {
-    console.log("Checking user role:", currentUser.role);
     if (currentUser.role === "Admin") {
       document.querySelectorAll(".admin-only").forEach((el) => {
         el.style.display = "block";
@@ -64,7 +57,6 @@ function checkUserRole() {
       });
     }
   } else {
-    console.log("User role not found or user not logged in");
     // Xử lý trường hợp không có thông tin người dùng
     document.querySelectorAll(".admin-only").forEach((el) => {
       el.style.display = "none";

@@ -10,15 +10,17 @@ const mainRoutes = require("./main-routes");
 const userManagementRoutes = require("./user_management_routes");
 const scheduleRoutes = require("./routes/schedule-routes");
 const infoForumRoutes = require("./routes/info-forum-routes");
+const feedbackRoutes = require("./routes/feedback-routes");
 
 const app = express();
 
-// CORS configuration
-const corsOptions = {
-  origin: ["http://192.168.0.103:5500", "http://localhost:5500"],
-  optionsSuccessStatus: 200,
-};
-app.use(cors(corsOptions));
+// Cấu hình CORS
+app.use(
+  cors({
+    origin: "http://192.168.0.103:5500", // Địa chỉ của client
+    credentials: true,
+  })
+);
 
 // Middleware setup
 app.use(bodyParser.json({ limit: "10mb" }));
@@ -62,6 +64,7 @@ app.use("/api", mainRoutes);
 app.use("/api", userManagementRoutes);
 app.use("/api", scheduleRoutes);
 app.use("/api", infoForumRoutes);
+app.use("/api", feedbackRoutes);
 
 // Serve vocabulary.html
 app.get("/vocabulary", (req, res) => {
