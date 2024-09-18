@@ -416,4 +416,24 @@ router.get("/get-table-list", async (req, res) => {
   }
 });
 
+// Cập nhật route để lấy tất cả người dùng với thông tin cá nhân
+router.get("/all-users", async (req, res) => {
+  try {
+    const [rows] = await req.dbConnection.execute(`
+      SELECT u.id, u.username, CONCAT(u.firstName, ' ', u.lastName) AS name, 
+             pi.photo_url, pi.bio, pi.phone
+      FROM users u
+      LEFT JOIN personal_info pi ON u.id = pi.user_id
+    `);
+    res.json({ success: true, users: rows });
+  } catch (error) {
+    console.error("Error fetching all users:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể lấy danh sách người dùng",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = router;

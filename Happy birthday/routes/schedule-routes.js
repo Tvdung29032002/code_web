@@ -192,10 +192,22 @@ router.post("/assign-task", async (req, res) => {
 router.get("/assigned-tasks/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
-    const [tasks] = await req.dbConnection.execute(
-      "SELECT * FROM assigned_tasks WHERE user_id = ? ORDER BY start_date",
-      [userId]
-    );
+    const { filter } = req.query;
+    let query =
+      "SELECT *, DATE_FORMAT(completed_at, '%d/%m/%Y %H:%i') as formatted_completed_at, DATE_FORMAT(updated_at, '%d/%m/%Y %H:%i') as formatted_updated_at FROM assigned_tasks WHERE user_id = ?";
+    const queryParams = [userId];
+
+    if (filter === "inProgress") {
+      query += " AND completed = 0 AND end_date >= CURDATE()";
+    } else if (filter === "completed") {
+      query += " AND completed = 1";
+    } else if (filter === "overdue") {
+      query += " AND completed = 0 AND end_date < CURDATE()";
+    }
+
+    query += " ORDER BY start_date";
+
+    const [tasks] = await req.dbConnection.execute(query, queryParams);
     res.json({ success: true, tasks: tasks });
   } catch (error) {
     console.error("Lỗi khi lấy danh sách nhiệm vụ đã giao:", error);
@@ -355,14 +367,19 @@ router.put("/assigned-tasks/:taskId/complete", async (req, res) => {
     const { taskId } = req.params;
     const { completed } = req.body;
 
+    const completedAt = completed
+      ? new Date().toISOString().slice(0, 19).replace("T", " ")
+      : null;
+
     await req.dbConnection.execute(
-      "UPDATE assigned_tasks SET completed = ? WHERE id = ?",
-      [completed, taskId]
+      "UPDATE assigned_tasks SET completed = ?, completed_at = ? WHERE id = ?",
+      [completed, completedAt, taskId]
     );
 
     res.json({
       success: true,
       message: "Trạng thái hoàn thành nhiệm vụ đã được cập nhật",
+      completedAt: completedAt,
     });
   } catch (error) {
     console.error("Lỗi khi cập nhật trạng thái hoàn thành nhiệm vụ:", error);
@@ -379,7 +396,7 @@ router.get("/assigned-tasks/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
     const [tasks] = await req.dbConnection.execute(
-      "SELECT * FROM assigned_tasks WHERE user_id = ? ORDER BY start_date",
+      "SELECT *, DATE_FORMAT(completed_at, '%d/%m/%Y %H:%i') as formatted_completed_at, DATE_FORMAT(updated_at, '%d/%m/%Y %H:%i') as formatted_updated_at FROM assigned_tasks WHERE user_id = ? ORDER BY start_date",
       [userId]
     );
     res.json({ success: true, tasks: tasks });
@@ -448,6 +465,59 @@ router.get("/assigned-tasks/search/:userId", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Không thể tìm kiếm nhiệm vụ đã giao",
+      error: error.message,
+    });
+  }
+});
+
+// Thêm route mới để cập nhật nhiệm vụ đã giao
+router.put("/assigned-tasks/:taskId", async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const { taskName, taskDescription, startDateTime, endDateTime, priority } =
+      req.body;
+
+    await req.dbConnection.execute(
+      "UPDATE assigned_tasks SET task_name = ?, task_description = ?, start_date = ?, end_date = ?, priority = ? WHERE id = ?",
+      [taskName, taskDescription, startDateTime, endDateTime, priority, taskId]
+    );
+
+    res.json({
+      success: true,
+      message: "Nhiệm vụ đã được cập nhật thành công",
+    });
+  } catch (error) {
+    console.error("Lỗi khi cập nhật nhiệm vụ:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể cập nhật nhiệm vụ",
+      error: error.message,
+    });
+  }
+});
+
+// Thêm route để lấy thông tin chi tiết của một nhiệm vụ
+router.get("/assigned-tasks/detail/:taskId", async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const [tasks] = await req.dbConnection.execute(
+      "SELECT *, DATE_FORMAT(completed_at, '%d/%m/%Y %H:%i') as formatted_completed_at, DATE_FORMAT(updated_at, '%d/%m/%Y %H:%i') as formatted_updated_at FROM assigned_tasks WHERE id = ?",
+      [taskId]
+    );
+
+    if (tasks.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy nhiệm vụ",
+      });
+    }
+
+    res.json({ success: true, task: tasks[0] });
+  } catch (error) {
+    console.error("Lỗi khi lấy thông tin nhiệm vụ:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể lấy thông tin nhiệm vụ",
       error: error.message,
     });
   }

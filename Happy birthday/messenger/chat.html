@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Hiện Đại</title>
+    <link rel="stylesheet" href="chat-styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="app-container">
+      <nav class="side-nav">
+        <div class="nav-header">
+          <a href="/" class="home-link" title="Trở về trang chủ">
+            <i class="fas fa-home"></i>
+          </a>
+        </div>
+        <ul class="nav-items">
+          <li class="active"><i class="fas fa-comments"></i></li>
+          <li id="groupChatButton"><i class="fas fa-users"></i></li>
+          <li><i class="fas fa-cog"></i></li>
+        </ul>
+      </nav>
+      <main class="chat-area">
+        <header class="chat-header">
+          <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Tìm kiếm cuộc trò chuyện..." />
+          </div>
+          <button class="new-chat-btn">
+            <i class="fas fa-plus"></i> Cuộc trò chuyện mới
+          </button>
+        </header>
+        <div class="chat-list-container">
+          <ul id="chat-list" class="chat-list">
+            <!-- Danh sách chat sẽ được thêm vào đây bằng JavaScript -->
+          </ul>
+        </div>
+      </main>
+      <section class="message-area">
+        <header class="message-header">
+          <div class="chat-info">
+            <img
+              src="/uploads/default.jpg"
+              alt="Chat Avatar"
+              class="chat-avatar"
+            />
+            <div>
+              <h3>Tên Người Nhận</h3>
+              <span class="status">Trực tuyến</span>
+            </div>
+          </div>
+          <div class="chat-actions">
+            <button><i class="fas fa-phone"></i></button>
+            <button><i class="fas fa-video"></i></button>
+            <button><i class="fas fa-ellipsis-v"></i></button>
+          </div>
+        </header>
+        <div id="chatMessages" class="message-container">
+          <!-- Tin nhắn sẽ được thêm vào đây bằng JavaScript -->
+        </div>
+        <footer class="message-input">
+          <button><i class="fas fa-paperclip"></i></button>
+          <input
+            type="text"
+            id="messageInput"
+            placeholder="Nhập tin nhắn của bạn..."
+          />
+          <button><i class="far fa-smile"></i></button>
+          <button id="sendButton"><i class="fas fa-paper-plane"></i></button>
+        </footer>
+      </section>
+    </div>
+    <script type="module" src="chat-script.js"></script>
+  </body>
+</html>

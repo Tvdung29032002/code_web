@@ -9,6 +9,24 @@
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="header-right-styles.css" />
     <!-- Liên kết đến file CSS để trang trí giao diện -->
+    <style>
+      .chat-popup {
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        border-radius: 8px 8px 0 0;
+        overflow: hidden;
+      }
+      .chat-header {
+        font-weight: bold;
+      }
+      .chat-messages {
+        font-size: 14px;
+      }
+      .chat-input input {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 5px;
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -74,6 +92,14 @@
           <img src="album/notification-icon.png" alt="Notification" class="icon" id="notificationIcon" />
           <span class="notification-tooltip-text">Thông báo</span>
           <div id="notificationMenu" class="notification-menu">
+          </div>
+        </div>
+        <!-- Biểu tượng tin nhắn -->
+        <div class="messenger-tooltip-wrapper tooltip-container">
+          <img src="album/messenger-icon.png" alt="Messenger" class="icon" id="messengerIcon" />
+          <span class="messenger-tooltip-text">Tin nhắn</span>
+          <div id="messengerMenu" class="messenger-menu">
+            <!-- Nội dung menu messenger sẽ được thêm vào đây bằng JavaScript -->
           </div>
         </div>
         <!-- Biểu tượng cài đặt -->
@@ -289,5 +315,6 @@
     <script type="module" src="main.js"></script>
     <script type="module" src="tasks.js"></script>
     <script type="module" src="ui.js"></script> 
+    <script type="module" src="chat-popup.js"></script>
   </body>
 </html>

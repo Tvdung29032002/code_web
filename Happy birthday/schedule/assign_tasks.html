@@ -37,37 +37,49 @@
             </button>
             <h1>Quản Lý Nhiệm Vụ</h1>
           </div>
-          <div class="search-bar">
-            <input
-              type="text"
-              id="searchInput"
-              placeholder="Tìm kiếm nhiệm vụ..."
-            />
-            <i class="fas fa-search" id="searchButton"></i>
+          <div class="header-right">
+            <div class="search-bar">
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Tìm kiếm nhiệm vụ..."
+              />
+              <i class="fas fa-search" id="searchButton"></i>
+            </div>
           </div>
         </header>
 
         <section class="task-overview">
-          <div class="task-card">
+          <div class="task-card" data-filter="all">
             <h3>Tổng nhiệm vụ</h3>
             <span class="task-count">0</span>
           </div>
-          <div class="task-card">
+          <div class="task-card" data-filter="inProgress">
             <h3>Đang thực hiện</h3>
             <span class="task-count">0</span>
           </div>
-          <div class="task-card">
+          <div class="task-card" data-filter="completed">
             <h3>Hoàn thành</h3>
             <span class="task-count">0</span>
           </div>
-          <div class="task-card overdue">
+          <div class="task-card overdue" data-filter="overdue">
             <h3>Quá hạn</h3>
             <span class="task-count">0</span>
           </div>
         </section>
 
         <section class="task-list">
-          <h2>Danh sách nhiệm vụ</h2>
+          <div class="task-list-header">
+            <h2>Danh sách nhiệm vụ</h2>
+            <div class="sort-container">
+              <select id="sortSelect">
+                <option value="default">Sắp xếp theo</option>
+                <option value="name">Tên nhiệm vụ</option>
+                <option value="priority">Mức độ ưu tiên</option>
+                <option value="dueDate">Ngày hết hạn</option>
+              </select>
+            </div>
+          </div>
           <ul id="taskList"></ul>
         </section>
       </main>
@@ -141,7 +153,104 @@
         </div>
       </div>
 
-      <script src="assign-tasks-script.js"></script>
+      <!-- Thêm modal chỉnh sửa nhiệm vụ sau modal tạo nhiệm vụ mới -->
+      <div class="modal" id="editTaskModal">
+        <div class="modal-content">
+          <button class="close">&times;</button>
+          <h2 class="modal-title">Chỉnh sửa nhiệm vụ</h2>
+          <form id="editTaskForm">
+            <input type="hidden" id="editTaskId" name="editTaskId" />
+            <div class="form-group floating">
+              <input
+                type="text"
+                id="editTaskName"
+                name="editTaskName"
+                required
+                placeholder=" "
+              />
+              <label for="editTaskName">Tên nhiệm vụ</label>
+            </div>
+
+            <div class="form-group floating">
+              <textarea
+                id="editTaskDescription"
+                name="editTaskDescription"
+                required
+                placeholder=" "
+              ></textarea>
+              <label for="editTaskDescription">Mô tả nhiệm vụ</label>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="editStartDate">Ngày bắt đầu</label>
+                <input
+                  type="date"
+                  id="editStartDate"
+                  name="editStartDate"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="editStartTime">Giờ bắt đầu</label>
+                <input
+                  type="time"
+                  id="editStartTime"
+                  name="editStartTime"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="editEndDate">Ngày kết thúc</label>
+                <input
+                  type="date"
+                  id="editEndDate"
+                  name="editEndDate"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="editEndTime">Giờ kết thúc</label>
+                <input
+                  type="time"
+                  id="editEndTime"
+                  name="editEndTime"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Mức độ ưu tiên</label>
+              <div class="priority-buttons">
+                <button type="button" class="priority-btn" data-priority="low">
+                  Thấp
+                </button>
+                <button
+                  type="button"
+                  class="priority-btn"
+                  data-priority="medium"
+                >
+                  Trung bình
+                </button>
+                <button type="button" class="priority-btn" data-priority="high">
+                  Cao
+                </button>
+              </div>
+            </div>
+
+            <div id="updatedAtInfo" class="updated-at-info"></div>
+            <button type="submit" class="btn-submit">Cập nhật nhiệm vụ</button>
+          </form>
+        </div>
+      </div>
+
+      <script type="module" src="assign-task-manager.js"></script>
+      <script type="module" src="assign-modal-handler.js"></script>
+      <script type="module" src="assign-tasks-main.js"></script>
     </div>
   </body>
 </html>

@@ -11,6 +11,7 @@ const userManagementRoutes = require("./user_management_routes");
 const scheduleRoutes = require("./routes/schedule-routes");
 const infoForumRoutes = require("./routes/info-forum-routes");
 const feedbackRoutes = require("./routes/feedback-routes");
+const chatRoutes = require("./routes/chat-routes");
 
 const app = express();
 
@@ -65,6 +66,7 @@ app.use("/api", userManagementRoutes);
 app.use("/api", scheduleRoutes);
 app.use("/api", infoForumRoutes);
 app.use("/api", feedbackRoutes);
+app.use("/api", chatRoutes);
 
 // Serve vocabulary.html
 app.get("/vocabulary", (req, res) => {
