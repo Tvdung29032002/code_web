@@ -12,6 +12,7 @@ const scheduleRoutes = require("./routes/schedule-routes");
 const infoForumRoutes = require("./routes/info-forum-routes");
 const feedbackRoutes = require("./routes/feedback-routes");
 const chatRoutes = require("./routes/chat-routes");
+const personalInfoRoutes = require("./routes/personal-info-routes"); // Thêm dòng này
 
 const app = express();
 
@@ -67,6 +68,7 @@ app.use("/api", scheduleRoutes);
 app.use("/api", infoForumRoutes);
 app.use("/api", feedbackRoutes);
 app.use("/api", chatRoutes);
+app.use("/api", personalInfoRoutes); // Thêm dòng này
 
 // Serve vocabulary.html
 app.get("/vocabulary", (req, res) => {

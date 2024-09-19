@@ -215,7 +215,7 @@ export function initUI() {
       e.preventDefault();
       const username = localStorage.getItem("username");
       if (username) {
-        window.location.href = "personal-info.html";
+        window.location.href = "/personal-info/personal-info.html";
       } else {
         console.log("Username not found, redirecting to login");
         window.location.href = "login.html";

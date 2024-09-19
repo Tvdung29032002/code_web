@@ -1,3 +1,5 @@
+import { EmojiButton } from "https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/index.min.js";
+
 // Tạo một đối tượng toàn cục để lưu trữ các hàm và biến
 const ChatApp = {
   currentReceiverId: null,
@@ -295,6 +297,21 @@ const ChatApp = {
             console.error("Lỗi khi tạo hoặc lấy nhóm chat:", error);
           });
       });
+
+      const emojiButton = document.querySelector("#emojiButton");
+      const picker = new EmojiButton();
+
+      picker.on("emoji", (emoji) => {
+        const messageInput = document.getElementById("messageInput");
+        messageInput.value += emoji;
+        messageInput.focus();
+      });
+
+      emojiButton.addEventListener("click", () => {
+        picker.togglePicker(emojiButton);
+      });
+
+      // ... existing code ...
     });
   },
 
