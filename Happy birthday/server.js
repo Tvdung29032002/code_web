@@ -1,10 +1,12 @@
 const express = require("express");
+const http = require("http"); // Thêm dòng này
+const WebSocket = require("ws");
 const bodyParser = require("body-parser");
 const mysql = require("mysql2/promise");
 const cors = require("cors");
 const path = require("path");
-const englishVocabularyRoutes = require("./english-vocabulary-routes");
-const chineseVocabularyRoutes = require("./chinese-vocabulary-routes");
+const englishVocabularyRoutes = require("./routes/english-vocabulary-routes");
+const chineseVocabularyRoutes = require("./routes/chinese-vocabulary-routes");
 const passwordRoutes = require("./password-routes");
 const mainRoutes = require("./main-routes");
 const userManagementRoutes = require("./user_management_routes");
@@ -13,8 +15,46 @@ const infoForumRoutes = require("./routes/info-forum-routes");
 const feedbackRoutes = require("./routes/feedback-routes");
 const chatRoutes = require("./routes/chat-routes");
 const personalInfoRoutes = require("./routes/personal-info-routes"); // Thêm dòng này
+const loginRoutes = require("./routes/login-routes");
 
 const app = express();
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+// Cấu hình kết nối cơ sở dữ liệu
+const dbConfig = {
+  host: "127.0.0.1",
+  user: "dungtv",
+  password: "Vboyht@02",
+  database: "mydatabase",
+  port: 3306,
+};
+
+// Tạo pool kết nối
+const pool = mysql.createPool(dbConfig);
+
+// Middleware để gắn kết nối vào request
+app.use(async (req, res, next) => {
+  try {
+    req.dbConnection = await pool.getConnection();
+    next();
+  } catch (error) {
+    console.error("Lỗi khi kết nối đến cơ sở dữ liệu:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Lỗi kết nối cơ sở dữ liệu" });
+  }
+});
+
+// Middleware để giải phóng kết nối sau khi xử lý request
+app.use((req, res, next) => {
+  res.on("finish", () => {
+    if (req.dbConnection) {
+      req.dbConnection.release();
+    }
+  });
+  next();
+});
 
 // Cấu hình CORS
 app.use(
@@ -30,34 +70,6 @@ app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 app.use(express.static(path.join(__dirname, "Vocabulary")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Database configuration
-const dbConfig = {
-  host: "127.0.0.1",
-  user: "dungtv",
-  password: "Vboyht@02",
-  database: "mydatabase",
-  port: 3306,
-};
-
-let connection;
-
-// Function to connect to the database
-async function connectToDatabase() {
-  try {
-    connection = await mysql.createConnection(dbConfig);
-    console.log("Connected to database:", dbConfig.database);
-  } catch (err) {
-    console.error("Error connecting to database:", err);
-    process.exit(1);
-  }
-}
-
-// Middleware to make database connection available to routes
-app.use((req, res, next) => {
-  req.dbConnection = connection;
-  next();
-});
-
 // Use the routes
 app.use("/api", englishVocabularyRoutes);
 app.use("/api", chineseVocabularyRoutes);
@@ -69,6 +81,7 @@ app.use("/api", infoForumRoutes);
 app.use("/api", feedbackRoutes);
 app.use("/api", chatRoutes);
 app.use("/api", personalInfoRoutes); // Thêm dòng này
+app.use("/api", loginRoutes);
 
 // Serve vocabulary.html
 app.get("/vocabulary", (req, res) => {
@@ -78,7 +91,7 @@ app.get("/vocabulary", (req, res) => {
 // Add this near your other route definitions
 app.get("/api/weather", async (req, res) => {
   try {
-    const [rows] = await connection.execute("SELECT * FROM weather");
+    const [rows] = await req.dbConnection.execute("SELECT * FROM weather");
     res.json(rows);
   } catch (error) {
     console.error("Error fetching weather data:", error);
@@ -86,23 +99,7 @@ app.get("/api/weather", async (req, res) => {
   }
 });
 
-const PORT = 3000;
-
-// Function to start the server
-async function startServer() {
-  await connectToDatabase();
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://192.168.0.103:${PORT}`);
-    console.log("Uploads directory:", path.join(__dirname, "uploads"));
-  });
-}
-
-// Serve static files for custom query
-app.use(express.static(path.join(__dirname, "query")));
-
-app.get("/custom-query", (req, res) => {
-  res.sendFile(path.join(__dirname, "query", "query.html"));
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
-
-// Start the server
-startServer();

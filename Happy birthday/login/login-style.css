@@ -470,6 +470,7 @@ footer p {
   border-radius: 3px;
   text-align: center;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .gender-inputs input[type="radio"] {

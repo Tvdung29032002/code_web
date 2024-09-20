@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (localStorage.getItem("isLoggedIn") === "true") {
     checkUserRole(); // Đảm bảo gọi hàm này sau khi người dùng đã đăng nhập
   } else {
-    window.location.href = "login.html";
+    window.location.href = "http://192.168.0.103:5500/login/login.html";
   }
 });
 
@@ -14,7 +14,7 @@ function logout() {
   localStorage.removeItem("currentUser");
   localStorage.removeItem("token");
   // Chuyển hướng về trang đăng nhập
-  window.location.href = "login.html";
+  window.location.href = "http://192.168.0.103:5500/login/login.html";
 }
 
 // Thêm logic xử lý đăng nhập
@@ -69,6 +69,6 @@ document.addEventListener("DOMContentLoaded", function () {
   if (localStorage.getItem("isLoggedIn") === "true") {
     checkUserRole(); // Đảm bảo gọi hàm này sau khi người dùng đã đăng nhập
   } else {
-    window.location.href = "login.html";
+    window.location.href = "http://192.168.0.103:5500/login/login.html";
   }
 });

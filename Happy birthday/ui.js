@@ -218,7 +218,7 @@ export function initUI() {
         window.location.href = "/personal-info/personal-info.html";
       } else {
         console.log("Username not found, redirecting to login");
-        window.location.href = "login.html";
+        window.location.href = "http://192.168.0.103:5500/login/login.html";
       }
     });
 
@@ -294,7 +294,7 @@ export function initUI() {
                     user.photo_url || "/uploads/default-avatar.jpg"
                   }" alt="${user.name}" class="messenger-avatar">
                   <div class="messenger-content">
-                    <div class="messenger-name">${user.name}</div>
+                    <div class="messenger-name">${user.display_name}</div>
                     <div class="messenger-preview">${
                       user.bio
                         ? user.bio.substring(0, 30) + "..."

@@ -1,0 +1,136 @@
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 280px;
+  position: fixed;
+  z-index: 1100;
+  top: 0;
+  left: -280px;
+  background-color: #ffffff;
+  overflow-x: hidden;
+  transition: 0.3s;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.sidebar-close {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.sidebar-content {
+  padding: 20px 0;
+  overflow-y: auto;
+}
+
+.sidebar-section {
+  margin-bottom: 20px;
+}
+
+.sidebar-section-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #5f6368;
+  padding: 0 24px;
+  margin-bottom: 8px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 24px;
+  color: #3c4043;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+  background-color: #f1f3f4;
+}
+
+.sidebar-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 16px;
+}
+
+.sidebar-link span {
+  font-size: 14px;
+}
+
+#sidebarToggle {
+  cursor: pointer;
+  width: 35px;
+  height: 35px;
+  margin: 0 8px;
+}
+
+#sidebarClose {
+  cursor: pointer;
+  width: 35px;
+  height: 35px;
+}
+
+.sidebar.open #sidebarClose {
+  display: block;
+  position: absolute;
+  top: 5px;
+  left: 25px;
+}
+
+.avatar-img {
+  max-width: 100%;
+  height: auto;
+}
+
+.apps-container {
+  position: relative;
+  display: inline-block;
+}
+
+#close-feedback {
+  position: absolute;
+  top: 14px;
+  right: 20px;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+}
+
+.feedback-option {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  cursor: pointer;
+}
+
+.feedback-option img.feedback-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}

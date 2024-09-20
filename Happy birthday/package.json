@@ -5,14 +5,16 @@
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
-    "express": "^4.19.2",
+    "express": "^4.21.0",
     "googleapis": "^140.0.1",
+    "http": "^0.0.1-security",
     "mssql": "^11.0.1",
     "multer": "^1.4.5-lts.1",
     "mysql": "^2.18.1",
     "mysql2": "^3.10.2",
     "nodemailer": "^6.9.14",
-    "react": "^18.3.1"
+    "react": "^18.3.1",
+    "ws": "^8.18.0"
   },
   "name": "happy-birthday",
   "version": "1.0.0",

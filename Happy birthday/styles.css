@@ -1,22 +1,22 @@
 body,
 html {
-  margin: 0; /* Bỏ khoảng cách mặc định của body và html */
-  padding: 0; /* Bỏ khoảng cách padding mặc định của body và html */
-  font-family: Arial, sans-serif; /* Đặt font chữ mặc định là Arial, và font dự phòng là sans-serif */
-  height: 100%; /* Đặt chiều cao của body và html là 100% chiều cao của cửa sổ trình duyệt */
-  overflow: hidden; /* Ẩn thanh cuộn mặc định của trình duyệt */
-  background-color: #f6f8fc; /* Đặt màu nền cho body và html */
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  height: 100%;
+  overflow: hidden;
+  background-color: #f6f8fc;
 }
 
 header {
-  display: flex; /* Sử dụng Flexbox để căn chỉnh các phần tử bên trong header */
-  justify-content: space-between; /* Căn đều khoảng cách giữa các phần tử trong header */
-  align-items: center; /* Căn giữa các phần tử theo chiều dọc */
-  padding: 8px 16px; /* Khoảng cách bên trong của header */
-  background-color: #ffffff; /* Màu nền của header */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); /* Đổ bóng cho header */
-  position: fixed; /* Cố định vị trí của header */
-  top: 0; /* Đặt header ở trên cùng */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  position: fixed;
+  top: 0;
   left: 0; /* Đặt header sát bên trái */
   right: 0; /* Đặt header sát bên phải */
   z-index: 1000; /* Đưa header lên trên các phần tử khác */
@@ -912,4 +912,24 @@ body.dark-mode .task-name.completed {
 body.dark-mode footer {
   background-color: #222;
   color: #ddd;
+}
+
+.chat-popup {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+}
+
+.chat-header {
+  font-weight: bold;
+}
+
+.chat-messages {
+  font-size: 14px;
+}
+
+.chat-input input {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
 }

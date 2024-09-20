@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { syncToGoogleSheets } = require("./googleSheetsSync");
+const { syncToGoogleSheets } = require("../googleSheetsSync");
 
 // Add vocabulary route
 router.post("/add-vocabulary", async (req, res) => {

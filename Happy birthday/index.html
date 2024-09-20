@@ -6,7 +6,10 @@
     <title>Trang chủ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.10/css/weather-icons.min.css">
     <link rel="icon" type="image/png" sizes="32x32" href="album/feedback-icon.png">
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="/home_page/base_styles.css" />
+    <link rel="stylesheet" href="/home_page/components_styles.css" />
+    <link rel="stylesheet" href="/home_page/tasks_and_dark_mode_styles.css" />
+    <link rel="stylesheet" href="/home_page/sidebar_styles.css" />
     <link rel="stylesheet" href="header-right-styles.css" />
     <!-- Liên kết đến file CSS để trang trí giao diện -->
     <style>
@@ -307,8 +310,9 @@
     <script src="virtualKeyboard.js"></script>
     <!-- Script chính của trang -->
     <script type="module" src="main.js"></script>
+    <script type="module" src="chat-popup.js"></script>
     <script type="module" src="tasks.js"></script>
     <script type="module" src="ui.js"></script> 
-    <script type="module" src="chat-popup.js"></script>
+    <div id="chat-popups-container" style="position: fixed; bottom: 0; right: 0; display: flex; flex-direction: row-reverse;"></div>
   </body>
 </html>

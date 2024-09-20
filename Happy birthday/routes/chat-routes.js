@@ -5,6 +5,9 @@ const router = express.Router();
 router.post("/messages", async (req, res) => {
   const { sender_id, receiver_id, content } = req.body;
   try {
+    if (!sender_id || !receiver_id || !content) {
+      throw new Error("Thiếu thông tin cần thiết");
+    }
     const [result] = await req.dbConnection.execute(
       "INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)",
       [sender_id, receiver_id, content]
@@ -12,7 +15,11 @@ router.post("/messages", async (req, res) => {
     res.json({ success: true, message_id: result.insertId });
   } catch (error) {
     console.error("Error saving message:", error);
-    res.status(500).json({ success: false, message: "Lỗi khi lưu tin nhắn" });
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi lưu tin nhắn",
+      error: error.message,
+    });
   }
 });
 
@@ -40,7 +47,7 @@ router.get("/chat-users/:currentUserId", async (req, res) => {
       SELECT u.id, u.username, CONCAT(u.firstName, ' ', u.lastName) AS name, 
              pi.photo_url, pi.bio, pi.phone,
              COALESCE(cdn.display_name, CONCAT(u.firstName, ' ', u.lastName)) AS display_name,
-             FALSE as is_group
+             FALSE as is_group, u.online_status
       FROM users u
       LEFT JOIN personal_info pi ON u.id = pi.user_id
       LEFT JOIN chat_display_names cdn ON u.id = cdn.chat_id AND cdn.user_id = ? AND cdn.is_group = FALSE
@@ -51,7 +58,8 @@ router.get("/chat-users/:currentUserId", async (req, res) => {
              'Nhóm chat cho tất cả người dùng' as bio, 
              NULL as phone,
              COALESCE(cdn.display_name, gc.name) as display_name,
-             TRUE as is_group
+             TRUE as is_group,
+             TRUE as online_status
       FROM group_chats gc
       LEFT JOIN chat_display_names cdn ON gc.id = cdn.chat_id AND cdn.user_id = ? AND cdn.is_group = TRUE
       WHERE gc.name = 'Nhóm chat chung'
@@ -200,6 +208,141 @@ router.post("/update-chat-display-name", async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: "Lỗi khi cập nhật tên hiển thị" });
+  }
+});
+
+// Cập nhật trạng thái trực tuyến
+router.post("/update-online-status", async (req, res) => {
+  const { user_id, online_status } = req.body;
+  try {
+    await req.dbConnection.execute(
+      "UPDATE users SET online_status = ? WHERE id = ?",
+      [online_status, user_id]
+    );
+    res.json({
+      success: true,
+      message: "Trạng thái trực tuyến đã được cập nhật",
+    });
+  } catch (error) {
+    console.error("Lỗi khi cập nhật trạng thái trực tuyến:", error);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi cập nhật trạng thái trực tuyến",
+    });
+  }
+});
+
+// Lấy trạng thái trực tuyến của người dùng
+router.get("/online-status/:user_id", async (req, res) => {
+  const { user_id } = req.params;
+  try {
+    const [rows] = await req.dbConnection.execute(
+      "SELECT online_status FROM users WHERE id = ?",
+      [user_id]
+    );
+    if (rows.length > 0) {
+      res.json({ success: true, online_status: rows[0].online_status });
+    } else {
+      res
+        .status(404)
+        .json({ success: false, message: "Không tìm thấy người dùng" });
+    }
+  } catch (error) {
+    console.error("Lỗi khi lấy trạng thái trực tuyến:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Lỗi khi lấy trạng thái trực tuyến" });
+  }
+});
+
+// Thêm người dùng vào nhóm chat chung
+router.post("/add-user-to-common-group", async (req, res) => {
+  const { user_id } = req.body;
+  try {
+    // Lấy ID của nhóm chat chung
+    const [groupRows] = await req.dbConnection.execute(
+      "SELECT id FROM group_chats WHERE name = 'Nhóm chat chung' LIMIT 1"
+    );
+
+    let groupId;
+    if (groupRows.length === 0) {
+      // Nếu nhóm chat chung chưa tồn tại, tạo mới
+      const [result] = await req.dbConnection.execute(
+        "INSERT INTO group_chats (name, creator_id) VALUES (?, ?)",
+        ["Nhóm chat chung", user_id]
+      );
+      groupId = result.insertId;
+      console.log("Đã tạo nhóm chat chung mới với ID:", groupId);
+    } else {
+      groupId = groupRows[0].id;
+    }
+
+    // Kiểm tra xem người dùng đã trong nhóm chưa
+    const [memberCheck] = await req.dbConnection.execute(
+      "SELECT * FROM group_chat_members WHERE group_id = ? AND user_id = ?",
+      [groupId, user_id]
+    );
+
+    if (memberCheck.length === 0) {
+      // Thêm người dùng vào nhóm nếu chưa là thành viên
+      await req.dbConnection.execute(
+        "INSERT INTO group_chat_members (group_id, user_id) VALUES (?, ?)",
+        [groupId, user_id]
+      );
+      res.json({
+        success: true,
+        message: "Đã thêm người dùng vào nhóm chat chung",
+      });
+    } else {
+      res.json({
+        success: true,
+        message: "Người dùng đã là thành viên của nhóm chat chung",
+      });
+    }
+  } catch (error) {
+    console.error("Lỗi khi thêm người dùng vào nhóm chat chung:", error);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi thêm người dùng vào nhóm chat chung",
+      error: error.message,
+    });
+  }
+});
+
+// Kiểm tra tin nhắn mới
+router.get("/check-new-messages/:userId/:lastMessageId", async (req, res) => {
+  const { userId, lastMessageId } = req.params;
+  try {
+    const [personalMessages] = await req.dbConnection.execute(
+      `SELECT m.*, CONCAT(u.firstName, ' ', u.lastName) AS sender_name, NULL as group_id
+       FROM messages m
+       JOIN users u ON m.sender_id = u.id
+       WHERE m.id > ? AND (m.sender_id = ? OR m.receiver_id = ?)
+       ORDER BY m.timestamp ASC`,
+      [lastMessageId, userId, userId]
+    );
+
+    const [groupMessages] = await req.dbConnection.execute(
+      `SELECT m.*, CONCAT(u.firstName, ' ', u.lastName) AS sender_name, m.group_id
+       FROM group_messages m
+       JOIN users u ON m.sender_id = u.id
+       WHERE m.id > ? AND m.group_id IN (
+         SELECT group_id FROM group_chat_members WHERE user_id = ?
+       )
+       ORDER BY m.timestamp ASC`,
+      [lastMessageId, userId]
+    );
+
+    const allMessages = [...personalMessages, ...groupMessages].sort(
+      (a, b) => a.timestamp - b.timestamp
+    );
+
+    res.json({ success: true, messages: allMessages });
+  } catch (error) {
+    console.error("Lỗi khi kiểm tra tin nhắn mới:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Lỗi khi kiểm tra tin nhắn mới" });
   }
 });
 

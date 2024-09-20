@@ -8,14 +8,14 @@
       rel="icon"
       type="image/png"
       sizes="32x32"
-      href="album/feedback-icon.png"
+      href="/album/feedback-icon.png"
     />
     <link rel="stylesheet" href="login-style.css" />
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   </head>
   <body>
     <video autoplay muted loop id="background-video">
-      <source src="image_login/cc.mp4" type="video/mp4" />
+      <source src="/image_login/cc.mp4" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
 
@@ -34,7 +34,7 @@
     <div class="login-container">
       <div class="logo-container">
         <img
-          src="image_login/logo_login.jpg"
+          src="/image_login/logo_login.jpg"
           alt="Login Logo"
           class="login-logo"
         />
@@ -56,7 +56,7 @@
               required
             />
             <img
-              src="image_login/eye-closed.png"
+              src="/image_login/eye-closed.png"
               id="togglePassword"
               class="toggle-password"
               alt="Hiển thị/Ẩn mật khẩu"
@@ -90,7 +90,7 @@
     </footer>
 
     <div class="contact-admin-button" id="contactAdminBtn">
-      <img src="contact.png" alt="Liên hệ quản trị viên" />
+      <img src="/album/contact.png" alt="Liên hệ quản trị viên" />
     </div>
 
     <!-- Modals -->
@@ -139,7 +139,7 @@
               required
             />
             <img
-              src="image_login/eye-closed.png"
+              src="/image_login/eye-closed.png"
               class="toggle-password"
               data-target="signupPassword"
               alt="Hiển thị/Ẩn mật khẩu"
@@ -163,33 +163,30 @@
           <div class="input-group">
             <label>Giới tính</label>
             <div class="gender-inputs">
-              <label for="gender-female">
-                <input
-                  type="radio"
-                  id="gender-female"
-                  name="gender"
-                  value="female"
-                />
-                Nữ
-              </label>
-              <label for="gender-male">
-                <input
-                  type="radio"
-                  id="gender-male"
-                  name="gender"
-                  value="male"
-                />
-                Nam
-              </label>
-              <label for="gender-other">
-                <input
-                  type="radio"
-                  id="gender-other"
-                  name="gender"
-                  value="other"
-                />
-                Khác
-              </label>
+              <input
+                type="radio"
+                id="gender-female"
+                name="gender"
+                value="female"
+                required
+              />
+              <label for="gender-female">Nữ</label>
+              <input
+                type="radio"
+                id="gender-male"
+                name="gender"
+                value="male"
+                required
+              />
+              <label for="gender-male">Nam</label>
+              <input
+                type="radio"
+                id="gender-other"
+                name="gender"
+                value="other"
+                required
+              />
+              <label for="gender-other">Khác</label>
             </div>
           </div>
           <p class="terms">
@@ -247,7 +244,7 @@
               required
             />
             <img
-              src="image_login/eye-closed.png"
+              src="/image_login/eye-closed.png"
               class="toggle-password"
               data-target="tempPassword"
             />
@@ -260,7 +257,7 @@
               required
             />
             <img
-              src="image_login/eye-closed.png"
+              src="/image_login/eye-closed.png"
               class="toggle-password"
               data-target="newPassword"
             />
@@ -274,7 +271,7 @@
               required
             />
             <img
-              src="image_login/eye-closed.png"
+              src="/image_login/eye-open.png"
               class="toggle-password"
               data-target="confirmNewPassword"
             />
@@ -285,6 +282,8 @@
       </div>
     </div>
 
-    <script src="login-script.js"></script>
+    <script src="login.js"></script>
+    <script src="password-management.js"></script>
+    <script src="signup.js"></script>
   </body>
 </html>

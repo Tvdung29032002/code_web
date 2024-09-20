@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chat Hiện Đại</title>
+    <title>Messenger</title>
     <link rel="stylesheet" href="chat-styles.css" />
+    <link rel="icon" type="image/png" sizes="32x32" href="message.png" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -74,6 +75,25 @@
         </footer>
       </section>
     </div>
-    <script type="module" src="chat-script.js"></script>
+    <script type="module" src="chat-api.js"></script>
+    <script type="module" src="chat-app.js"></script>
+    <script type="module" src="chat-ui.js"></script>
+    <script type="module">
+      import { ChatApp } from "./chat-app.js";
+      ChatApp.init();
+    </script>
+    <!-- Modal đổi tên hiển thị -->
+    <div id="displayNameModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Đổi tên hiển thị</h2>
+        <input
+          type="text"
+          id="newDisplayName"
+          placeholder="Nhập tên hiển thị mới"
+        />
+        <button id="saveDisplayNameBtn">Lưu</button>
+      </div>
+    </div>
   </body>
 </html>

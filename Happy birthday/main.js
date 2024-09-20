@@ -1,5 +1,7 @@
 // main.js
 
+import { handleNewMessageHomepage, initChatPopup } from "./chat-popup.js";
+import { ChatApp } from "./messenger/chat-app.js";
 import {
   displayNotifications,
   displayTodayTasks,
@@ -9,7 +11,8 @@ import {
 import { checkUserRole, initUI } from "./ui.js";
 import { initWeather } from "./weather.js";
 
-document.addEventListener("DOMContentLoaded", async function () {
+// Initialize the application
+async function initApp() {
   // Initialize UI
   initUI();
 
@@ -44,4 +47,27 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // Check and apply user role permissions
   checkUserRole();
-});
+
+  // Initialize WebSocket connection
+  ChatApp.initWebSocket();
+
+  // Khởi tạo ChatApp
+  if (window.location.pathname.includes("messenger")) {
+    ChatApp.init();
+  } else {
+    ChatApp.initForHomepage();
+    // Thêm xử lý tin nhắn mới cho trang chủ
+    ChatApp.handleNewMessage = handleNewMessageHomepage;
+  }
+
+  // Khởi tạo chat popup chỉ khi ở trang chủ
+  if (
+    window.location.pathname === "/" ||
+    window.location.pathname === "/index.html"
+  ) {
+    initChatPopup();
+  }
+}
+
+// Call initApp when the document is ready
+document.addEventListener("DOMContentLoaded", initApp);
