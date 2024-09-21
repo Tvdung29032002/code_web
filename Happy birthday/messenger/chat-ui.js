@@ -98,12 +98,6 @@ const ChatUI = {
       this.displayCurrentUserInfo(user);
       this.loadUserMessages(user.id, chatApp);
     }
-    console.log(
-      "Selected chat:",
-      chatApp.isGroupChat ? "Group" : "Personal",
-      "ID:",
-      chatApp.isGroupChat ? chatApp.currentGroupId : chatApp.currentReceiverId
-    );
   },
 
   updateUserOnlineStatus: function (userId, onlineStatus) {
@@ -118,9 +112,8 @@ const ChatUI = {
       }
     }
 
-    // Cập nhật trạng thái trong chat-info nếu đang hiển thị
     const chatInfoStatus = document.querySelector(".chat-info .status");
-    if (chatInfoStatus && chatInfoStatus.dataset.userId === userId) {
+    if (chatInfoStatus && chatInfoStatus.dataset.userId === userId.toString()) {
       chatInfoStatus.textContent = onlineStatus ? "Trực tuyến" : "Ngoại tuyến";
     }
   },
@@ -211,7 +204,13 @@ const ChatUI = {
         <span class="status" data-user-id="${user.id}">Đang cập nhật...</span>
       </div>
     `;
-    this.updateUserOnlineStatus(user.id);
+    ChatAPI.getOnlineStatus(user.id)
+      .then((onlineStatus) => {
+        this.updateUserOnlineStatus(user.id, onlineStatus);
+      })
+      .catch((error) => {
+        console.error("Lỗi khi lấy trạng thái trực tuyến:", error);
+      });
   },
 
   addMessage: function (content, isSent, senderName = "") {
@@ -303,7 +302,6 @@ const ChatUI = {
   updateChatListWithNewMessage: function (message, isGroupMessage, chatApp) {
     const chatList = document.getElementById("chat-list");
     if (!chatList) {
-      console.log("Chat list not found, possibly on homepage");
       return;
     }
 

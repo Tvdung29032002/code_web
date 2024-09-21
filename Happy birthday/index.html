@@ -4,57 +4,61 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Trang chủ</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.10/css/weather-icons.min.css">
-    <link rel="icon" type="image/png" sizes="32x32" href="album/feedback-icon.png">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.10/css/weather-icons.min.css"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="album/feedback-icon.png"
+    />
     <link rel="stylesheet" href="/home_page/base_styles.css" />
     <link rel="stylesheet" href="/home_page/components_styles.css" />
     <link rel="stylesheet" href="/home_page/tasks_and_dark_mode_styles.css" />
     <link rel="stylesheet" href="/home_page/sidebar_styles.css" />
-    <link rel="stylesheet" href="header-right-styles.css" />
-    <!-- Liên kết đến file CSS để trang trí giao diện -->
-    <style>
-      .chat-popup {
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        border-radius: 8px 8px 0 0;
-        overflow: hidden;
-      }
-      .chat-header {
-        font-weight: bold;
-      }
-      .chat-messages {
-        font-size: 14px;
-      }
-      .chat-input input {
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        padding: 5px;
-      }
-    </style>
+    <link rel="stylesheet" href="/home_page/header-right-general.css" />
+    <link rel="stylesheet" href="/home_page/header-right-menus.css" />
+    <link rel="stylesheet" href="/home_page/header-right-tooltips.css" />
+    <link rel="stylesheet" href="/home_page/general_styles.css" />
+    <link rel="stylesheet" href="chat-popup.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   </head>
   <body>
     <header>
       <!-- Phần header bao gồm menu toggle, ô tìm kiếm và các biểu tượng -->
       <div class="header-left">
-        <img src="album/menu.png" alt="Menu" id="sidebarToggle" class="icon" />
-        <div id="current-time" class="current-time">
-          <span class="date"></span>
-          <span class="time"></span>
-      </div>
-        <!-- Biểu tượng mở sidebar -->
-        <div class="weather-widget">
-          <span class="weather-icon"></span>
-          <span class="temperature"></span>
-          <span class="weather-tooltip-text"></span>
-        </div>
-          <span class="separator">|</span> <!-- Thêm phần tử này -->
-          <div class="city-selector">
-            <div class="selected-city" id="selectedCity">
-              Hà Nội
-              <img src="album/dropdown-arrow.png" id="toggleIcon" class="toggle-icon">
+        <img
+          src="album/menu.png"
+          alt="Menu"
+          id="sidebarToggle"
+          class="icon menu-icon"
+        />
+        <div class="header-info">
+          <div id="current-time" class="current-time">
+            <span class="date"></span>
+            <span class="time"></span>
+          </div>
+          <div class="weather-city-info">
+            <div class="weather-widget">
+              <span class="weather-icon"></span>
+              <span class="temperature"></span>
+              <span class="weather-tooltip-text"></span>
             </div>
-            <div class="city-dropdown" style="display: none;">
+            <span class="separator">|</span>
+            <div class="city-selector">
+              <div id="selectedCity" class="selected-city">
+                <span class="city-name">Hà Nội</span>
+              </div>
+              <button id="toggleCityDropdown" class="toggle-city-dropdown">
+                <img src="album/dropdown-arrow.png" alt="Dropdown" class="dropdown-icon">
+              </button>
+            </div>
+            <div class="city-dropdown">
               <div class="search-container">
-                <input type="text" id="citySearch" placeholder="Tìm thành phố...">
+                <img src="album/search-icon.png" alt="Tìm kiếm" class="search-icon" />
+                <input type="text" id="citySearch" placeholder="Tìm kiếm thành phố..." />
               </div>
               <ul id="cityList">
                 <!-- Danh sách thành phố sẽ được thêm bằng JavaScript -->
@@ -64,27 +68,32 @@
         </div>
       </div>
       <div class="search-bar tooltip-container">
-        <input type="text" id="searchInput" placeholder="Tìm kiếm" />
-        <img
-          src="album/keyboard.png"
-          alt="Keyboard Icon"
-          class="keyboard-icon"
-          id="keyboardIcon"
-        />
-        <img
-          src="album/search-icon.png"
-          alt="Search Icon"
-          class="search-icon"
-        />
-        <span class="search-tooltip-text">Tìm kiếm</span>
+        <div class="search-input-wrapper">
+          <img src="album/search-icon.png" alt="Tìm kiếm" class="search-icon" />
+          <input type="text" id="searchInput" placeholder="Tìm kiếm..." />
+          <img
+            src="album/keyboard.png"
+            alt="Bàn phím ảo"
+            class="keyboard-icon"
+            id="keyboardIcon"
+          />
+        </div>
+        <span class="search-tooltip">Tìm kiếm</span>
       </div>
       <div class="header-right">
         <!-- Các biểu tượng phải của header -->
         <div class="help-tooltip-wrapper tooltip-container">
-          <img src="album/help-icon.png" alt="Help" class="icon" id="helpIcon" />
+          <img
+            src="album/help-icon.png"
+            alt="Help"
+            class="icon"
+            id="helpIcon"
+          />
           <span class="help-tooltip-text">Hỗ trợ</span>
           <div id="helpMenu" class="help-menu">
-            <div class="help-item"><a href="info_forum/info-forum.html">Diễn đàn</a></div>
+            <div class="help-item">
+              <a href="info_forum/info-forum.html">Diễn đàn</a>
+            </div>
             <div class="help-item">Trợ giúp</div>
             <div class="help-item">Đào tạo</div>
             <div class="help-item">Nội dung cập nhật</div>
@@ -92,14 +101,23 @@
         </div>
         <!-- Biểu tượng thông báo -->
         <div class="notification-tooltip-wrapper tooltip-container">
-          <img src="album/notification-icon.png" alt="Notification" class="icon" id="notificationIcon" />
+          <img
+            src="album/notification-icon.png"
+            alt="Notification"
+            class="icon"
+            id="notificationIcon"
+          />
           <span class="notification-tooltip-text">Thông báo</span>
-          <div id="notificationMenu" class="notification-menu">
-          </div>
+          <div id="notificationMenu" class="notification-menu"></div>
         </div>
         <!-- Biểu tượng tin nhắn -->
         <div class="messenger-tooltip-wrapper tooltip-container">
-          <img src="album/messenger-icon.png" alt="Messenger" class="icon" id="messengerIcon" />
+          <img
+            src="album/messenger-icon.png"
+            alt="Messenger"
+            class="icon"
+            id="messengerIcon"
+          />
           <span class="messenger-tooltip-text">Tin nhắn</span>
           <div id="messengerMenu" class="messenger-menu">
             <!-- Nội dung menu messenger sẽ được thêm vào đây bằng JavaScript -->
@@ -107,13 +125,18 @@
         </div>
         <!-- Biểu tượng cài đặt -->
         <div class="settings-tooltip-wrapper tooltip-container">
-          <img src="album/settings-icon.png" alt="Settings" class="icon" id="settingsIcon" />
+          <img
+            src="album/settings-icon.png"
+            alt="Settings"
+            class="icon"
+            id="settingsIcon"
+          />
           <span class="settings-tooltip-text">Cài đặt</span>
           <div id="settingsMenu" class="settings-menu">
             <div class="settings-item">
               <span>Chế độ tối</span>
               <label class="switch">
-                <input type="checkbox" id="darkModeToggle">
+                <input type="checkbox" id="darkModeToggle" />
                 <span class="slider round"></span>
               </label>
             </div>
@@ -127,75 +150,90 @@
             <div class="settings-item">
               <span>Widget trang chủ</span>
               <div>
-                <label><input type="checkbox" id="widgetWeather"> Thời tiết</label>
-                <label><input type="checkbox" id="widgetTasks"> Nhiệm vụ</label>
+                <label
+                  ><input type="checkbox" id="widgetWeather" /> Thời tiết</label
+                >
+                <label
+                  ><input type="checkbox" id="widgetTasks" /> Nhiệm vụ</label
+                >
               </div>
             </div>
             <div class="settings-item">
               <span>Quyền riêng tư</span>
               <div>
-                <label><input type="checkbox" id="privacyProfile"> Hồ sơ công khai</label>
-                <label><input type="checkbox" id="privacyActivity"> Hoạt động công khai</label>
+                <label
+                  ><input type="checkbox" id="privacyProfile" /> Hồ sơ công
+                  khai</label
+                >
+                <label
+                  ><input type="checkbox" id="privacyActivity" /> Hoạt động công
+                  khai</label
+                >
               </div>
             </div>
-          </div>      
+          </div>
         </div>
         <!-- Biểu tượng ứng dụng -->
         <div class="apps-tooltip-wrapper tooltip-container">
-          <img src="album/apps-icon.png" alt="Apps" class="icon" id="appsIcon">
+          <img
+            src="album/apps-icon.png"
+            alt="Apps"
+            class="icon"
+            id="appsIcon"
+          />
           <span class="apps-tooltip-text">Ứng dụng</span>
           <div id="appsMenu" class="apps-menu">
             <div class="apps-grid">
               <div class="apps-item">
-                <img src="image_menu_app/calendar.jpg" alt="Calendar">
+                <img src="image_menu_app/calendar.jpg" alt="Calendar" />
                 <span>Calendar</span>
               </div>
               <div class="apps-item">
-                <img src="image_menu_app/gmail.jpg" alt="Gmail">
+                <img src="image_menu_app/gmail.jpg" alt="Gmail" />
                 <span>Gmail</span>
               </div>
               <div class="apps-item">
-                <img src="image_menu_app/google_map.jpg" alt="Maps">
+                <img src="image_menu_app/google_map.jpg" alt="Maps" />
                 <span>Maps</span>
               </div>
               <div class="apps-item">
-                <img src="image_menu_app/youtube.jpg" alt="YouTube">
+                <img src="image_menu_app/youtube.jpg" alt="YouTube" />
                 <span>YouTube</span>
               </div>
               <div class="apps-item">
-                <img src="image_menu_app/vnexpress.png" alt="Vnexpress">
+                <img src="image_menu_app/vnexpress.png" alt="Vnexpress" />
                 <span>Vnexpress</span>
               </div>
               <div class="apps-item">
-                <img src="image_menu_app/tiktok.jpg" alt="Tiktok">
+                <img src="image_menu_app/tiktok.jpg" alt="Tiktok" />
                 <span>Tiktok</span>
               </div>
               <div class="apps-item">
-                <img src="image_menu_app/messenger.jpg" alt="Messenger">
+                <img src="image_menu_app/messenger.jpg" alt="Messenger" />
                 <span>Messenger</span>
               </div>
               <div class="apps-item">
-                <img src="image_menu_app/facebook.png" alt="Facebook">
+                <img src="image_menu_app/facebook.png" alt="Facebook" />
                 <span>Facebook</span>
               </div>
               <div class="apps-item">
-                <img src="image_menu_app/instagram.jpg" alt="Instagram">
+                <img src="image_menu_app/instagram.jpg" alt="Instagram" />
                 <span>Instagram</span>
               </div>
               <div class="apps-item">
-                <img src="image_menu_app/openai-chatgpt.png" alt="Chat GPT">
+                <img src="image_menu_app/openai-chatgpt.png" alt="Chat GPT" />
                 <span>Chat GPT</span>
               </div>
               <div class="apps-item">
-                <img src="image_menu_app/claude.png" alt="Claude">
+                <img src="image_menu_app/claude.png" alt="Claude" />
                 <span>Claude</span>
               </div>
               <div class="apps-item">
-                <img src="image_menu_app/gemini.png" alt="Gemini">
+                <img src="image_menu_app/gemini.png" alt="Gemini" />
                 <span>Gemini</span>
               </div>
               <div class="apps-item">
-                <img src="image_menu_app/blackbox.png" alt="Blackbox">
+                <img src="image_menu_app/blackbox.png" alt="Blackbox" />
                 <span>Blackbox</span>
               </div>
             </div>
@@ -223,46 +261,74 @@
       <!-- Overlay cho sidebar khi mở -->
       <div id="sidebar-menu" class="sidebar">
         <div class="sidebar-header">
-          <img src="album/menu.png" alt="Đóng" id="sidebarClose" class="sidebar-close">
+          <img
+            src="album/menu.png"
+            alt="Đóng"
+            id="sidebarClose"
+            class="sidebar-close"
+          />
         </div>
         <div class="sidebar-content">
           <div class="sidebar-section">
             <h3 class="sidebar-section-title">Trang chính</h3>
             <a href="#" class="sidebar-link active">
-              <img src="album/home-icon.png" alt="Home" class="sidebar-icon">
+              <img src="album/home-icon.png" alt="Home" class="sidebar-icon" />
               <span>Trang chủ</span>
             </a>
           </div>
           <div class="sidebar-section">
             <h3 class="sidebar-section-title">Học tập</h3>
             <a href="Vocabulary/vocabulary.html" class="sidebar-link">
-              <img src="Vocabulary/dictionary.png" alt="English" class="sidebar-icon">
+              <img
+                src="Vocabulary/dictionary.png"
+                alt="English"
+                class="sidebar-icon"
+              />
               <span>Học tiếng Anh</span>
             </a>
             <a href="Vocabulary/hoc_tieng_trung.html" class="sidebar-link">
-              <img src="Vocabulary/china.png" alt="Chinese" class="sidebar-icon">
+              <img
+                src="Vocabulary/china.png"
+                alt="Chinese"
+                class="sidebar-icon"
+              />
               <span>Học tiếng Trung</span>
             </a>
           </div>
           <div class="sidebar-section">
             <h3 class="sidebar-section-title">Công cụ</h3>
             <a href="query/query.html" class="sidebar-link admin-only">
-              <img src="query/query.png" alt="Query" class="sidebar-icon">
+              <img src="query/query.png" alt="Query" class="sidebar-icon" />
               <span>Truy vấn</span>
             </a>
             <a href="schedule/schedule.html" class="sidebar-link">
-              <img src="schedule/timetable.png" alt="Schedule" class="sidebar-icon">
+              <img
+                src="schedule/timetable.png"
+                alt="Schedule"
+                class="sidebar-icon"
+              />
               <span>Lịch trình</span>
             </a>
             <a href="schedule/assign_tasks.html" class="sidebar-link">
-              <img src="schedule/tasks-icon.png" alt="Tasks" class="sidebar-icon">
+              <img
+                src="schedule/tasks-icon.png"
+                alt="Tasks"
+                class="sidebar-icon"
+              />
               <span>Phân công nhiệm vụ</span>
             </a>
           </div>
           <div class="sidebar-section">
             <h3 class="sidebar-section-title">Quản lý</h3>
-            <a href="user_management/user_management.html" class="sidebar-link admin-only">
-              <img src="user_management/user_management.png" alt="User Management" class="sidebar-icon">
+            <a
+              href="user_management/user_management.html"
+              class="sidebar-link admin-only"
+            >
+              <img
+                src="user_management/user_management.png"
+                alt="User Management"
+                class="sidebar-icon"
+              />
               <span>Quản lý tài khoản</span>
             </a>
           </div>
@@ -272,7 +338,12 @@
         <div class="today-tasks-header">
           <h2>Nhiệm vụ hôm nay</h2>
           <a href="schedule/schedule.html" class="schedule-link">
-            <img src="album/link.png" alt="Xem lịch" class="schedule-icon" title="Xem lịch chi tiết">
+            <img
+              src="album/link.png"
+              alt="Xem lịch"
+              class="schedule-icon"
+              title="Xem lịch chi tiết"
+            />
           </a>
         </div>
         <ul id="taskList"></ul>
@@ -281,7 +352,7 @@
 
     <iframe
       id="virtual-keyboard"
-      src="keyboard.html"
+      src="/keyboard/keyboard.html"
       style="
         display: none;
         position: fixed;
@@ -305,14 +376,27 @@
     <!-- Script để xử lý cài đặt -->
     <script src="modal-settings.js"></script>
     <!-- Script để xử lý đăng nhập -->
-     <script src="auth.js"></script>
+    <script src="auth.js"></script>
     <!-- Script để xử lý bàn phím ảo -->
-    <script src="virtualKeyboard.js"></script>
+    <script src="/keyboard/virtualKeyboard.js"></script>
     <!-- Script chính của trang -->
     <script type="module" src="main.js"></script>
     <script type="module" src="chat-popup.js"></script>
     <script type="module" src="tasks.js"></script>
-    <script type="module" src="ui.js"></script> 
-    <div id="chat-popups-container" style="position: fixed; bottom: 0; right: 0; display: flex; flex-direction: row-reverse;"></div>
+    <script type="module" src="ui.js"></script>
+    <div
+      id="chat-popups-container"
+      style="
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        display: flex;
+        flex-direction: row-reverse;
+      "
+    ></div>
+  </body>
+</html>
+
+    ></div>
   </body>
 </html>

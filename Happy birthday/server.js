@@ -16,6 +16,7 @@ const feedbackRoutes = require("./routes/feedback-routes");
 const chatRoutes = require("./routes/chat-routes");
 const personalInfoRoutes = require("./routes/personal-info-routes"); // Thêm dòng này
 const loginRoutes = require("./routes/login-routes");
+require("./cron-jobs");
 
 const app = express();
 const server = http.createServer(app);

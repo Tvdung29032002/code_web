@@ -1,0 +1,25 @@
+<template id="chat-popup-template">
+  <div class="chat-popup" data-user-id="">
+    <div class="chat-header">
+      <div class="user-info">
+        <img src="/uploads/default.jpg" alt="Avatar" class="user-avatar" />
+        <div class="user-details">
+          <span class="user-name"></span>
+          <span class="user-status">Đang cập nhật...</span>
+        </div>
+      </div>
+      <div class="chat-actions">
+        <button class="minimize-chat"><i class="fas fa-minus"></i></button>
+        <button class="close-chat"><i class="fas fa-times"></i></button>
+      </div>
+    </div>
+    <div class="chat-messages"></div>
+    <div class="chat-input">
+      <button class="emoji-button"><i class="far fa-smile"></i></button>
+      <input type="text" placeholder="Nhập tin nhắn..." />
+      <button class="send-button"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+</template>
+
+<div id="chat-popups-container"></div>

@@ -15,35 +15,22 @@ const ChatApp = {
     if (currentUser && currentUser.id) {
       this.currentUserId = currentUser.id;
 
-      // Thêm người dùng vào nhóm chat chung
       ChatAPI.addUserToCommonGroup(this.currentUserId)
         .then((data) => {
-          if (data.success) {
-            console.log(data.message);
-          } else {
-            console.error(
-              "Lỗi khi thêm người dùng vào nhóm chat chung:",
-              data.message
-            );
-          }
+          // Xóa console.log và console.error
         })
         .catch((error) => {
-          console.error("Lỗi khi thêm người dùng vào nhóm chat chung:", error);
+          // Xóa console.error
         });
 
       this.initWebSocket();
-
       ChatUI.initUI(this);
 
-      // Chỉ tải danh sách người dùng nếu đang ở trang messenger
       if (window.location.pathname.includes("messenger")) {
         this.loadUserList();
       }
 
-      // Cập nhật trạng thái trực tuyến
       this.updateOnlineStatus();
-
-      // Bắt đầu kiểm tra tin nhắn mới
       this.startPolling();
     }
   },
@@ -75,7 +62,6 @@ const ChatApp = {
     this.socket = new WebSocket("ws://192.168.0.103:3000");
 
     this.socket.onopen = () => {
-      console.log("WebSocket connection established");
       this.socket.send(
         JSON.stringify({ type: "register", userId: this.currentUserId })
       );
@@ -89,13 +75,23 @@ const ChatApp = {
     };
 
     this.socket.onerror = (error) => {
-      console.error("WebSocket error:", error);
+      // Xóa console.error
     };
 
     this.socket.onclose = (event) => {
-      console.log("WebSocket connection closed:", event.reason);
-      // Có thể thêm logic để kết nối lại ở đây
+      // Xóa console.log
     };
+
+    window.addEventListener("beforeunload", () => {
+      if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+        this.socket.send(
+          JSON.stringify({
+            type: "offline",
+            userId: this.currentUserId,
+          })
+        );
+      }
+    });
   },
 
   handleNewMessage: function (message) {
@@ -127,6 +123,7 @@ const ChatApp = {
   },
 
   sendMessage: function (receiverId, content) {
+    this.updateLastActivity(); // Cập nhật last_activity khi gửi tin nhắn
     return new Promise((resolve, reject) => {
       if (this.checkAndReconnectWebSocket()) {
         const message = {
@@ -216,14 +213,25 @@ const ChatApp = {
       .then((users) => {
         users.forEach((user) => {
           if (!user.is_group) {
-            this.updateUserOnlineStatus(user.id, user.online_status);
+            ChatAPI.getOnlineStatus(user.id)
+              .then((onlineStatus) => {
+                ChatUI.updateUserOnlineStatus(user.id, onlineStatus);
+              })
+              .catch((error) => {
+                console.error(
+                  `Lỗi khi cập nhật trạng thái của user ${user.id}:`,
+                  error.message
+                );
+                // Có thể thêm xử lý lỗi khác ở đây, ví dụ: hiển thị trạng thái là "Không xác định"
+                ChatUI.updateUserOnlineStatus(user.id, null);
+              });
           }
         });
       })
       .catch((error) => {
         console.error(
           "Lỗi khi cập nhật trạng thái trực tuyến của người dùng:",
-          error
+          error.message
         );
       });
   },
@@ -231,10 +239,12 @@ const ChatApp = {
   startPolling: function () {
     this.pollingInterval = setInterval(() => {
       this.checkForNewMessages();
-    }, 3000); // Kiểm tra mỗi 3 giây
+      this.updateAllUsersOnlineStatus();
+    }, 5000); // Kiểm tra mỗi 5 giây
   },
 
   checkForNewMessages: function () {
+    this.updateLastActivity(); // Cập nhật last_activity khi kiểm tra tin nhắn mới
     ChatAPI.checkNewMessages(this.currentUserId, this.lastMessageId)
       .then((newMessages) => {
         newMessages.forEach((message) => {
@@ -249,9 +259,23 @@ const ChatApp = {
       });
   },
 
+  updateLastActivity: function () {
+    ChatAPI.updateLastActivity(this.currentUserId)
+      .then(() => {})
+      .catch((error) => {
+        console.error("Lỗi khi cập nhật last_activity:", error);
+      });
+  },
+
   updateOnlineStatus: function () {
     ChatAPI.updateOnlineStatus(this.currentUserId, true)
-      .then(() => console.log("Đã cập nhật trạng thái trực tuyến"))
+      .then((response) => {
+        if (response && response.success) {
+          console.log("Đã cập nhật trạng thái trực tuyến");
+        } else {
+          console.warn("Cập nhật trạng thái trực tuyến không thành công");
+        }
+      })
       .catch((error) =>
         console.error("Lỗi khi cập nhật trạng thái trực tuyến:", error)
       );
@@ -270,8 +294,6 @@ const ChatApp = {
     this.socket = new WebSocket("ws://192.168.0.103:3000");
 
     this.socket.onopen = () => {
-      console.log("WebSocket đã kết nối");
-      // Gửi thông tin xác thực nếu cần
       this.socket.send(
         JSON.stringify({ type: "register", userId: this.currentUserId })
       );
@@ -292,31 +314,27 @@ const ChatApp = {
         this.handleNewMessage(data.message);
       }
     };
-  },
 
-  sendMessage(receiverId, content) {
-    return new Promise((resolve, reject) => {
-      if (this.checkAndReconnectWebSocket()) {
-        const message = {
-          type: "chat",
-          sender_id: this.currentUserId,
-          receiver_id: receiverId,
-          content: content,
-        };
-        this.socket.send(JSON.stringify(message));
-
-        // Gọi API để lưu tin nhắn
-        ChatAPI.sendMessage(this.currentUserId, receiverId, content)
-          .then(() => resolve())
-          .catch((error) => reject(error));
-      } else {
-        console.log("WebSocket không sẵn sàng, đang gửi tin nhắn qua API HTTP");
-        // Gửi tin nhắn qua API HTTP
-        ChatAPI.sendMessage(this.currentUserId, receiverId, content)
-          .then(() => resolve())
-          .catch((error) => reject(error));
+    window.addEventListener("beforeunload", () => {
+      if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+        this.socket.send(
+          JSON.stringify({
+            type: "offline",
+            userId: this.currentUserId,
+          })
+        );
       }
     });
+  },
+
+  updateOfflineStatus: function () {
+    return ChatAPI.updateOnlineStatus(this.currentUserId, false)
+      .then(() => {
+        // Xóa console.log
+      })
+      .catch((error) => {
+        // Xóa console.error
+      });
   },
 };
 

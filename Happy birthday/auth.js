@@ -9,12 +9,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Hàm đăng xuất
 function logout() {
-  localStorage.removeItem("isLoggedIn");
-  localStorage.removeItem("userRole");
-  localStorage.removeItem("currentUser");
-  localStorage.removeItem("token");
-  // Chuyển hướng về trang đăng nhập
-  window.location.href = "http://192.168.0.103:5500/login/login.html";
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (currentUser && currentUser.id) {
+    // Xóa tất cả dữ liệu người dùng khỏi localStorage
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("token");
+
+    // Chuyển hướng người dùng đến trang đăng nhập
+    window.location.href = "http://192.168.0.103:5500/login/login.html";
+  } else {
+    window.location.href = "http://192.168.0.103:5500/login/login.html";
+  }
 }
 
 // Thêm logic xử lý đăng nhập

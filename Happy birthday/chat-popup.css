@@ -1,0 +1,246 @@
+#chat-popups-container {
+  position: fixed;
+  bottom: 0;
+  right: 20px;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: flex-end;
+  gap: 10px;
+  z-index: 1000;
+}
+
+.chat-popup {
+  width: 300px;
+  height: 400px;
+  background-color: #fff;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.chat-popup.minimized {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.chat-popup.minimized .chat-header {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.chat-popup.minimized .user-info {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chat-popup.minimized .user-avatar {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  object-fit: cover;
+}
+
+.chat-popup.minimized .user-details,
+.chat-popup.minimized .chat-actions {
+  display: none;
+}
+
+.chat-popup.minimized:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.chat-popup.minimized .chat-messages,
+.chat-popup.minimized .chat-input {
+  display: none;
+}
+
+.chat-popup.minimized .chat-header {
+  border-radius: 8px 8px 0 0;
+}
+
+.chat-header {
+  padding: 10px;
+  background-color: #f1f3f4;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: bold;
+  color: #202124;
+}
+
+.user-status {
+  font-size: 12px;
+  color: #5f6368;
+}
+
+.chat-actions button {
+  background: none;
+  border: none;
+  color: #5f6368;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 5px;
+}
+
+.chat-messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 10px;
+  background-color: #f8f9fa;
+}
+
+.chat-input {
+  padding: 10px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+}
+
+.chat-input input {
+  flex-grow: 1;
+  padding: 8px;
+  border: 1px solid #dfe1e5;
+  border-radius: 20px;
+  font-size: 14px;
+  outline: none;
+  margin: 0 5px;
+}
+
+.emoji-button,
+.send-button {
+  background: none;
+  border: none;
+  color: #5f6368;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.chat-message {
+  margin-bottom: 10px;
+  max-width: 80%;
+  padding: 8px 12px;
+  border-radius: 18px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.chat-message.sent {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.chat-message.received {
+  background-color: #f1f3f4;
+  color: #202124;
+  align-self: flex-start;
+}
+
+.chat-popup.dark-mode {
+  background-color: #2c2c2c;
+  color: #ffffff;
+}
+
+.chat-popup.dark-mode .chat-header {
+  background-color: #1f1f1f;
+}
+
+.chat-popup.dark-mode .user-name {
+  color: #ffffff;
+}
+
+.chat-popup.dark-mode .user-status,
+.chat-popup.dark-mode .chat-actions button {
+  color: #b0b0b0;
+}
+
+.chat-popup.dark-mode .chat-messages {
+  background-color: #2c2c2c;
+}
+
+.chat-popup.dark-mode .chat-input {
+  border-top-color: #3a3a3a;
+}
+
+.chat-popup.dark-mode .chat-input input {
+  background-color: #3a3a3a;
+  border-color: #4a4a4a;
+  color: #ffffff;
+}
+
+.chat-popup.dark-mode .emoji-button,
+.chat-popup.dark-mode .send-button {
+  color: #b0b0b0;
+}
+
+.chat-popup.dark-mode .chat-message.sent {
+  background-color: #1565c0;
+  color: #ffffff;
+}
+
+.chat-popup.dark-mode .chat-message.received {
+  background-color: #3a3a3a;
+  color: #ffffff;
+}
+
+.chat-popup.minimized .chat-icon {
+  display: block;
+  width: 70%;
+  height: auto;
+}
+
+.chat-popup:not(.minimized) .chat-icon {
+  display: none;
+}
+
+.chat-popup.minimized .user-avatar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.chat-popup:not(.minimized) .user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}

@@ -9,10 +9,20 @@ import {
   fetchUpcomingTasks,
 } from "./tasks.js";
 import { checkUserRole, initUI } from "./ui.js";
-import { initWeather } from "./weather.js";
+import { initWeather, toggleCityDropdown } from "./weather/weather.js";
 
-// Initialize the application
+// Thêm hàm mới để tạo container cho chat popups
+function createChatPopupsContainer() {
+  const container = document.createElement("div");
+  container.id = "chat-popups-container";
+  document.body.appendChild(container);
+}
+
+// Sửa đổi hàm initApp
 async function initApp() {
+  // Thêm dòng này để tạo container cho chat popups
+  createChatPopupsContainer();
+
   // Initialize UI
   initUI();
 
@@ -31,19 +41,16 @@ async function initApp() {
   notificationIcon.appendChild(notificationCount);
 
   // Initialize weather
-  const toggleIcon = document.getElementById("toggleIcon");
-  const cityList = document.getElementById("cityList");
-  const cityDropdown = document.querySelector(".city-dropdown");
-  const citySearch = document.getElementById("citySearch");
-  const selectedCity = document.getElementById("selectedCity");
-
   await initWeather(
-    toggleIcon,
-    cityList,
-    cityDropdown,
-    citySearch,
-    selectedCity
+    document.getElementById("cityList"),
+    document.querySelector(".city-dropdown"),
+    document.getElementById("citySearch"),
+    document.getElementById("selectedCity")
   );
+
+  // Add event listener for toggle button
+  const toggleButton = document.getElementById("toggleCityDropdown");
+  toggleButton.addEventListener("click", toggleCityDropdown);
 
   // Check and apply user role permissions
   checkUserRole();
@@ -71,3 +78,34 @@ async function initApp() {
 
 // Call initApp when the document is ready
 document.addEventListener("DOMContentLoaded", initApp);
+
+// Update online status when closing the page
+window.addEventListener("beforeunload", function (e) {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (currentUser && currentUser.id) {
+    const data = JSON.stringify({
+      user_id: currentUser.id,
+      online_status: false,
+    });
+
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon("/api/update-online-status", data);
+    } else {
+      fetch("/api/update-online-status", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: data,
+        keepalive: true,
+      });
+    }
+  }
+});
+
+// Cập nhật last_activity mỗi 5 phút
+setInterval(() => {
+  if (ChatApp.currentUserId) {
+    ChatApp.updateLastActivity();
+  }
+}, 5 * 60 * 1000);

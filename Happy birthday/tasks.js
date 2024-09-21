@@ -5,7 +5,6 @@ export async function fetchTodayTasks() {
   console.log("UserId from localStorage:", userId);
 
   if (!userId) {
-    console.error("Không tìm thấy userId");
     return [];
   }
 

@@ -13,30 +13,34 @@ async function fetchCities() {
     try {
       cities = JSON.parse(text);
       showCityList();
+      return cities;
     } catch (parseError) {
       throw new Error("Invalid JSON response");
     }
   } catch (error) {
     const cityList = document.getElementById("cityList");
     cityList.innerHTML = `<li>Lỗi khi tải danh sách thành phố: ${error.message}</li>`;
+    return [];
   }
 }
 
 function updateToggleIcon(isOpen) {
-  const toggleIcon = document.getElementById("toggleIcon");
-  toggleIcon.src = isOpen
-    ? "album/arrowhead-up.png"
-    : "album/dropdown-arrow.png";
-  toggleIcon.classList.toggle("up", isOpen);
+  const toggleButton = document.getElementById("toggleCityDropdown");
+  if (toggleButton) {
+    toggleButton.classList.toggle("up", isOpen);
+  }
 }
 
 function showCityList() {
   const cityList = document.getElementById("cityList");
+  if (!cityList) {
+    return;
+  }
   cityList.innerHTML = cities
     .map(
       (city) => `
     <li data-value="${city.coords}">
-      ${city.name}
+      <span>${city.name}</span>
       ${
         city.name === currentCity
           ? '<img src="album/location-icon.png" class="location-icon" alt="Đang chọn">'
@@ -48,15 +52,13 @@ function showCityList() {
     .join("");
 }
 
-function toggleCityDropdown(e) {
-  e.stopPropagation();
+function toggleCityDropdown() {
   const cityDropdown = document.querySelector(".city-dropdown");
-  const isDropdownOpen = cityDropdown.style.display === "block";
+  const toggleButton = document.getElementById("toggleCityDropdown");
+  cityDropdown.classList.toggle("show");
+  toggleButton.classList.toggle("up");
 
-  cityDropdown.style.display = isDropdownOpen ? "none" : "block";
-  updateToggleIcon(!isDropdownOpen);
-
-  if (!isDropdownOpen) {
+  if (cityDropdown.classList.contains("show")) {
     showCityList();
     document.getElementById("citySearch").focus();
   }
@@ -147,28 +149,38 @@ function updateWeatherWidget(weatherData) {
   temperature.classList.remove("error");
 }
 
-async function initWeather(
-  toggleIcon,
-  cityList,
-  cityDropdown,
-  citySearch,
-  selectedCity
-) {
-  toggleIcon.addEventListener("click", toggleCityDropdown);
+async function initWeather(cityList, cityDropdown, citySearch, selectedCity) {
+  // Fetch cities first
+  const fetchedCities = await fetchCities();
+
+  if (fetchedCities.length === 0) {
+    console.error("No cities fetched");
+    return;
+  }
+
+  // Thêm event listener cho nút toggle
+  const toggleButton = document.getElementById("toggleCityDropdown");
+  toggleButton.addEventListener("click", toggleCityDropdown);
+
+  // Sử dụng event delegation cho selectedCity
+  selectedCity.addEventListener("click", function (e) {
+    if (
+      e.target.classList.contains("toggle-icon") ||
+      e.target.closest(".toggle-icon")
+    ) {
+      toggleCityDropdown(e);
+    }
+  });
 
   cityList.addEventListener("click", function (e) {
     if (e.target.tagName === "LI") {
       const [lat, lon] = e.target.getAttribute("data-value").split(",");
       currentCity = e.target.textContent.trim();
-      selectedCity.innerHTML = `${currentCity} <img src="album/dropdown-arrow.png" id="toggleIcon" class="toggle-icon">`;
+      selectedCity.querySelector(".city-name").textContent = currentCity;
       displayWeather(parseFloat(lat), parseFloat(lon));
 
-      cityDropdown.style.display = "none";
+      cityDropdown.classList.remove("show");
       updateToggleIcon(false);
-
-      document
-        .getElementById("toggleIcon")
-        .addEventListener("click", toggleCityDropdown);
 
       showCityList();
     }
@@ -183,12 +195,12 @@ async function initWeather(
     });
   });
 
-  await fetchCities();
-
   const defaultCity = cities.find((city) => city.name === "Hà Nội");
   if (defaultCity) {
     const [lat, lon] = defaultCity.coords.split(",");
     displayWeather(parseFloat(lat), parseFloat(lon));
+    currentCity = "Hà Nội";
+    selectedCity.querySelector(".city-name").textContent = currentCity;
   } else {
     console.error("Không tìm thấy thành phố mặc định");
   }

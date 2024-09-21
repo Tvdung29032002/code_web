@@ -1,7 +1,73 @@
 // ui.js
 
 import { initChatPopup, openChatPopup } from "./chat-popup.js";
-import { updateToggleIcon } from "./weather.js";
+import { ChatAPI } from "./messenger/chat-api.js";
+import { ChatApp } from "./messenger/chat-app.js";
+
+// Di chuyển hàm closeAllMenus ra ngoài
+function closeAllMenus() {
+  const menus = document.querySelectorAll(
+    ".help-menu, .notification-menu, .settings-menu, .apps-menu, .dropdown-menu, .messenger-menu"
+  );
+  menus.forEach((menu) => {
+    menu.classList.remove("show");
+    const tooltipContainer = menu.closest(".tooltip-container");
+    if (tooltipContainer) {
+      tooltipContainer.classList.remove("menu-open");
+    }
+  });
+}
+
+export function displayMessengerMenu(users) {
+  const messengerMenu = document.getElementById("messengerMenu");
+  messengerMenu.innerHTML = `
+    <div class="messenger-header">
+      <span class="messenger-title">Tin nhắn</span>
+      <a href="messenger/chat.html" class="new-message-btn">Tin nhắn mới</a>
+    </div>
+    <ul class="messenger-list">
+      ${users
+        .map(
+          (user) => `
+        <li class="messenger-item" data-user-id="${user.id}">
+          <img src="${user.photo_url || "album/default-avatar.png"}" alt="${
+            user.name
+          }" class="messenger-avatar">
+          <div class="messenger-content">
+            <div class="messenger-name">${user.display_name || user.name}</div>
+            <div class="messenger-preview">${
+              user.is_group
+                ? "Nhóm chat"
+                : user.online_status
+                ? "Đang hoạt động"
+                : "Không hoạt động"
+            }</div>
+          </div>
+          ${
+            user.online_status && !user.is_group
+              ? '<div class="online-indicator"></div>'
+              : ""
+          }
+        </li>
+      `
+        )
+        .join("")}
+    </ul>
+  `;
+
+  // Thêm sự kiện cho các mục người dùng
+  const userItems = messengerMenu.querySelectorAll(".messenger-item");
+  userItems.forEach((item) => {
+    item.addEventListener("click", () => {
+      const userId = item.dataset.userId;
+      const user = users.find((u) => u.id == userId);
+      if (user) {
+        openChatPopup(user);
+        closeAllMenus();
+      }
+    });
+  });
+}
 
 export function initUI() {
   const sidebarToggle = document.getElementById("sidebarToggle");
@@ -71,35 +137,6 @@ export function initUI() {
     });
   }
 
-  function closeAllMenus() {
-    const menus = [
-      dropdownMenu,
-      appsMenu,
-      helpMenu,
-      notificationMenu,
-      messengerMenu,
-      settingsMenu,
-    ];
-    menus.forEach((menu) => {
-      if (menu.classList) {
-        menu.classList.remove("show");
-      } else {
-        menu.style.display = "none";
-      }
-    });
-
-    if (cityDropdown.style.display === "block") {
-      cityDropdown.style.display = "none";
-      updateToggleIcon(false);
-    }
-
-    toggleTooltips(true);
-
-    document.querySelectorAll(".tooltip-container").forEach((container) => {
-      container.classList.remove("menu-open");
-    });
-  }
-
   function toggleMenu(menu, icon) {
     const isMenuOpen = menu.classList.contains("show");
 
@@ -111,7 +148,11 @@ export function initUI() {
       icon.closest(".tooltip-container").classList.add("menu-open");
 
       if (menu === messengerMenu) {
-        displayMessengerList();
+        ChatAPI.fetchAllUsers(ChatApp.currentUserId)
+          .then((users) => {
+            displayMessengerMenu(users);
+          })
+          .catch((error) => {});
       }
     } else {
       toggleTooltips(true);
@@ -217,7 +258,6 @@ export function initUI() {
       if (username) {
         window.location.href = "/personal-info/personal-info.html";
       } else {
-        console.log("Username not found, redirecting to login");
         window.location.href = "http://192.168.0.103:5500/login/login.html";
       }
     });
@@ -238,101 +278,11 @@ export function initUI() {
   const messengerIcon = document.getElementById("messengerIcon");
   const messengerMenu = document.getElementById("messengerMenu");
 
-  initChatPopup();
-
-  // Thêm event listener để đóng messengerMenu khi click bên ngoài
-  document.addEventListener("click", function (event) {
-    if (
-      !messengerIcon.contains(event.target) &&
-      !messengerMenu.contains(event.target)
-    ) {
-      messengerMenu.style.display = "none";
-    }
-  });
-
-  // Cập nhật event listener cho messengerIcon
+  // Thay đổi event listener cho messengerIcon
   messengerIcon.addEventListener("click", (event) => {
     event.stopPropagation();
     toggleMenu(messengerMenu, messengerIcon);
   });
-
-  // Thêm vào hàm closeAllMenus()
-  messengerMenu.style.display = "none";
-
-  // Thêm hàm để hiển thị danh sách tin nhắn
-  function displayMessengerList() {
-    // Lấy thông tin người dùng hiện tại từ localStorage
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-    if (!currentUser || !currentUser.id) {
-      console.error("Không tìm thấy thông tin người dùng hiện tại");
-      messengerMenu.innerHTML = "<p>Vui lòng đăng nhập để xem tin nhắn.</p>";
-      return;
-    }
-
-    // Lấy danh sách người dùng từ server, loại trừ người dùng hiện tại
-    fetch(`http://192.168.0.103:3000/api/chat-users/${currentUser.id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          const users = data.users;
-          const messengerContent = `
-            <div class="messenger-header">
-              <span class="messenger-title">Tin nhắn</span>
-              <a href="messenger/chat.html" class="new-message-btn">Xem tất cả</a>
-            </div>
-            <ul class="messenger-list">
-              ${users
-                .map(
-                  (user) => `
-                <li class="messenger-item" data-user-id="${user.id}">
-                  <img src="${
-                    user.photo_url || "/uploads/default-avatar.jpg"
-                  }" alt="${user.name}" class="messenger-avatar">
-                  <div class="messenger-content">
-                    <div class="messenger-name">${user.display_name}</div>
-                    <div class="messenger-preview">${
-                      user.bio
-                        ? user.bio.substring(0, 30) + "..."
-                        : "Chưa có tiểu sử"
-                    }</div>
-                  </div>
-                </li>
-              `
-                )
-                .join("")}
-            </ul>
-          `;
-
-          messengerMenu.innerHTML = messengerContent;
-
-          // Thêm sự kiện click cho mỗi mục tin nhắn
-          const messengerItems =
-            messengerMenu.querySelectorAll(".messenger-item");
-          messengerItems.forEach((item) => {
-            item.addEventListener("click", function (event) {
-              event.stopPropagation(); // Ngăn chặn sự kiện click lan ra document
-              const userId = this.getAttribute("data-user-id");
-              const user = users.find((u) => u.id.toString() === userId);
-              if (user) {
-                openChatPopup(user);
-                messengerMenu.classList.remove("show"); // Đóng menu messenger sau khi mở chat
-              }
-            });
-          });
-        } else {
-          throw new Error(data.message || "Không thể lấy danh sách người dùng");
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching users:", error);
-        messengerMenu.innerHTML = "<p>Không thể tải danh sách người dùng.</p>";
-      });
-  }
 
   initChatPopup();
 }

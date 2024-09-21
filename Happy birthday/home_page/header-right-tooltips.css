@@ -1,0 +1,76 @@
+.help-tooltip-text,
+.notification-tooltip-text,
+.settings-tooltip-text,
+.apps-tooltip-text,
+.avatar-tooltip-text,
+.messenger-tooltip-text {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  bottom: -30px;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.help-tooltip-text::after,
+.notification-tooltip-text::after,
+.settings-tooltip-text::after,
+.apps-tooltip-text::after,
+.avatar-tooltip-text::after,
+.messenger-tooltip-text::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+.help-tooltip-wrapper:hover .help-tooltip-text,
+.notification-tooltip-wrapper:hover .notification-tooltip-text,
+.settings-tooltip-wrapper:hover .settings-tooltip-text,
+.apps-tooltip-wrapper:hover .apps-tooltip-text,
+.avatar-tooltip-wrapper:hover .avatar-tooltip-text,
+.messenger-tooltip-wrapper:hover .messenger-tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.help-tooltip-wrapper.menu-open .help-tooltip-text,
+.notification-tooltip-wrapper.menu-open .notification-tooltip-text,
+.settings-tooltip-wrapper.menu-open .settings-tooltip-text,
+.messenger-tooltip-wrapper.menu-open .messenger-tooltip-text {
+  display: none;
+}
+
+.tooltip-container.menu-open .help-tooltip-text,
+.tooltip-container.menu-open .notification-tooltip-text,
+.tooltip-container.menu-open .messenger-tooltip-text,
+.tooltip-container.menu-open .settings-tooltip-text,
+.tooltip-container.menu-open .apps-tooltip-text,
+.tooltip-container.menu-open .avatar-tooltip-text {
+  display: none;
+}
+
+.tooltip-container.menu-open .messenger-tooltip-text {
+  display: none;
+}
+
+.messenger-tooltip-wrapper:hover .messenger-tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltip-container.menu-open .messenger-tooltip-text {
+  display: none;
+}

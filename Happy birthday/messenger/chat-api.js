@@ -97,12 +97,26 @@ const ChatAPI = {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ user_id: userId, online_status: onlineStatus }),
-    }).then((response) => response.json());
+    }).then(async (response) => {
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `HTTP error! status: ${response.status}, message: ${errorText}`
+        );
+      }
+      const text = await response.text();
+      return text ? JSON.parse(text) : {};
+    });
   },
 
   getOnlineStatus: function (userId) {
     return fetch(`${API_BASE_URL}/online-status/${userId}`)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then((data) => {
         if (data.success) {
           return data.online_status;
@@ -149,21 +163,35 @@ const ChatAPI = {
         group_id: groupId,
         content,
       }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((errorData) => {
-            throw new Error(
-              `HTTP error! status: ${response.status}, message: ${errorData.message}`
-            );
-          });
-        }
-        return response.json();
-      })
-      .catch((error) => {
-        console.error("Lỗi khi gửi tin nhắn nhóm:", error);
-        throw error;
-      });
+    }).then((response) => {
+      if (!response.ok) {
+        return response.json().then((errorData) => {
+          throw new Error(
+            `HTTP error! status: ${response.status}, message: ${errorData.message}`
+          );
+        });
+      }
+      return response.json();
+    });
+  },
+
+  updateLastActivity: function (userId) {
+    return fetch(`${API_BASE_URL}/update-last-activity`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ user_id: userId }),
+    }).then(async (response) => {
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `HTTP error! status: ${response.status}, message: ${errorText}`
+        );
+      }
+      const text = await response.text();
+      return text ? JSON.parse(text) : {};
+    });
   },
 
   // ... existing methods ...

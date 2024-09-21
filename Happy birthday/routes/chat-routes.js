@@ -12,6 +12,13 @@ router.post("/messages", async (req, res) => {
       "INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)",
       [sender_id, receiver_id, content]
     );
+
+    // Cập nhật last_activity
+    await req.dbConnection.execute(
+      "UPDATE users SET last_activity = CURRENT_TIMESTAMP WHERE id = ?",
+      [sender_id]
+    );
+
     res.json({ success: true, message_id: result.insertId });
   } catch (error) {
     console.error("Error saving message:", error);
@@ -212,17 +219,19 @@ router.post("/update-chat-display-name", async (req, res) => {
 });
 
 // Cập nhật trạng thái trực tuyến
-router.post("/update-online-status", async (req, res) => {
+router.post("/update-online-status", express.json(), async (req, res) => {
   const { user_id, online_status } = req.body;
   try {
     await req.dbConnection.execute(
-      "UPDATE users SET online_status = ? WHERE id = ?",
+      "UPDATE users SET online_status = ?, last_activity = CURRENT_TIMESTAMP WHERE id = ?",
       [online_status, user_id]
     );
-    res.json({
-      success: true,
-      message: "Trạng thái trực tuyến đã được cập nhật",
-    });
+    console.log(
+      `Đã cập nhật trạng thái online của user ${user_id} thành ${online_status}`
+    );
+    res
+      .status(200)
+      .json({ success: true, message: "Đã cập nhật trạng thái trực tuyến" });
   } catch (error) {
     console.error("Lỗi khi cập nhật trạng thái trực tuyến:", error);
     res.status(500).json({
@@ -233,15 +242,55 @@ router.post("/update-online-status", async (req, res) => {
 });
 
 // Lấy trạng thái trực tuyến của người dùng
+router.post("/update-last-activity", express.json(), async (req, res) => {
+  const { user_id } = req.body;
+  try {
+    await req.dbConnection.execute(
+      "UPDATE users SET last_activity = CURRENT_TIMESTAMP WHERE id = ?",
+      [user_id]
+    );
+    res
+      .status(200)
+      .json({ success: true, message: "Đã cập nhật last_activity" });
+  } catch (error) {
+    console.error("Lỗi khi cập nhật last_activity:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Lỗi khi cập nhật last_activity" });
+  }
+});
+
+router.post("/update-last-activity", express.json(), async (req, res) => {
+  const { user_id } = req.body;
+  try {
+    await req.dbConnection.execute(
+      "UPDATE users SET last_activity = CURRENT_TIMESTAMP WHERE id = ?",
+      [user_id]
+    );
+    res
+      .status(200)
+      .json({ success: true, message: "Đã cập nhật last_activity" });
+  } catch (error) {
+    console.error("Lỗi khi cập nhật last_activity:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Lỗi khi cập nhật last_activity" });
+  }
+});
+
 router.get("/online-status/:user_id", async (req, res) => {
   const { user_id } = req.params;
   try {
     const [rows] = await req.dbConnection.execute(
-      "SELECT online_status FROM users WHERE id = ?",
+      "SELECT online_status, last_activity FROM users WHERE id = ?",
       [user_id]
     );
     if (rows.length > 0) {
-      res.json({ success: true, online_status: rows[0].online_status });
+      const now = new Date();
+      const lastActivity = new Date(rows[0].last_activity);
+      const timeDiff = (now - lastActivity) / 1000 / 60; // Chuyển đổi thành phút
+      const isOnline = rows[0].online_status && timeDiff <= 5;
+      res.json({ success: true, online_status: isOnline });
     } else {
       res
         .status(404)
