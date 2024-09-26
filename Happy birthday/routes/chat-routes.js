@@ -219,19 +219,14 @@ router.post("/update-chat-display-name", async (req, res) => {
 });
 
 // Cập nhật trạng thái trực tuyến
-router.post("/update-online-status", express.json(), async (req, res) => {
+router.post("/update-online-status", async (req, res) => {
   const { user_id, online_status } = req.body;
   try {
     await req.dbConnection.execute(
       "UPDATE users SET online_status = ?, last_activity = CURRENT_TIMESTAMP WHERE id = ?",
       [online_status, user_id]
     );
-    console.log(
-      `Đã cập nhật trạng thái online của user ${user_id} thành ${online_status}`
-    );
-    res
-      .status(200)
-      .json({ success: true, message: "Đã cập nhật trạng thái trực tuyến" });
+    res.json({ success: true, message: "Đã cập nhật trạng thái trực tuyến" });
   } catch (error) {
     console.error("Lỗi khi cập nhật trạng thái trực tuyến:", error);
     res.status(500).json({
@@ -392,6 +387,127 @@ router.get("/check-new-messages/:userId/:lastMessageId", async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: "Lỗi khi kiểm tra tin nhắn mới" });
+  }
+});
+
+// Thêm route mới để lấy trạng thái online của các thành viên trong nhóm
+router.get("/group-online-status/:groupId/:currentUserId", async (req, res) => {
+  const { groupId, currentUserId } = req.params;
+  try {
+    const [members] = await req.dbConnection.execute(
+      `SELECT u.id, u.online_status, u.last_activity
+       FROM users u
+       JOIN group_chat_members gcm ON u.id = gcm.user_id
+       WHERE gcm.group_id = ? AND u.id != ?`,
+      [groupId, currentUserId]
+    );
+
+    const now = new Date();
+    const onlineUsers = members
+      .filter((member) => {
+        const lastActivity = new Date(member.last_activity);
+        const timeDiff = (now - lastActivity) / 1000 / 60; // Chuyển đổi thành phút
+        return member.online_status && timeDiff <= 5;
+      })
+      .map((member) => member.id);
+
+    res.json({ success: true, onlineUsers });
+  } catch (error) {
+    console.error("Lỗi khi lấy trạng thái online của nhóm:", error);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi lấy trạng thái online của nhóm",
+    });
+  }
+});
+
+// Đánh dấu tin nhắn đã đọc
+router.post("/mark-messages-as-read", async (req, res) => {
+  const { user_id, other_user_id, group_id } = req.body;
+  try {
+    if (group_id) {
+      // Đánh dấu tin nhắn nhóm đã đọc
+      await req.dbConnection.execute(
+        "UPDATE group_messages SET is_read = TRUE WHERE group_id = ? AND sender_id != ?",
+        [group_id, user_id]
+      );
+    } else {
+      // Đánh dấu tin nhắn cá nhân đã đọc
+      await req.dbConnection.execute(
+        "UPDATE messages SET is_read = TRUE WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)",
+        [other_user_id, user_id, user_id, other_user_id]
+      );
+    }
+    res.json({ success: true, message: "Đã đánh dấu tin nhắn là đã đọc" });
+  } catch (error) {
+    console.error("Lỗi khi đánh dấu tin nhắn đã đọc:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Lỗi khi đánh dấu tin nhắn đã đọc" });
+  }
+});
+
+// Lấy số lượng tin nhắn chưa đọc
+router.get("/unread-messages-count/:user_id", async (req, res) => {
+  const { user_id } = req.params;
+  try {
+    const [personalCount] = await req.dbConnection.execute(
+      "SELECT COUNT(*) as count FROM messages WHERE receiver_id = ? AND is_read = FALSE",
+      [user_id]
+    );
+    const [groupCount] = await req.dbConnection.execute(
+      `SELECT COUNT(*) as count FROM group_messages 
+       WHERE group_id IN (SELECT group_id FROM group_chat_members WHERE user_id = ?) 
+       AND sender_id != ? AND is_read = FALSE`,
+      [user_id, user_id]
+    );
+    const totalCount = personalCount[0].count + groupCount[0].count;
+    res.json({ success: true, unreadCount: totalCount });
+  } catch (error) {
+    console.error("Lỗi khi lấy số lượng tin nhắn chưa đọc:", error);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi lấy số lượng tin nhắn chưa đọc",
+    });
+  }
+});
+
+// Đánh dấu tin nhắn đã xem
+router.post("/mark-messages-as-seen", async (req, res) => {
+  const { user_id, other_user_id, group_id } = req.body;
+  try {
+    let updatedMessageIds = [];
+    if (group_id) {
+      await req.dbConnection.execute(
+        "UPDATE group_messages SET is_seen = TRUE WHERE group_id = ? AND sender_id != ? AND is_seen = FALSE",
+        [group_id, user_id]
+      );
+      const [result] = await req.dbConnection.execute(
+        "SELECT id FROM group_messages WHERE group_id = ? AND sender_id != ? AND is_seen = TRUE",
+        [group_id, user_id]
+      );
+      updatedMessageIds = result.map((row) => row.id);
+    } else {
+      await req.dbConnection.execute(
+        "UPDATE messages SET is_seen = TRUE WHERE sender_id = ? AND receiver_id = ? AND is_seen = FALSE",
+        [other_user_id, user_id]
+      );
+      const [result] = await req.dbConnection.execute(
+        "SELECT id FROM messages WHERE sender_id = ? AND receiver_id = ? AND is_seen = TRUE",
+        [other_user_id, user_id]
+      );
+      updatedMessageIds = result.map((row) => row.id);
+    }
+    res.json({
+      success: true,
+      message: "Đã đánh dấu tin nhắn là đã xem",
+      updatedMessageIds,
+    });
+  } catch (error) {
+    console.error("Lỗi khi đánh dấu tin nhắn đã xem:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Lỗi khi đánh dấu tin nhắn đã xem" });
   }
 });
 

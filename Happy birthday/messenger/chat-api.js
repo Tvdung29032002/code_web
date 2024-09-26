@@ -97,16 +97,7 @@ const ChatAPI = {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ user_id: userId, online_status: onlineStatus }),
-    }).then(async (response) => {
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `HTTP error! status: ${response.status}, message: ${errorText}`
-        );
-      }
-      const text = await response.text();
-      return text ? JSON.parse(text) : {};
-    });
+    }).then((response) => response.json());
   },
 
   getOnlineStatus: function (userId) {
@@ -194,6 +185,69 @@ const ChatAPI = {
     });
   },
 
+  markMessagesAsRead: function (userId, otherUserId, groupId) {
+    return fetch(`${API_BASE_URL}/mark-messages-as-read`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: userId,
+        other_user_id: otherUserId,
+        group_id: groupId,
+      }),
+    }).then((response) => response.json());
+  },
+
+  getUnreadMessagesCount: function (userId) {
+    return fetch(`${API_BASE_URL}/unread-messages-count/${userId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          return data.unreadCount;
+        } else {
+          throw new Error(
+            data.message || "Không thể lấy số lượng tin nhắn chưa đọc"
+          );
+        }
+      });
+  },
+
+  markMessagesAsSeen: function (userId, otherUserId, groupId) {
+    return fetch(`${API_BASE_URL}/mark-messages-as-seen`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: userId,
+        other_user_id: otherUserId,
+        group_id: groupId,
+      }),
+    }).then((response) => response.json());
+  },
+
+  getGroupOnlineStatus: function (groupId, currentUserId) {
+    if (!currentUserId) {
+      console.error("currentUserId is missing in getGroupOnlineStatus");
+      return Promise.reject(new Error("currentUserId is required"));
+    }
+    return fetch(
+      `${API_BASE_URL}/group-online-status/${groupId}/${currentUserId}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          return data.onlineUsers;
+        } else {
+          throw new Error(
+            data.message || "Không thể lấy trạng thái online của nhóm"
+          );
+        }
+      });
+  },
+
   // ... existing methods ...
 };
+
 export { ChatAPI };

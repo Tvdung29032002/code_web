@@ -1,5 +1,6 @@
 import { ChatAPI } from "./chat-api.js";
 import { ChatUI } from "./chat-ui.js";
+import { ChatEvents } from "./chat-events.js";
 
 const ChatApp = {
   currentReceiverId: null,
@@ -17,14 +18,14 @@ const ChatApp = {
 
       ChatAPI.addUserToCommonGroup(this.currentUserId)
         .then((data) => {
-          // Xóa console.log và console.error
+          // Xử lý kết quả nếu cần
         })
         .catch((error) => {
-          // Xóa console.error
+          console.error("Lỗi khi thêm người dùng vào nhóm chung:", error);
         });
 
       this.initWebSocket();
-      ChatUI.initUI(this);
+      ChatEvents.initUI(this);
 
       if (window.location.pathname.includes("messenger")) {
         this.loadUserList();
@@ -32,6 +33,9 @@ const ChatApp = {
 
       this.updateOnlineStatus();
       this.startPolling();
+    } else {
+      console.error("Không tìm thấy thông tin người dùng hiện tại");
+      // Xử lý trường hợp không có người dùng đăng nhập
     }
   },
   initForHomepage: function () {
@@ -47,7 +51,7 @@ const ChatApp = {
     ChatAPI.fetchAllUsers(this.currentUserId)
       .then((users) => {
         ChatUI.renderChatList(users, this);
-        ChatUI.setupSearchListener(users, this);
+        ChatEvents.setupSearchListener(users, this);
       })
       .catch((error) => {
         console.error("Error fetching users:", error);
@@ -62,24 +66,36 @@ const ChatApp = {
     this.socket = new WebSocket("ws://192.168.0.103:3000");
 
     this.socket.onopen = () => {
+      console.log("WebSocket connected");
       this.socket.send(
         JSON.stringify({ type: "register", userId: this.currentUserId })
       );
+    };
+
+    this.socket.onerror = (error) => {
+      console.error("WebSocket error:", error);
+      // Thử kết nối lại sau một khoảng thời gian
+      setTimeout(() => this.initWebSocket(), 5000);
     };
 
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.type === "new_message") {
         this.handleNewMessage(data.message);
+      } else if (data.type === "messages_seen_update") {
+        this.updateMessageSeenStatus(
+          data.messageIds,
+          data.groupId,
+          data.otherUserId
+        );
       }
     };
 
-    this.socket.onerror = (error) => {
-      // Xóa console.error
-    };
-
-    this.socket.onclose = (event) => {
-      // Xóa console.log
+    this.socket.onclose = () => {
+      console.log("WebSocket đã đóng, sẽ thử kết nối lại sau 5 giây");
+      this.updateOfflineStatus().then(() => {
+        setTimeout(() => this.initWebSocket(), 5000);
+      });
     };
 
     window.addEventListener("beforeunload", () => {
@@ -96,17 +112,17 @@ const ChatApp = {
 
   handleNewMessage: function (message) {
     if (message.group_id) {
-      // Tin nhắn nhóm
       if (this.isGroupChat && this.currentGroupId === message.group_id) {
         ChatUI.addMessage(
           message.content,
           message.sender_id === this.currentUserId,
-          message.sender_name
+          message.sender_name,
+          message.is_seen
         );
+        ChatAPI.markMessagesAsSeen(this.currentUserId, null, message.group_id);
       }
       ChatUI.updateChatListWithNewMessage(message, true, this);
     } else {
-      // Tin nhắn cá nhân
       if (
         !this.isGroupChat &&
         (this.currentReceiverId === message.sender_id ||
@@ -115,75 +131,29 @@ const ChatApp = {
         ChatUI.addMessage(
           message.content,
           message.sender_id === this.currentUserId,
-          message.sender_name
+          message.sender_name,
+          message.is_seen
         );
+        ChatAPI.markMessagesAsSeen(this.currentUserId, message.sender_id, null);
       }
       ChatUI.updateChatListWithNewMessage(message, false, this);
     }
   },
 
   sendMessage: function (receiverId, content) {
-    this.updateLastActivity(); // Cập nhật last_activity khi gửi tin nhắn
     return new Promise((resolve, reject) => {
-      if (this.checkAndReconnectWebSocket()) {
-        const message = {
-          type: "chat",
-          sender_id: this.currentUserId,
-          receiver_id: receiverId,
-          content: content,
-        };
-        this.socket.send(JSON.stringify(message));
-
-        // Gọi API để lưu tin nhắn
-        ChatAPI.sendMessage(this.currentUserId, receiverId, content)
-          .then(() => resolve())
-          .catch((error) => reject(error));
-      } else {
-        console.log("WebSocket không sẵn sàng, đang gửi tin nhắn qua API HTTP");
-        // Gửi tin nhắn qua API HTTP
-        ChatAPI.sendMessage(this.currentUserId, receiverId, content)
-          .then(() => resolve())
-          .catch((error) => reject(error));
-      }
+      ChatAPI.sendMessage(this.currentUserId, receiverId, content)
+        .then(() => resolve())
+        .catch((error) => reject(error));
     });
   },
 
   sendGroupMessage: function (groupId, content) {
-    if (content === undefined) {
-      console.error("Nội dung tin nhắn không được định nghĩa");
-      return;
-    }
-
-    content = content.trim();
-    if (!content) {
-      console.error("Nội dung tin nhắn trống");
-      return;
-    }
-
-    ChatAPI.sendGroupMessage(this.currentUserId, groupId, content)
-      .then((data) => {
-        if (data.success) {
-          ChatUI.addMessage(content, true);
-          // Gửi tin nhắn qua WebSocket nếu cần
-          if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-            this.socket.send(
-              JSON.stringify({
-                type: "new_group_message",
-                message: {
-                  sender_id: this.currentUserId,
-                  group_id: groupId,
-                  content: content,
-                },
-              })
-            );
-          }
-        } else {
-          console.error("Lỗi khi gửi tin nhắn nhóm:", data.message);
-        }
-      })
-      .catch((error) => {
-        console.error("Lỗi khi gửi tin nhắn nhóm:", error);
-      });
+    return new Promise((resolve, reject) => {
+      ChatAPI.sendGroupMessage(this.currentUserId, groupId, content)
+        .then(() => resolve())
+        .catch((error) => reject(error));
+    });
   },
 
   updateChatDisplayName: function (chatId, newName, isGroup) {
@@ -222,9 +192,10 @@ const ChatApp = {
                   `Lỗi khi cập nhật trạng thái của user ${user.id}:`,
                   error.message
                 );
-                // Có thể thêm xử lý lỗi khác ở đây, ví dụ: hiển thị trạng thái là "Không xác định"
-                ChatUI.updateUserOnlineStatus(user.id, null);
+                ChatUI.updateUserOnlineStatus(user.id, false);
               });
+          } else {
+            ChatUI.updateGroupOnlineStatus(user.id, this.currentUserId);
           }
         });
       })
@@ -240,6 +211,9 @@ const ChatApp = {
     this.pollingInterval = setInterval(() => {
       this.checkForNewMessages();
       this.updateAllUsersOnlineStatus();
+      if (this.isGroupChat && this.currentGroupId) {
+        ChatUI.updateGroupOnlineStatus(this.currentGroupId, this.currentUserId);
+      }
     }, 5000); // Kiểm tra mỗi 5 giây
   },
 
@@ -294,24 +268,35 @@ const ChatApp = {
     this.socket = new WebSocket("ws://192.168.0.103:3000");
 
     this.socket.onopen = () => {
+      console.log("WebSocket connected");
       this.socket.send(
         JSON.stringify({ type: "register", userId: this.currentUserId })
       );
     };
 
-    this.socket.onclose = () => {
-      console.log("WebSocket đã đóng, sẽ thử kết nối lại sau 5 giây");
+    this.socket.onerror = (error) => {
+      console.error("WebSocket error:", error);
+      // Thử kết nối lại sau một khoảng thời gian
       setTimeout(() => this.initWebSocket(), 5000);
     };
 
-    this.socket.onerror = (error) => {
-      console.error("Lỗi WebSocket:", error);
+    this.socket.onclose = () => {
+      console.log("WebSocket đã đóng, sẽ thử kết nối lại sau 5 giây");
+      this.updateOfflineStatus().then(() => {
+        setTimeout(() => this.initWebSocket(), 5000);
+      });
     };
 
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.type === "new_message") {
         this.handleNewMessage(data.message);
+      } else if (data.type === "messages_seen_update") {
+        this.updateMessageSeenStatus(
+          data.messageIds,
+          data.groupId,
+          data.otherUserId
+        );
       }
     };
 
@@ -327,13 +312,22 @@ const ChatApp = {
     });
   },
 
+  updateMessageSeenStatus: function (messageIds, groupId, otherUserId) {
+    messageIds.forEach((messageId) => {
+      ChatUI.updateMessageStatus(messageId, true);
+    });
+  },
+
   updateOfflineStatus: function () {
     return ChatAPI.updateOnlineStatus(this.currentUserId, false)
       .then(() => {
-        // Xóa console.log
+        console.log("Đã cập nhật trạng thái offline");
       })
       .catch((error) => {
-        // Xóa console.error
+        console.error("Lỗi khi cập nhật trạng thái offline:", error);
+        // Thêm xử lý lỗi ở đây, ví dụ:
+        // Có thể thử kết nối lại sau một khoảng thời gian
+        setTimeout(() => this.updateOfflineStatus(), 5000);
       });
   },
 };

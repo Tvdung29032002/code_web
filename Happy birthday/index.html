@@ -23,7 +23,11 @@
     <link rel="stylesheet" href="/home_page/header-right-tooltips.css" />
     <link rel="stylesheet" href="/home_page/general_styles.css" />
     <link rel="stylesheet" href="chat-popup.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="chatbot/chatbot.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
   </head>
   <body>
     <header>
@@ -52,13 +56,25 @@
                 <span class="city-name">Hà Nội</span>
               </div>
               <button id="toggleCityDropdown" class="toggle-city-dropdown">
-                <img src="album/dropdown-arrow.png" alt="Dropdown" class="dropdown-icon">
+                <img
+                  src="album/dropdown-arrow.png"
+                  alt="Dropdown"
+                  class="dropdown-icon"
+                />
               </button>
             </div>
             <div class="city-dropdown">
               <div class="search-container">
-                <img src="album/search-icon.png" alt="Tìm kiếm" class="search-icon" />
-                <input type="text" id="citySearch" placeholder="Tìm kiếm thành phố..." />
+                <img
+                  src="/weather/exploration.png"
+                  alt="Tìm kiếm"
+                  class="search-icon"
+                />
+                <input
+                  type="text"
+                  id="citySearch"
+                  placeholder="Tìm kiếm thành phố..."
+                />
               </div>
               <ul id="cityList">
                 <!-- Danh sách thành phố sẽ được thêm bằng JavaScript -->
@@ -373,6 +389,15 @@
       <p>Copyright © 2024, Tran Van Dung</p>
     </footer>
     <!-- Footer -->
+    <!-- Thay thế phần chatbot cũ bằng đoạn mã sau -->
+    <div id="chatbot-container" class="chatbot-wrapper">
+      <div id="chatbot-iframe-container" style="display: none">
+        <iframe id="chatbot-iframe" src="chatbot/chatbot.html"></iframe>
+      </div>
+      <button id="open-chatbot" class="open-chatbot-btn">
+        <i class="fas fa-robot"></i>
+      </button>
+    </div>
     <!-- Script để xử lý cài đặt -->
     <script src="modal-settings.js"></script>
     <!-- Script để xử lý đăng nhập -->
@@ -384,6 +409,7 @@
     <script type="module" src="chat-popup.js"></script>
     <script type="module" src="tasks.js"></script>
     <script type="module" src="ui.js"></script>
+    <script type="module" src="chatbot/chatbot.js"></script>
     <div
       id="chat-popups-container"
       style="
@@ -393,10 +419,6 @@
         display: flex;
         flex-direction: row-reverse;
       "
-    ></div>
-  </body>
-</html>
-
     ></div>
   </body>
 </html>

@@ -18,29 +18,58 @@ function createChatPopupsContainer() {
   document.body.appendChild(container);
 }
 
-// Sửa đổi hàm initApp
-async function initApp() {
-  // Thêm dòng này để tạo container cho chat popups
-  createChatPopupsContainer();
+// Hàm khởi tạo chatbot
+function initChatbot() {
+  const chatbotWrapper = document.getElementById("chatbot-container");
+  const openChatbotBtn = document.getElementById("open-chatbot");
+  const chatbotIframeContainer = document.getElementById(
+    "chatbot-iframe-container"
+  );
+  const chatbotIframe = document.getElementById("chatbot-iframe");
 
-  // Initialize UI
+  if (chatbotIframeContainer && chatbotIframe && openChatbotBtn) {
+    chatbotIframe.onload = function () {
+      chatbotIframe.contentWindow.postMessage("initializeChatbot", "*");
+    };
+
+    // Sửa đổi sự kiện click cho nút mở chatbot
+    openChatbotBtn.addEventListener("click", function () {
+      if (chatbotIframeContainer.style.display === "none") {
+        chatbotIframeContainer.style.display = "block";
+        openChatbotBtn.innerHTML = '<i class="fas fa-times"></i>';
+      } else {
+        chatbotIframeContainer.style.display = "none";
+        openChatbotBtn.innerHTML = '<i class="fas fa-robot"></i>';
+      }
+    });
+
+    // Đảm bảo rằng trạng thái ban đầu là ẩn
+    chatbotIframeContainer.style.display = "none";
+    openChatbotBtn.innerHTML = '<i class="fas fa-robot"></i>';
+  } else {
+    // Xóa console.error ở đây
+  }
+
+  // Xóa console.log ở đây
+}
+
+// Hàm khởi tạo ứng dụng
+async function initApp() {
+  createChatPopupsContainer();
   initUI();
 
-  // Fetch and display tasks
   const todayTasks = await fetchTodayTasks();
   displayTodayTasks(todayTasks);
 
   const upcomingTasks = await fetchUpcomingTasks();
   displayNotifications(upcomingTasks);
 
-  // Update notification count
   const notificationIcon = document.getElementById("notificationIcon");
   const notificationCount = document.createElement("span");
   notificationCount.className = "notification-count";
   notificationCount.textContent = upcomingTasks.length;
   notificationIcon.appendChild(notificationCount);
 
-  // Initialize weather
   await initWeather(
     document.getElementById("cityList"),
     document.querySelector(".city-dropdown"),
@@ -48,38 +77,26 @@ async function initApp() {
     document.getElementById("selectedCity")
   );
 
-  // Add event listener for toggle button
   const toggleButton = document.getElementById("toggleCityDropdown");
   toggleButton.addEventListener("click", toggleCityDropdown);
 
-  // Check and apply user role permissions
   checkUserRole();
-
-  // Initialize WebSocket connection
   ChatApp.initWebSocket();
 
-  // Khởi tạo ChatApp
   if (window.location.pathname.includes("messenger")) {
     ChatApp.init();
   } else {
     ChatApp.initForHomepage();
-    // Thêm xử lý tin nhắn mới cho trang chủ
     ChatApp.handleNewMessage = handleNewMessageHomepage;
   }
 
-  // Khởi tạo chat popup chỉ khi ở trang chủ
-  if (
-    window.location.pathname === "/" ||
-    window.location.pathname === "/index.html"
-  ) {
-    initChatPopup();
-  }
+  initChatPopup();
 }
 
-// Call initApp when the document is ready
+// Khởi chạy ứng dụng khi tài liệu đã sẵn sàng
 document.addEventListener("DOMContentLoaded", initApp);
 
-// Update online status when closing the page
+// Cập nhật trạng thái trực tuyến khi đóng trang
 window.addEventListener("beforeunload", function (e) {
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   if (currentUser && currentUser.id) {
@@ -109,3 +126,9 @@ setInterval(() => {
     ChatApp.updateLastActivity();
   }
 }, 5 * 60 * 1000);
+
+// Đảm bảo rằng hàm này được gọi khi trang đã tải xong
+document.addEventListener("DOMContentLoaded", function () {
+  // Xóa console.log ở đây
+  initChatbot();
+});
