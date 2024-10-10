@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lịch - TaskMaster</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="assign-tasks-style.css" />
+    <link rel="stylesheet" href="calendar-style.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assign-tasks-icon.png"
+    />
+    <style>
+      /* Thêm style cho các trạng thái nhiệm vụ */
+      .task-overdue {
+        color: #ff6b6b;
+      }
+      .task-on-time {
+        color: #6dd5a7;
+      }
+      .task-in-progress {
+        color: #4a90e2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <aside class="sidebar">
+        <div class="logo">
+          <i class="fas fa-tasks"></i>
+          <span>TaskMaster</span>
+        </div>
+        <nav>
+          <a href="assign-tasks.html"><i class="fas fa-home"></i> Tổng quan</a>
+          <a href="#" class="active"
+            ><i class="fas fa-calendar-alt"></i> Lịch</a
+          >
+          <a href="reports.html"><i class="fas fa-chart-bar"></i> Báo cáo</a>
+        </nav>
+      </aside>
+
+      <main class="main-content">
+        <header>
+          <div class="header-left">
+            <button id="backToHome" class="back-button">
+              <i class="fas fa-home"></i> Trang chủ
+            </button>
+            <h1>Lịch</h1>
+          </div>
+          <div class="calendar-controls">
+            <button id="prevMonth">&lt;</button>
+            <span id="currentMonth"></span>
+            <button id="nextMonth">&gt;</button>
+          </div>
+        </header>
+        <section id="calendar">
+          <div class="calendar-header">
+            <div>CN</div>
+            <div>T2</div>
+            <div>T3</div>
+            <div>T4</div>
+            <div>T5</div>
+            <div>T6</div>
+            <div>T7</div>
+          </div>
+          <div id="calendarDays" class="calendar-days">
+            <!-- Các ngày sẽ được thêm vào đây bằng JavaScript -->
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="taskModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalDate"></h2>
+        <ul id="modalTaskList"></ul>
+      </div>
+    </div>
+
+    <script src="calendar.js"></script>
+  </body>
+</html>

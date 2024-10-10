@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trợ giúp</title>
+    <link rel="stylesheet" href="help.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <meta
+      name="description"
+      content="Trung tâm trợ giúp cho người dùng với các hướng dẫn, câu hỏi thường gặp và hỗ trợ trực tiếp."
+    />
+  </head>
+  <body>
+    <header>
+      <a href="/" class="home-button">
+        <i class="fas fa-home"></i>
+        <span>Trang chủ</span>
+      </a>
+      <h1>Trung tâm trợ giúp</h1>
+      <input type="text" id="searchHelp" placeholder="Tìm kiếm trợ giúp..." />
+    </header>
+    <nav>
+      <ul>
+        <li>
+          <a href="#getting-started"><i class="fas fa-rocket"></i> Bắt đầu</a>
+        </li>
+        <li>
+          <a href="#features"><i class="fas fa-star"></i> Tính năng</a>
+        </li>
+        <li>
+          <a href="#faq"><i class="fas fa-question"></i> Câu hỏi thường gặp</a>
+        </li>
+        <li>
+          <a href="#contact"><i class="fas fa-envelope"></i> Liên hệ hỗ trợ</a>
+        </li>
+      </ul>
+    </nav>
+    <main>
+      <section id="getting-started">
+        <h2><i class="fas fa-rocket"></i> Bắt đầu</h2>
+        <p>Hướng dẫn cách sử dụng các tính năng cơ bản của trang web:</p>
+        <ol>
+          <li>Đăng ký tài khoản</li>
+          <li>Cập nhật thông tin cá nhân</li>
+          <li>Khám phá các khóa học</li>
+          <li>Tham gia lớp học trực tuyến</li>
+        </ol>
+        <button class="expand-btn" onclick="toggleContent(this)">
+          Xem thêm <span class="visually-hidden">về phần Bắt đầu</span>
+        </button>
+        <div class="expanded-content">
+          <p>Để bắt đầu sử dụng trang web, hãy làm theo các bước sau:</p>
+          <ol>
+            <li>Truy cập trang chủ và nhấp vào nút "Đăng ký"</li>
+            <li>Điền thông tin cá nhân và tạo tài khoản</li>
+            <li>Đăng nhập vào tài khoản của bạn</li>
+            <li>Khám phá các tính năng và bắt đầu học tập!</li>
+          </ol>
+        </div>
+      </section>
+      <section id="features">
+        <h2><i class="fas fa-star"></i> Tính năng</h2>
+        <ul>
+          <li><i class="fas fa-user-cog"></i> Quản lý tài khoản</li>
+          <li><i class="fas fa-calendar-alt"></i> Lịch học và nhiệm vụ</li>
+          <li><i class="fas fa-language"></i> Học tiếng Anh và tiếng Trung</li>
+          <li><i class="fas fa-comments"></i> Trò chuyện và tin nhắn</li>
+        </ul>
+        <button class="expand-btn" onclick="toggleContent(this)">
+          Xem thêm <span class="visually-hidden">về các tính năng</span>
+        </button>
+        <div class="expanded-content">
+          <h3>Mô tả chi tiết các tính năng:</h3>
+          <ul>
+            <li>
+              <strong>Quản lý tài khoản:</strong> Cập nhật thông tin cá nhân,
+              đổi mật khẩu, quản lý quyền riêng tư.
+            </li>
+            <li>
+              <strong>Lịch học và nhiệm vụ:</strong> Xem lịch học, thêm nhiệm vụ
+              mới, nhận thông báo về deadline.
+            </li>
+            <li>
+              <strong>Học ngôn ngữ:</strong> Truy cập các bài học, làm bài tập,
+              theo dõi tiến độ học tập.
+            </li>
+            <li>
+              <strong>Trò chuyện:</strong> Gửi tin nhắn cho bạn học và giáo
+              viên, tham gia các nhóm thảo luận.
+            </li>
+          </ul>
+        </div>
+      </section>
+      <section id="faq">
+        <h2><i class="fas fa-question"></i> Câu hỏi thường gặp</h2>
+        <dl>
+          <dt><i class="fas fa-key"></i> Làm thế nào để đổi mật khẩu?</dt>
+          <dd>Truy cập vào phần Cài đặt tài khoản và chọn "Đổi mật khẩu".</dd>
+          <dt><i class="fas fa-tasks"></i> Làm sao để thêm nhiệm vụ mới?</dt>
+          <dd>
+            Vào phần Lịch học, nhấp vào nút "Thêm nhiệm vụ" và điền thông tin
+            cần thiết.
+          </dd>
+        </dl>
+        <button class="expand-btn" onclick="toggleContent(this)">
+          Xem thêm câu hỏi <span class="visually-hidden">thường gặp</span>
+        </button>
+        <div class="expanded-content">
+          <dl>
+            <dt>
+              <i class="fas fa-certificate"></i> Làm sao để nhận chứng chỉ hoàn
+              thành khóa học?
+            </dt>
+            <dd>
+              Sau khi hoàn thành tất cả các bài học và bài kiểm tra của khóa
+              học, chứng chỉ sẽ tự động được cấp trong phần "Thành tích" của
+              bạn.
+            </dd>
+            <dt>
+              <i class="fas fa-user-plus"></i> Tôi có thể mời bạn bè tham gia
+              học cùng không?
+            </dt>
+            <dd>
+              Có, bạn có thể sử dụng tính năng "Giới thiệu bạn bè" trong menu
+              cài đặt để mời bạn bè tham gia. Bạn sẽ nhận được phần thưởng khi
+              bạn bè đăng ký thành công.
+            </dd>
+          </dl>
+        </div>
+      </section>
+      <section id="contact">
+        <h2><i class="fas fa-envelope"></i> Liên hệ hỗ trợ</h2>
+        <p>Nếu bạn cần thêm trợ giúp, vui lòng liên hệ với chúng tôi qua:</p>
+        <ul>
+          <li>
+            <i class="fas fa-envelope"></i> Email: tvdung29032002@gmail.com
+          </li>
+          <li><i class="fas fa-phone"></i> Điện thoại: 0915 599 258</li>
+          <li>
+            <i class="fab fa-facebook-messenger"></i> Chat trực tuyến:
+            <a href="#" id="openChat">Bắt đầu chat</a>
+          </li>
+        </ul>
+        <form id="supportForm">
+          <h3>Gửi yêu cầu hỗ trợ</h3>
+          <input type="text" placeholder="Họ tên" required />
+          <input type="email" placeholder="Email" required />
+          <textarea placeholder="Nội dung yêu cầu" required></textarea>
+          <button type="submit">Gửi yêu cầu</button>
+        </form>
+      </section>
+    </main>
+    <script src="help.js"></script>
+    <button id="backToTop" class="back-to-top" aria-label="Quay lại đầu trang">
+      <i class="fas fa-chevron-up"></i>
+    </button>
+    <div id="feedbackButton" class="feedback-button">
+      <i class="fas fa-comment"></i> Gửi phản hồi
+    </div>
+    <div id="feedbackModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Gửi phản hồi</h2>
+        <form id="feedbackForm">
+          <div class="rating">
+            <input type="radio" id="star5" name="rating" value="5" required />
+            <label for="star5" title="5 sao">&#9733;</label>
+            <input type="radio" id="star4" name="rating" value="4" />
+            <label for="star4" title="4 sao">&#9733;</label>
+            <input type="radio" id="star3" name="rating" value="3" />
+            <label for="star3" title="3 sao">&#9733;</label>
+            <input type="radio" id="star2" name="rating" value="2" />
+            <label for="star2" title="2 sao">&#9733;</label>
+            <input type="radio" id="star1" name="rating" value="1" />
+            <label for="star1" title="1 sao">&#9733;</label>
+          </div>
+          <textarea
+            id="feedbackText"
+            placeholder="Nhập phản hồi của bạn"
+            required
+          ></textarea>
+          <button type="submit">Gửi</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

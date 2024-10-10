@@ -108,11 +108,11 @@
           <span class="help-tooltip-text">Hỗ trợ</span>
           <div id="helpMenu" class="help-menu">
             <div class="help-item">
-              <a href="info_forum/info-forum.html">Diễn đàn</a>
+              <a href="/help-item/info_forum/info-forum.html">Diễn đàn</a>
             </div>
-            <div class="help-item">Trợ giúp</div>
-            <div class="help-item">Đào tạo</div>
-            <div class="help-item">Nội dung cập nhật</div>
+            <div class="help-item">
+              <a href="/help-item/help/help.html">Trợ giúp</a>
+            </div>
           </div>
         </div>
         <!-- Biểu tượng thông báo -->
@@ -286,67 +286,99 @@
         </div>
         <div class="sidebar-content">
           <div class="sidebar-section">
-            <h3 class="sidebar-section-title">Trang chính</h3>
-            <a href="#" class="sidebar-link active">
-              <img src="album/home-icon.png" alt="Home" class="sidebar-icon" />
-              <span>Trang chủ</span>
-            </a>
+            <div class="section-header">
+              <h3 class="sidebar-section-title">Trang chính</h3>
+              <button class="toggle-btn">+</button>
+            </div>
+            <div class="sidebar-links">
+              <a href="#" class="sidebar-link active">
+                <img
+                  src="album/home-icon.png"
+                  alt="Home"
+                  class="sidebar-icon"
+                />
+                <span>Trang chủ</span>
+              </a>
+            </div>
           </div>
           <div class="sidebar-section">
-            <h3 class="sidebar-section-title">Học tập</h3>
-            <a href="Vocabulary/vocabulary.html" class="sidebar-link">
-              <img
-                src="Vocabulary/dictionary.png"
-                alt="English"
-                class="sidebar-icon"
-              />
-              <span>Học tiếng Anh</span>
-            </a>
-            <a href="Vocabulary/hoc_tieng_trung.html" class="sidebar-link">
-              <img
-                src="Vocabulary/china.png"
-                alt="Chinese"
-                class="sidebar-icon"
-              />
-              <span>Học tiếng Trung</span>
-            </a>
+            <div class="section-header">
+              <h3 class="sidebar-section-title">Học tập</h3>
+              <button class="toggle-btn">+</button>
+            </div>
+            <div class="sidebar-links">
+              <a href="Vocabulary/vocabulary.html" class="sidebar-link">
+                <img
+                  src="Vocabulary/dictionary.png"
+                  alt="English"
+                  class="sidebar-icon"
+                />
+                <span>Học tiếng Anh</span>
+              </a>
+              <a href="Vocabulary/hoc_tieng_trung.html" class="sidebar-link">
+                <img
+                  src="Vocabulary/china.png"
+                  alt="Chinese"
+                  class="sidebar-icon"
+                />
+                <span>Học tiếng Trung</span>
+              </a>
+            </div>
           </div>
           <div class="sidebar-section">
-            <h3 class="sidebar-section-title">Công cụ</h3>
-            <a href="query/query.html" class="sidebar-link admin-only">
-              <img src="query/query.png" alt="Query" class="sidebar-icon" />
-              <span>Truy vấn</span>
-            </a>
-            <a href="schedule/schedule.html" class="sidebar-link">
-              <img
-                src="schedule/timetable.png"
-                alt="Schedule"
-                class="sidebar-icon"
-              />
-              <span>Lịch trình</span>
-            </a>
-            <a href="schedule/assign_tasks.html" class="sidebar-link">
-              <img
-                src="schedule/tasks-icon.png"
-                alt="Tasks"
-                class="sidebar-icon"
-              />
-              <span>Phân công nhiệm vụ</span>
-            </a>
+            <div class="section-header">
+              <h3 class="sidebar-section-title">Giao việc</h3>
+              <button class="toggle-btn">+</button>
+            </div>
+            <div class="sidebar-links">
+              <a href="tasks/tasks.html" class="sidebar-link">
+                <img
+                  src="tasks/tasks-icon.png"
+                  alt="Tasks"
+                  class="sidebar-icon"
+                />
+                <span>Lịch học</span>
+              </a>
+              <a href="assign-tasks/assign-tasks.html" class="sidebar-link">
+                <img
+                  src="assign-tasks/assign-tasks-icon.png"
+                  alt="Assign Tasks"
+                  class="sidebar-icon"
+                />
+                <span>Phân công nhiệm vụ</span>
+              </a>
+            </div>
           </div>
           <div class="sidebar-section">
-            <h3 class="sidebar-section-title">Quản lý</h3>
-            <a
-              href="user_management/user_management.html"
-              class="sidebar-link admin-only"
-            >
-              <img
-                src="user_management/user_management.png"
-                alt="User Management"
-                class="sidebar-icon"
-              />
-              <span>Quản lý tài khoản</span>
-            </a>
+            <div class="section-header">
+              <h3 class="sidebar-section-title">Công cụ</h3>
+              <button class="toggle-btn">+</button>
+            </div>
+            <div class="sidebar-links">
+              <a href="query/query.html" class="sidebar-link admin-only">
+                <img src="query/query.png" alt="Query" class="sidebar-icon" />
+                <span>Truy vấn</span>
+              </a>
+            </div>
+          </div>
+          <div class="sidebar-section">
+            <div class="section-header">
+              <h3 class="sidebar-section-title">Quản lý</h3>
+              <button class="toggle-btn">+</button>
+            </div>
+            <div class="sidebar-links">
+              <a
+                href="user_management/user_management.html"
+                class="sidebar-link admin-only"
+              >
+                <img
+                  src="user_management/user_management.png"
+                  alt="User Management"
+                  class="sidebar-icon"
+                />
+                <span>Quản lý tài khoản</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>

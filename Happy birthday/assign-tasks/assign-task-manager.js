@@ -52,12 +52,29 @@ const taskManager = {
         minute: "2-digit",
       });
 
+      let statusText = "";
+      let statusClass = "";
+      if (task.completed) {
+        if (task.completion_status === "overdue") {
+          statusText = "Hoàn thành trễ";
+          statusClass = "task-overdue";
+        } else {
+          statusText = "Hoàn thành đúng hạn";
+          statusClass = "task-on-time";
+        }
+      } else if (task.completion_status === "overdue") {
+        statusText = "Quá hạn";
+        statusClass = "task-overdue";
+      }
+
       const completedAtText = task.formatted_completed_at
-        ? `<span class="task-completed-at">Hoàn thành lúc: ${task.formatted_completed_at}</span>`
+        ? `<span class="task-completed-at ${statusClass}">${statusText} lúc: ${task.formatted_completed_at}</span>`
         : "";
 
       const taskItem = document.createElement("li");
-      taskItem.className = `task-item ${task.completed ? "completed" : ""}`;
+      taskItem.className = `task-item ${
+        task.completed ? "completed" : ""
+      } ${statusClass}`;
       taskItem.dataset.taskId = task.id;
 
       taskItem.innerHTML = `
@@ -73,6 +90,7 @@ const taskManager = {
             <span>Bắt đầu: ${formattedStartDate} ${formattedStartTime}</span>
             <span>Kết thúc: ${formattedEndDate} ${formattedEndTime}</span>
           </div>
+          <div class="task-creator">Người tạo: ${task.creator_name}</div>
           ${completedAtText}
         `;
 
@@ -114,9 +132,19 @@ const taskManager = {
   addCheckboxListeners() {
     const checkboxes = document.querySelectorAll(".task-checkbox");
     checkboxes.forEach((checkbox) => {
-      checkbox.addEventListener("change", async function () {
+      checkbox.addEventListener("change", async function (event) {
         const taskId = this.dataset.taskId;
         const completed = this.checked;
+        const taskItem = this.closest(".task-item");
+
+        // Kiểm tra xem nhiệm vụ đã hoàn thành chưa
+        if (taskItem.classList.contains("completed") && !completed) {
+          // Nếu nhiệm vụ đã hoàn thành và người dùng cố gắng bỏ chọn
+          event.preventDefault(); // Ngăn chặn thay đổi trạng thái checkbox
+          this.checked = true; // Đảm bảo checkbox vẫn được chọn
+          alert("Không thể bỏ chọn nhiệm vụ đã hoàn thành");
+          return;
+        }
 
         try {
           const response = await fetch(
@@ -137,7 +165,6 @@ const taskManager = {
           const result = await response.json();
 
           if (result.success) {
-            const taskItem = this.closest(".task-item");
             taskItem.classList.toggle("completed", completed);
             const editButton = taskItem.querySelector(".edit-task-btn");
             if (editButton) {
@@ -202,19 +229,19 @@ const taskManager = {
   async searchTasks(userId, searchTerm) {
     try {
       const response = await fetch(
-        `http://192.168.0.103:3000/api/assigned-tasks/search/${userId}?searchTerm=${encodeURIComponent(
-          searchTerm
-        )}`
+        `http://192.168.0.103:3000/api/assigned-tasks/search/${userId}?searchTerm=${searchTerm}`
       );
-      const result = await response.json();
-
-      if (result.success) {
-        this.displayAssignedTasks(result.tasks);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      if (data.success) {
+        this.displayAssignedTasks(data.tasks);
       } else {
-        console.error("Lỗi khi tìm kiếm nhiệm vụ:", result.message);
+        console.error("Lỗi khi tìm kiếm nhiệm vụ:", data.message);
       }
     } catch (error) {
-      console.error("Lỗi:", error);
+      console.error("Lỗi khi tìm kiếm nhiệm vụ:", error);
     }
   },
 };

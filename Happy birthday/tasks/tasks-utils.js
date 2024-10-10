@@ -1,5 +1,12 @@
-import { updateCalendar } from "./calendar.js";
-import { currentDate, fetchTasks, tasks } from "./tasks.js";
+import { updateCalendar } from "./tasks-calendar.js";
+import {
+  addTask,
+  currentDate,
+  deleteTask,
+  fetchTasks,
+  tasks,
+  updateTask,
+} from "./tasks-script.js";
 
 function formatDate(date) {
   const d = new Date(date);
@@ -12,14 +19,20 @@ function formatDate(date) {
 function createTaskElement(task) {
   const taskElement = document.createElement("div");
   taskElement.classList.add("task");
+
+  // Kiểm tra nếu là nhiệm vụ cố định "Tiếng Anh - Từ vựng" hoặc "Tiếng Anh - Minigame"
+  if (
+    task.isFixed &&
+    task.type === "english" &&
+    (task.activity === "vocabulary" || task.activity === "game")
+  ) {
+    taskElement.classList.add("fixed-task");
+  }
+
   taskElement.textContent = task.name;
   taskElement.dataset.id = task.id;
   taskElement.dataset.type = task.type;
   taskElement.dataset.activity = task.activity;
-
-  if (task.isFixed) {
-    taskElement.classList.add("fixed-task");
-  }
 
   if (new Date(task.date) < new Date()) {
     taskElement.classList.add(task.completed ? "completed" : "missed");
@@ -27,8 +40,16 @@ function createTaskElement(task) {
 
   taskElement.addEventListener("click", (e) => {
     e.stopPropagation();
-    if (!task.isFixed) {
+    if (
+      !task.isFixed ||
+      task.type !== "english" ||
+      (task.activity !== "vocabulary" && task.activity !== "game")
+    ) {
       editTask(task, e.target.closest(".day"));
+    } else {
+      console.log(
+        "Không thể chỉnh sửa nhiệm vụ cố định Tiếng Anh - Từ vựng hoặc Minigame"
+      );
     }
   });
 
@@ -102,6 +123,7 @@ async function handleFormSubmit(e) {
 
   await addTask(newTask);
   hideTaskForm(form);
+  updateCalendar(); // Thêm dòng này để cập nhật lịch sau khi thêm nhiệm vụ mới
 }
 
 async function isTaskDuplicate(task) {
@@ -161,9 +183,27 @@ function editTask(task, dayElement) {
       ...task,
       type: form.querySelector("#taskType").value,
       activity: form.querySelector("#activityType").value,
+      name: `${
+        form.querySelector("#taskType").value === "english"
+          ? "Tiếng Anh"
+          : "Tiếng Trung"
+      } - ${
+        form.querySelector("#activityType").value === "vocabulary"
+          ? "Từ vựng"
+          : "Minigame"
+      }`,
     };
     await updateTask(updatedTask);
     form.remove();
+
+    // Cập nhật giao diện ngay lập tức
+    const taskElement = dayElement.querySelector(`[data-id="${task.id}"]`);
+    if (taskElement) {
+      taskElement.textContent = updatedTask.name;
+      taskElement.dataset.type = updatedTask.type;
+      taskElement.dataset.activity = updatedTask.activity;
+    }
+
     updateCalendar();
   });
 
@@ -177,6 +217,13 @@ function editTask(task, dayElement) {
       if (confirm("Bạn có chắc chắn muốn xóa nhiệm vụ này?")) {
         await deleteTask(task.id);
         form.remove();
+
+        // Xóa nhiệm vụ khỏi giao diện ngay lập tức
+        const taskElement = dayElement.querySelector(`[data-id="${task.id}"]`);
+        if (taskElement) {
+          taskElement.remove();
+        }
+
         updateCalendar();
       }
     });
@@ -187,6 +234,7 @@ function editTask(task, dayElement) {
 function toggleTaskCompletion(task) {
   task.completed = !task.completed;
   updateTask(task);
+  updateCalendar(); // Thêm dòng này để cập nhật lịch sau khi thay đổi trạng thái nhiệm vụ
 }
 
 function searchTasks() {

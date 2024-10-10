@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Báo cáo - TaskMaster</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="assign-tasks-style.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assign-tasks-icon.png"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/dist/date-fns.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  </head>
+  <body>
+    <div class="app-container">
+      <aside class="sidebar">
+        <div class="logo">
+          <i class="fas fa-tasks"></i>
+          <span>TaskMaster</span>
+        </div>
+        <nav>
+          <a href="assign-tasks.html"><i class="fas fa-home"></i> Tổng quan</a>
+          <a href="calendar.html"><i class="fas fa-calendar-alt"></i> Lịch</a>
+          <a href="#" class="active"
+            ><i class="fas fa-chart-bar"></i> Báo cáo</a
+          >
+        </nav>
+      </aside>
+
+      <main class="main-content">
+        <header>
+          <div class="header-left">
+            <button id="backToHome" class="back-button">
+              <i class="fas fa-home"></i> Trang chủ
+            </button>
+            <h1>Báo cáo</h1>
+          </div>
+        </header>
+        <section id="reports">
+          <div class="report-card">
+            <h2>Tổng quan nhiệm vụ</h2>
+            <canvas id="taskOverviewChart"></canvas>
+          </div>
+          <div class="report-card">
+            <h2>Tiến độ theo thời gian</h2>
+            <canvas id="taskProgressChart"></canvas>
+          </div>
+          <div class="report-card">
+            <h2>Phân bổ ưu tiên</h2>
+            <canvas id="taskPriorityChart"></canvas>
+          </div>
+          <div class="time-range-selector">
+            <label for="timeRangeSelect">Chọn khoảng thời gian:</label>
+            <select id="timeRangeSelect">
+              <option value="currentMonth">Tháng hiện tại</option>
+              <option value="year">Năm gần nhất</option>
+            </select>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="reports.js"></script>
+  </body>
+</html>

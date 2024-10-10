@@ -10,13 +10,15 @@ const chineseVocabularyRoutes = require("./routes/chinese-vocabulary-routes");
 const passwordRoutes = require("./password-routes");
 const mainRoutes = require("./main-routes");
 const userManagementRoutes = require("./user_management_routes");
-const scheduleRoutes = require("./routes/schedule-routes");
+//const scheduleRoutes = require("./routes/schedule-routes");
 const infoForumRoutes = require("./routes/info-forum-routes");
 const feedbackRoutes = require("./routes/feedback-routes");
 const chatRoutes = require("./routes/chat-routes");
 const personalInfoRoutes = require("./routes/personal-info-routes"); // Thêm dòng này
 const loginRoutes = require("./routes/login-routes");
 const chatbotRoutes = require("./routes/chatbot-routes");
+const tasksRoutes = require("./routes/tasks-routes");
+const assignedTasksRoutes = require("./routes/assigned-tasks-routes");
 require("./cron-jobs");
 
 const app = express();
@@ -88,6 +90,7 @@ app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 app.use(express.static(path.join(__dirname, "Vocabulary")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/messenger", express.static(path.join(__dirname, "messenger")));
 
 // Use the routes
 app.use("/api", englishVocabularyRoutes);
@@ -95,13 +98,15 @@ app.use("/api", chineseVocabularyRoutes);
 app.use("/api", passwordRoutes);
 app.use("/api", mainRoutes);
 app.use("/api", userManagementRoutes);
-app.use("/api", scheduleRoutes);
+//app.use("/api", scheduleRoutes);
 app.use("/api", infoForumRoutes);
 app.use("/api", feedbackRoutes);
 app.use("/api", chatRoutes);
 app.use("/api", personalInfoRoutes); // Thêm dòng này
 app.use("/api", loginRoutes);
 app.use("/api", chatbotRoutes);
+app.use("/api", tasksRoutes);
+app.use("/api", assignedTasksRoutes);
 
 // Serve vocabulary.html
 app.get("/vocabulary", (req, res) => {

@@ -285,6 +285,17 @@ export function initUI() {
   });
 
   initChatPopup();
+
+  const helpItems = document.querySelectorAll(".help-item");
+  helpItems.forEach((item) => {
+    item.addEventListener("click", (event) => {
+      const link = item.querySelector("a");
+      if (link) {
+        event.preventDefault();
+        window.location.href = link.href;
+      }
+    });
+  });
 }
 
 export function checkUserRole() {

@@ -559,3 +559,71 @@ header {
   outline: none;
   border-color: var(--primary-color);
 }
+
+/* Thêm vào cuối file */
+
+#reports {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.report-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.report-card h2 {
+  margin-bottom: 15px;
+  font-size: 1.2em;
+  color: #333;
+}
+
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+.time-range-selector {
+  margin-bottom: 20px;
+}
+
+.time-range-selector label {
+  margin-right: 10px;
+}
+
+#timeRangeSelect {
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.task-creator {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+.task-item.task-overdue {
+  border-left: 4px solid #ff6b6b;
+}
+
+.task-item.task-on-time {
+  border-left: 4px solid #6dd5a7;
+}
+
+.task-completed-at {
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.task-completed-at.task-overdue {
+  color: #ff6b6b;
+}
+
+.task-completed-at.task-on-time {
+  color: #6dd5a7;
+}

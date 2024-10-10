@@ -1,6 +1,6 @@
 import { ChatAPI } from "./chat-api.js";
-import { ChatUI } from "./chat-ui.js";
 import { ChatEvents } from "./chat-events.js";
+import { ChatUI } from "./chat-ui.js";
 
 const ChatApp = {
   currentReceiverId: null,

@@ -596,3 +596,13 @@ main {
   opacity: 1;
   transform: translateY(0);
 }
+
+.fixed-task {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  cursor: not-allowed;
+}
+
+.fixed-task:hover {
+  background-color: #f0f0f0;
+}

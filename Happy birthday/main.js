@@ -132,3 +132,17 @@ document.addEventListener("DOMContentLoaded", function () {
   // Xóa console.log ở đây
   initChatbot();
 });
+
+document.querySelectorAll(".toggle-btn").forEach((button) => {
+  button.addEventListener("click", function () {
+    const links =
+      this.closest(".sidebar-section").querySelector(".sidebar-links");
+    if (links.style.display === "none" || links.style.display === "") {
+      links.style.display = "block";
+      this.textContent = "-";
+    } else {
+      links.style.display = "none";
+      this.textContent = "+";
+    }
+  });
+});

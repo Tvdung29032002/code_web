@@ -1,19 +1,7 @@
 // calendar.js
 
-import {
-  tasks,
-  fetchTasks,
-  checkAndAddFixedTasks,
-  checkEnglishGameCompletion,
-  checkEnglishVocabularyCompletion,
-  currentDate,
-} from "./tasks.js";
-import {
-  formatDate,
-  createTaskElement,
-  showTaskForm,
-  updateLearningStatistics,
-} from "./utils.js";
+import { currentDate, fetchTasks, tasks } from "./tasks-script.js";
+import { createTaskElement, formatDate, showTaskForm } from "./tasks-utils.js";
 
 export let currentView = "month";
 
@@ -99,7 +87,8 @@ function createDayElement(date) {
   dayElement.addEventListener("click", (e) => {
     if (
       !e.target.classList.contains("task") &&
-      !e.target.closest(".task-form")
+      !e.target.closest(".task-form") &&
+      !e.target.closest(".fixed-task") // Thêm điều kiện này
     ) {
       showTaskForm(dayElement, dateString);
     }
@@ -108,9 +97,10 @@ function createDayElement(date) {
   return dayElement;
 }
 
-function updateCalendar() {
-  createCalendar(currentDate, currentView);
+export async function updateCalendar() {
+  await fetchTasks(); // Đảm bảo rằng tất cả các nhiệm vụ, bao gồm cả nhiệm vụ cố định, đã được tải
+  createCalendar(currentDate);
 }
 
-// Đảm bảo rằng updateCalendar được export
-export { createCalendar, updateCalendar };
+// Chỉ export createCalendar, không export updateCalendar lần nữa
+export { createCalendar };
