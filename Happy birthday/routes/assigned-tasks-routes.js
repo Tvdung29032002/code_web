@@ -10,9 +10,40 @@ function formatDate(date) {
   return `${year}-${month}-${day}`;
 }
 
+// Thêm hàm này vào đầu file
+function truncateMessage(message, maxLength = 65535) {
+  if (message.length <= maxLength) {
+    return message;
+  }
+  return message.substring(0, maxLength - 3) + "...";
+}
+
+// Thêm hàm helper mới để kiểm tra tên nhiệm vụ đã tồn tại
+async function isTaskNameExists(
+  connection,
+  taskName,
+  userId,
+  excludeTaskId = null
+) {
+  let query =
+    "SELECT COUNT(*) as count FROM assigned_tasks WHERE user_id = ? AND task_name = ?";
+  let params = [userId, taskName];
+
+  if (excludeTaskId) {
+    query += " AND id != ?";
+    params.push(excludeTaskId);
+  }
+
+  const [result] = await connection.execute(query, params);
+  return result[0].count > 0;
+}
+
 // Các route liên quan đến assigned tasks
 router.post("/assign-task", async (req, res) => {
+  let connection = req.dbConnection;
   try {
+    await connection.beginTransaction();
+
     const {
       userId,
       taskName,
@@ -29,21 +60,43 @@ router.post("/assign-task", async (req, res) => {
       });
     }
 
-    const [result] = await req.dbConnection.execute(
+    // Kiểm tra xem tên nhiệm vụ đã tồn tại chưa
+    const taskExists = await isTaskNameExists(connection, taskName, userId);
+    if (taskExists) {
+      await connection.rollback();
+      return res.status(400).json({
+        success: false,
+        message: "Tên nhiệm vụ đã tồn tại",
+      });
+    }
+
+    const [result] = await connection.execute(
       "INSERT INTO assigned_tasks (user_id, task_name, task_description, start_date, end_date, priority) VALUES (?, ?, ?, ?, ?, ?)",
       [userId, taskName, taskDescription, startDateTime, endDateTime, priority]
     );
 
+    const taskId = result.insertId;
+
+    // Tạo thông báo cho nhiệm vụ mới
+    const notificationMessage = `Bạn đã được giao một nhiệm vụ mới: ${taskName}`;
+    await connection.execute(
+      "INSERT INTO notifications (user_id, task_id, message) VALUES (?, ?, ?)",
+      [userId, taskId, notificationMessage]
+    );
+
+    await connection.commit();
+
     res.json({
       success: true,
-      message: "Nhiệm vụ đã được giao thành công",
-      taskId: result.insertId,
+      message: "Nhiệm vụ đã được giao thành công và thông báo đã được tạo",
+      taskId: taskId,
     });
   } catch (error) {
-    console.error("Lỗi khi giao nhiệm vụ:", error);
+    await connection.rollback();
+    console.error("Lỗi khi giao nhiệm vụ và tạo thông báo:", error);
     res.status(500).json({
       success: false,
-      message: "Không thể giao nhiệm vụ",
+      message: "Không thể giao nhiệm vụ và tạo thông báo",
       error: error.message,
     });
   }
@@ -93,29 +146,76 @@ router.get("/assigned-tasks/:userId", async (req, res) => {
 });
 
 router.put("/assigned-tasks/:taskId/complete", async (req, res) => {
+  let connection;
   try {
+    connection = req.dbConnection;
+    await connection.beginTransaction();
+
     const { taskId } = req.params;
-    const { completed } = req.body;
+    const { completed, userId } = req.body;
+
+    console.log("Received data:", { taskId, completed, userId });
+
+    // Kiểm tra các giá trị đầu vào
+    if (
+      taskId === undefined ||
+      completed === undefined ||
+      userId === undefined
+    ) {
+      console.log("Missing data:", { taskId, completed, userId });
+      throw new Error(
+        "Thiếu thông tin cần thiết để cập nhật trạng thái nhiệm vụ"
+      );
+    }
 
     const completedAt = completed
       ? new Date().toISOString().slice(0, 19).replace("T", " ")
       : null;
 
-    await req.dbConnection.execute(
+    await connection.execute(
       "UPDATE assigned_tasks SET completed = ?, completed_at = ? WHERE id = ?",
-      [completed, completedAt, taskId]
+      [completed ? 1 : 0, completedAt, taskId]
     );
+
+    // Tạo thông báo khi nhiệm vụ được hoàn thành
+    if (completed) {
+      const [taskInfo] = await connection.execute(
+        "SELECT task_name FROM assigned_tasks WHERE id = ?",
+        [taskId]
+      );
+
+      if (taskInfo && taskInfo.length > 0) {
+        const taskName = taskInfo[0].task_name;
+        const notificationMessage = `Nhiệm vụ "${taskName}" đã được hoàn thành`;
+        await connection.execute(
+          "INSERT INTO notifications (user_id, task_id, message) VALUES (?, ?, ?)",
+          [userId, taskId, notificationMessage]
+        );
+      } else {
+        throw new Error("Không tìm thấy thông tin nhiệm vụ");
+      }
+    }
+
+    await connection.commit();
 
     res.json({
       success: true,
-      message: "Trạng thái hoàn thành nhiệm vụ đã được cập nhật",
+      message:
+        "Trạng thái hoàn thành nhiệm vụ đã được cập nhật và thông báo đã được tạo",
       completedAt: completedAt,
     });
   } catch (error) {
-    console.error("Lỗi khi cập nhật trạng thái hoàn thành nhiệm vụ:", error);
+    if (connection) {
+      await connection.rollback();
+    }
+    console.error(
+      "Lỗi khi cập nhật trạng thái hoàn thành nhiệm vụ và tạo thông báo:",
+      error
+    );
     res.status(500).json({
       success: false,
-      message: "Không thể cập nhật trạng thái hoàn thành nhiệm vụ",
+      message:
+        "Không thể cập nhật trạng thái hoàn thành nhiệm vụ và tạo thông báo",
       error: error.message,
     });
   }
@@ -211,21 +311,104 @@ router.get("/assigned-tasks/search/:userId", async (req, res) => {
 });
 
 router.put("/assigned-tasks/:taskId", async (req, res) => {
+  let connection;
   try {
+    connection = req.dbConnection;
+    await connection.beginTransaction();
+
     const { taskId } = req.params;
     const { taskName, taskDescription, startDateTime, endDateTime, priority } =
       req.body;
 
-    await req.dbConnection.execute(
+    // Lấy thông tin cũ của nhiệm vụ
+    const [oldTaskInfo] = await connection.execute(
+      "SELECT * FROM assigned_tasks WHERE id = ?",
+      [taskId]
+    );
+
+    const oldTask = oldTaskInfo[0];
+
+    // Kiểm tra xem tên nhiệm vụ mới có trùng với tên nhiệm vụ khác không
+    if (oldTask.task_name !== taskName) {
+      const taskExists = await isTaskNameExists(
+        connection,
+        taskName,
+        oldTask.user_id,
+        taskId
+      );
+      if (taskExists) {
+        await connection.rollback();
+        return res.status(400).json({
+          success: false,
+          message: "Tên nhiệm vụ đã tồn tại",
+        });
+      }
+    }
+
+    // Cập nhật thông tin nhiệm vụ
+    await connection.execute(
       "UPDATE assigned_tasks SET task_name = ?, task_description = ?, start_date = ?, end_date = ?, priority = ? WHERE id = ?",
       [taskName, taskDescription, startDateTime, endDateTime, priority, taskId]
     );
+
+    // Tạo thông báo cho mỗi thay đổi
+    const changes = [];
+    if (oldTask.task_name !== taskName) {
+      changes.push(
+        `Tên nhiệm vụ đã được thay đổi từ "${oldTask.task_name}" thành "${taskName}"`
+      );
+    }
+    if (oldTask.task_description !== taskDescription) {
+      changes.push(
+        `Mô tả nhiệm vụ đã được cập nhật từ "${oldTask.task_description}" thành "${taskDescription}"`
+      );
+    }
+    if (
+      formatDateTime(oldTask.start_date) !==
+      formatDateTime(new Date(startDateTime))
+    ) {
+      changes.push(
+        `Thời gian bắt đầu đã được thay đổi từ ${formatDateTime(
+          oldTask.start_date
+        )} thành ${formatDateTime(new Date(startDateTime))}`
+      );
+    }
+    if (
+      formatDateTime(oldTask.end_date) !== formatDateTime(new Date(endDateTime))
+    ) {
+      changes.push(
+        `Thời gian kết thúc đã được thay đổi từ ${formatDateTime(
+          oldTask.end_date
+        )} thành ${formatDateTime(new Date(endDateTime))}`
+      );
+    }
+    if (oldTask.priority !== priority) {
+      changes.push(
+        `Mức độ ưu tiên đã được thay đổi từ ${oldTask.priority} thành ${priority}`
+      );
+    }
+
+    // Nếu có bất kỳ thay đổi nào, tạo thông báo mới
+    if (changes.length > 0) {
+      const notificationMessage = truncateMessage(
+        `Nhiệm vụ "${taskName}" đã được cập nhật:\n${changes.join("\n")}`
+      );
+      await connection.execute(
+        "INSERT INTO notifications (user_id, task_id, message) VALUES (?, ?, ?)",
+        [oldTask.user_id, taskId, notificationMessage]
+      );
+    }
+
+    await connection.commit();
 
     res.json({
       success: true,
       message: "Nhiệm vụ đã được cập nhật thành công",
     });
   } catch (error) {
+    if (connection) {
+      await connection.rollback();
+    }
     console.error("Lỗi khi cập nhật nhiệm vụ:", error);
     res.status(500).json({
       success: false,
@@ -356,5 +539,16 @@ router.get("/assigned-tasks/:userId", async (req, res) => {
     });
   }
 });
+
+// Hàm helper để format ngày giờ
+function formatDateTime(date) {
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  const hours = String(d.getHours()).padStart(2, "0");
+  const minutes = String(d.getMinutes()).padStart(2, "0");
+  return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
 
 module.exports = router;

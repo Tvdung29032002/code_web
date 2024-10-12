@@ -1,5 +1,3 @@
-import taskManager from "./assign-task-manager.js";
-
 // modalHandler.js
 
 const modalHandler = {
@@ -86,19 +84,26 @@ const modalHandler = {
         }
       );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
       const result = await response.json();
 
-      if (result.success) {
-        alert(result.message);
-        this.resetForm();
-        this.closeModalHandler();
-        // You might want to trigger a reload of tasks here
+      if (response.ok) {
+        if (result.success) {
+          alert(result.message);
+          this.resetForm();
+          this.closeModalHandler();
+          // Có thể thêm code để tải lại danh sách nhiệm vụ ở đây
+        } else {
+          alert("Lỗi: " + result.message);
+        }
       } else {
-        alert("Lỗi: " + result.message);
+        if (
+          response.status === 400 &&
+          result.message === "Tên nhiệm vụ đã tồn tại"
+        ) {
+          alert("Nhiệm vụ đã tồn tại. Vui lòng nhập tên khác.");
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
       }
     } catch (error) {
       console.error("Lỗi:", error);
@@ -209,23 +214,29 @@ const modalHandler = {
         }
       );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
       const result = await response.json();
 
-      if (result.success) {
-        alert(result.message);
-        document.getElementById("editTaskModal").style.display = "none";
-        // Dispatch một custom event
-        window.dispatchEvent(
-          new CustomEvent("taskUpdated", {
-            detail: { userId: localStorage.getItem("userId") },
-          })
-        );
+      if (response.ok) {
+        if (result.success) {
+          alert(result.message);
+          document.getElementById("editTaskModal").style.display = "none";
+          window.dispatchEvent(
+            new CustomEvent("taskUpdated", {
+              detail: { userId: localStorage.getItem("userId") },
+            })
+          );
+        } else {
+          alert("Lỗi: " + result.message);
+        }
       } else {
-        alert("Lỗi: " + result.message);
+        if (
+          response.status === 400 &&
+          result.message === "Tên nhiệm vụ đã tồn tại"
+        ) {
+          alert("Không được nhập trùng tên nhiệm vụ");
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
       }
     } catch (error) {
       console.error("Lỗi:", error);

@@ -74,6 +74,14 @@
   transition: background-color 0.2s;
 }
 
+.notification-item.unread {
+  background-color: #e8f0fe;
+}
+
+.notification-item.read {
+  background-color: #ffffff;
+}
+
 .notification-item:hover {
   background-color: #f1f3f4;
 }

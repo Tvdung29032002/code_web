@@ -38,6 +38,7 @@ const taskManager = {
   displayAssignedTasks(tasks) {
     const taskList = document.getElementById("taskList");
     taskList.innerHTML = "";
+
     tasks.forEach((task) => {
       const startDateTime = new Date(task.start_date);
       const endDateTime = new Date(task.end_date);
@@ -55,13 +56,14 @@ const taskManager = {
       let statusText = "";
       let statusClass = "";
       if (task.completed) {
-        if (task.completion_status === "overdue") {
-          statusText = "Hoàn thành trễ";
-          statusClass = "task-overdue";
-        } else {
-          statusText = "Hoàn thành đúng hạn";
-          statusClass = "task-on-time";
-        }
+        statusText =
+          task.completion_status === "overdue"
+            ? "Hoàn thành trễ"
+            : "Hoàn thành đúng hạn";
+        statusClass =
+          task.completion_status === "overdue"
+            ? "task-overdue"
+            : "task-on-time";
       } else if (task.completion_status === "overdue") {
         statusText = "Quá hạn";
         statusClass = "task-overdue";
@@ -85,7 +87,7 @@ const taskManager = {
             <h3>${task.task_name}</h3>
             <span class="task-priority ${task.priority}">${task.priority}</span>
           </div>
-          <p class="task-description">${task.task_description}</p>
+          <p class="task-description">Mô tả: ${task.task_description}</p>
           <div class="task-dates">
             <span>Bắt đầu: ${formattedStartDate} ${formattedStartTime}</span>
             <span>Kết thúc: ${formattedEndDate} ${formattedEndTime}</span>
@@ -136,12 +138,12 @@ const taskManager = {
         const taskId = this.dataset.taskId;
         const completed = this.checked;
         const taskItem = this.closest(".task-item");
+        const userId = localStorage.getItem("userId"); // Thêm dòng này
 
         // Kiểm tra xem nhiệm vụ đã hoàn thành chưa
         if (taskItem.classList.contains("completed") && !completed) {
-          // Nếu nhiệm vụ đã hoàn thành và người dùng cố gắng bỏ chọn
-          event.preventDefault(); // Ngăn chặn thay đổi trạng thái checkbox
-          this.checked = true; // Đảm bảo checkbox vẫn được chọn
+          event.preventDefault();
+          this.checked = true;
           alert("Không thể bỏ chọn nhiệm vụ đã hoàn thành");
           return;
         }
@@ -154,7 +156,7 @@ const taskManager = {
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ completed }),
+              body: JSON.stringify({ completed, userId }), // Thêm userId vào đây
             }
           );
 

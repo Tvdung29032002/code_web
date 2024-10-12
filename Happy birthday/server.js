@@ -19,6 +19,7 @@ const loginRoutes = require("./routes/login-routes");
 const chatbotRoutes = require("./routes/chatbot-routes");
 const tasksRoutes = require("./routes/tasks-routes");
 const assignedTasksRoutes = require("./routes/assigned-tasks-routes");
+const allNotificationsRoutes = require("./routes/all-notifications-routes");
 require("./cron-jobs");
 
 const app = express();
@@ -107,6 +108,7 @@ app.use("/api", loginRoutes);
 app.use("/api", chatbotRoutes);
 app.use("/api", tasksRoutes);
 app.use("/api", assignedTasksRoutes);
+app.use("/api", allNotificationsRoutes);
 
 // Serve vocabulary.html
 app.get("/vocabulary", (req, res) => {

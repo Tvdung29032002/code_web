@@ -66,73 +66,206 @@ export async function fetchUpcomingTasks() {
   const userId = localStorage.getItem("userId");
   if (!userId) {
     console.error("Không tìm thấy userId");
-    return [];
+    return { notifications: [], unreadCount: 0 };
   }
 
   try {
     const response = await fetch(
-      `http://192.168.0.103:3000/api/upcoming-tasks/${userId}`
+      `http://192.168.0.103:3000/api/all-notifications/${userId}`
     );
     const data = await response.json();
     if (data.success) {
-      return data.tasks;
+      const notifications = data.notifications
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        .slice(0, 5);
+      const unreadCount = data.notifications.filter((n) => !n.is_read).length;
+      return { notifications, unreadCount };
     } else {
-      console.error("Lỗi khi lấy nhiệm vụ sắp đến hạn:", data.message);
+      console.error("Lỗi khi lấy thông báo:", data.message);
     }
   } catch (error) {
-    console.error("Lỗi khi lấy nhiệm vụ sắp đến hạn:", error);
+    console.error("Lỗi khi lấy thông báo:", error);
   }
-  return [];
+  return { notifications: [], unreadCount: 0 };
 }
 
-export function displayNotifications(tasks) {
+export function displayNotifications(notificationData) {
+  const { notifications, unreadCount } = notificationData;
   const notificationMenu = document.getElementById("notificationMenu");
   notificationMenu.innerHTML = "";
-
-  if (tasks.length === 0) {
-    notificationMenu.innerHTML =
-      "<div class='notification-empty'>Không có thông báo mới</div>";
-    return;
-  }
 
   const notificationHeader = document.createElement("div");
   notificationHeader.className = "notification-header";
   notificationHeader.textContent = "Thông báo";
   notificationMenu.appendChild(notificationHeader);
 
-  tasks.forEach((task) => {
-    const notification = document.createElement("div");
-    notification.className = "notification-item";
-    notification.innerHTML = `
-        <div class="notification-icon">${task.completed ? "✅" : "📅"}</div>
+  if (notifications.length === 0) {
+    const emptyNotification = document.createElement("div");
+    emptyNotification.className = "notification-empty";
+    emptyNotification.textContent = "Không có thông báo mới";
+    notificationMenu.appendChild(emptyNotification);
+  } else {
+    notifications.forEach((notification) => {
+      const notificationItem = document.createElement("div");
+      notificationItem.className = `notification-item ${
+        notification.is_read ? "read" : "unread"
+      }`;
+      notificationItem.dataset.id = notification.id; // Thêm id của thông báo vào dataset
+      notificationItem.innerHTML = `
+        <div class="notification-icon">${getNotificationIcon(
+          notification
+        )}</div>
         <div class="notification-content">
-          <div class="notification-title">${task.task_name}</div>
-          <div class="notification-message">
-            ${
-              task.completed ? "Nhiệm vụ đã hoàn thành" : "Nhiệm vụ sắp đến hạn"
-            }
-          </div>
-          <div class="notification-date">Hạn: ${formatDate(task.end_date)}</div>
-          <div class="notification-status ${
-            task.completed ? "completed" : "pending"
-          }">
-            ${task.completed ? "Đã hoàn thành" : "Chưa hoàn thành"}
+          <div class="notification-message">${formatNotificationMessage(
+            notification.message
+          )}</div>
+          <div class="notification-date">
+            Ngày tạo: ${formatDate(notification.created_at)}
           </div>
         </div>
       `;
-    notificationMenu.appendChild(notification);
-  });
+      notificationItem.addEventListener("click", handleNotificationClick);
+      notificationMenu.appendChild(notificationItem);
+    });
+  }
 
   const viewAllButton = document.createElement("button");
   viewAllButton.className = "view-all-notifications";
   viewAllButton.textContent = "Xem tất cả";
   viewAllButton.onclick = () => {
-    // Implement view all notifications logic
+    window.location.href = "/all-notifications/all-notifications.html";
   };
   notificationMenu.appendChild(viewAllButton);
+
+  updateNotificationBadge(unreadCount);
 }
 
+function getNotificationIcon(notification) {
+  if (notification.completed) {
+    return "✅";
+  } else if (notification.message.includes("hoàn thành")) {
+    return "🏁";
+  } else {
+    return "📅";
+  }
+}
+
+function formatNotificationMessage(message) {
+  // Tách tiêu đề và nội dung
+  const [title, ...contentParts] = message.split(":");
+  let content = contentParts.join(":").trim();
+
+  // Tách các phần của nội dung
+  const contentItems = content
+    .split("\n")
+    .map((item) => item.trim())
+    .filter((item) => item);
+
+  // Tạo HTML cho thông báo đã định dạng
+  let formattedMessage = `<div class="notification-title">${escapeHtml(
+    title.trim()
+  )}</div>`;
+  formattedMessage += '<ul class="notification-details">';
+  contentItems.forEach((item) => {
+    formattedMessage += `<li>${escapeHtml(item)}</li>`;
+  });
+  formattedMessage += "</ul>";
+
+  return formattedMessage;
+}
+
+function escapeHtml(unsafe) {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// Thêm hàm này để định dạng ngày tháng
 function formatDate(dateString) {
-  const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-  return new Date(dateString).toLocaleDateString("vi-VN", options);
+  const date = new Date(dateString);
+  return date.toLocaleString("vi-VN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function updateNotificationBadge(unreadCount) {
+  const notificationIcon = document.getElementById("notificationIcon");
+  let countBadge = notificationIcon.parentElement.querySelector(
+    ".notification-count"
+  );
+
+  if (unreadCount > 0) {
+    if (!countBadge) {
+      countBadge = document.createElement("span");
+      countBadge.className = "notification-count";
+      notificationIcon.parentElement.appendChild(countBadge);
+    }
+    countBadge.textContent = unreadCount;
+  } else if (countBadge) {
+    countBadge.remove();
+  }
+}
+
+async function handleNotificationClick(event) {
+  const notificationItem = event.currentTarget;
+  const notificationId = notificationItem.dataset.id;
+
+  if (notificationItem.classList.contains("unread")) {
+    try {
+      const response = await fetch(
+        `http://192.168.0.103:3000/api/notifications/${notificationId}/toggle-read`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ isRead: true }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.success) {
+        // Cập nhật giao diện cho thông báo hiện tại
+        notificationItem.classList.remove("unread");
+        notificationItem.classList.add("read");
+
+        // Cập nhật số lượng thông báo chưa đọc
+        const currentUnreadCount = parseInt(
+          document.querySelector(".notification-count")?.textContent || "0"
+        );
+        const newUnreadCount = Math.max(currentUnreadCount - 1, 0);
+        updateNotificationBadge(newUnreadCount);
+
+        // Làm mới toàn bộ danh sách thông báo
+        await updateNotifications();
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật trạng thái đọc:", error);
+    }
+  }
+}
+
+// Cập nhật hàm updateNotifications để có thể sử dụng async/await
+export async function updateNotifications() {
+  const notificationData = await fetchUpcomingTasks();
+  displayNotifications(notificationData);
+}
+
+// Đảm bảo rằng hàm này được export
+export { handleNotificationClick };
+
+export async function refreshNotifications() {
+  const notificationData = await fetchUpcomingTasks();
+  displayNotifications(notificationData);
 }
